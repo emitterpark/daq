@@ -481,27 +481,28 @@
 <pad name="9" x="13.335" y="0" drill="1.1"/>
 <pad name="10" x="17.145" y="0" drill="1.1"/>
 </package>
-<package name="BUTTON-4P-SMD-5X5">
-<description>&lt;b&gt;COM-08720-1&lt;/b&gt;&lt;br&gt;
-</description>
-<smd name="1" x="-3.048" y="1.85" dx="1.27" dy="0.762" layer="1"/>
-<smd name="4" x="3.048" y="1.85" dx="1.27" dy="0.762" layer="1"/>
-<smd name="2" x="-3.048" y="-1.85" dx="1.27" dy="0.762" layer="1"/>
-<smd name="3" x="3.048" y="-1.85" dx="1.27" dy="0.762" layer="1"/>
-<text x="0.008" y="0.498" size="1.016" layer="25" align="center">&gt;NAME</text>
-<wire x1="-2.6" y1="1" x2="-2.6" y2="-1" width="0.0762" layer="51"/>
-<wire x1="-2.6" y1="-1" x2="-1" y2="-2.6" width="0.0762" layer="51"/>
-<wire x1="-1" y1="-2.6" x2="1" y2="-2.6" width="0.0762" layer="51"/>
-<wire x1="1" y1="-2.6" x2="2.6" y2="-1" width="0.0762" layer="51"/>
-<wire x1="2.6" y1="1" x2="1" y2="2.6" width="0.0762" layer="51"/>
-<wire x1="-1" y1="2.6" x2="-2.6" y2="1" width="0.0762" layer="51"/>
-<wire x1="2.6" y1="-1" x2="2.6" y2="1" width="0.0762" layer="21"/>
-<wire x1="-1" y1="2.6" x2="1" y2="2.6" width="0.0762" layer="21"/>
-<text x="-2.413" y="0" size="1.016" layer="27">&gt;VALUE</text>
-<wire x1="-3.8735" y1="2.794" x2="3.8735" y2="2.794" width="0.127" layer="21"/>
-<wire x1="3.8735" y1="2.794" x2="3.8735" y2="-2.794" width="0.127" layer="21"/>
-<wire x1="3.8735" y1="-2.794" x2="-3.8735" y2="-2.794" width="0.127" layer="21"/>
-<wire x1="-3.8735" y1="-2.794" x2="-3.8735" y2="2.794" width="0.127" layer="21"/>
+<package name="B3F-3150-52-55">
+<pad name="1" x="-2.25" y="0" drill="1.1"/>
+<pad name="2" x="2.25" y="0" drill="1.1"/>
+<pad name="3" x="-3.5" y="2.5" drill="1.5"/>
+<pad name="4" x="3.5" y="2.5" drill="1.5"/>
+<wire x1="-3.683" y1="3.937" x2="3.683" y2="3.937" width="0.0762" layer="51"/>
+<wire x1="3.683" y1="3.937" x2="3.683" y2="-2.159" width="0.0762" layer="51"/>
+<wire x1="-3.683" y1="-2.159" x2="-3.683" y2="3.937" width="0.0762" layer="51"/>
+<wire x1="-1.27" y1="-4.699" x2="1.27" y2="-4.699" width="0.0762" layer="51"/>
+<wire x1="1.27" y1="-4.699" x2="1.27" y2="-2.159" width="0.0762" layer="51"/>
+<wire x1="-1.27" y1="-4.699" x2="-1.27" y2="-2.159" width="0.0762" layer="51"/>
+<wire x1="-3.683" y1="-2.159" x2="3.683" y2="-2.159" width="0.0762" layer="51"/>
+<wire x1="-4.826" y1="3.937" x2="-4.826" y2="-2.159" width="0.127" layer="21"/>
+<wire x1="-4.826" y1="-2.159" x2="-1.27" y2="-2.159" width="0.127" layer="21"/>
+<wire x1="-1.27" y1="-2.159" x2="-1.27" y2="-4.699" width="0.127" layer="21"/>
+<wire x1="-1.27" y1="-4.699" x2="1.27" y2="-4.699" width="0.127" layer="21"/>
+<wire x1="1.27" y1="-4.699" x2="1.27" y2="-2.159" width="0.127" layer="21"/>
+<wire x1="1.27" y1="-2.159" x2="4.826" y2="-2.159" width="0.127" layer="21"/>
+<wire x1="4.826" y1="-2.159" x2="4.826" y2="3.937" width="0.127" layer="21"/>
+<wire x1="4.826" y1="3.937" x2="-4.826" y2="3.937" width="0.127" layer="21"/>
+<text x="-3.2385" y="0.889" size="1.016" layer="25">&gt;NAME</text>
+<text x="-3.2385" y="0.889" size="1.016" layer="27">&gt;VALUE</text>
 </package>
 </packages>
 <symbols>
@@ -887,28 +888,26 @@
 <pin name="9" x="0" y="-20.32" length="middle"/>
 <pin name="10" x="0" y="-22.86" length="middle"/>
 </symbol>
-<symbol name="BUTTON-4P">
+<symbol name="B3F-3150-52-55">
 <wire x1="2.54" y1="2.54" x2="10.16" y2="2.54" width="0.254" layer="94"/>
 <wire x1="10.16" y1="-5.08" x2="10.16" y2="-2.54" width="0.254" layer="94"/>
-<wire x1="10.16" y1="-2.54" x2="10.16" y2="0" width="0.254" layer="94"/>
-<wire x1="10.16" y1="0" x2="10.16" y2="2.54" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-2.54" x2="10.16" y2="2.54" width="0.254" layer="94"/>
 <wire x1="10.16" y1="-5.08" x2="2.54" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="2.54" y1="2.54" x2="2.54" y2="0" width="0.254" layer="94"/>
 <text x="2.794" y="3.556" size="1.778" layer="95" align="center-left">&gt;NAME</text>
 <text x="2.794" y="5.334" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
-<pin name="1" x="0" y="0" visible="pad" length="short" direction="pas"/>
-<pin name="2" x="0" y="-2.54" visible="pad" length="short" direction="pas"/>
+<pin name="3" x="0" y="0" visible="pad" length="short" direction="pas"/>
+<pin name="1" x="0" y="-2.54" visible="pad" length="short" direction="pas"/>
 <pin name="4" x="12.7" y="0" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="3" x="12.7" y="-2.54" visible="pad" length="short" direction="pas" rot="R180"/>
-<wire x1="2.54" y1="0" x2="2.54" y2="-2.54" width="0.254" layer="94"/>
+<pin name="2" x="12.7" y="-2.54" visible="pad" length="short" direction="pas" rot="R180"/>
+<wire x1="2.54" y1="2.54" x2="2.54" y2="-2.54" width="0.254" layer="94"/>
 <wire x1="2.54" y1="-2.54" x2="2.54" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="2.54" y1="0" x2="6.35" y2="0" width="0.1524" layer="94"/>
-<wire x1="6.35" y1="0" x2="10.16" y2="0" width="0.1524" layer="94"/>
-<wire x1="2.54" y1="-2.54" x2="6.35" y2="-2.54" width="0.1524" layer="94"/>
-<wire x1="6.35" y1="-2.54" x2="10.16" y2="-2.54" width="0.1524" layer="94"/>
-<wire x1="6.35" y1="0" x2="6.35" y2="-1.016" width="0.1524" layer="94"/>
-<wire x1="6.35" y1="-1.016" x2="5.588" y2="-1.778" width="0.1524" layer="94"/>
-<wire x1="6.35" y1="-2.54" x2="6.35" y2="-1.778" width="0.1524" layer="94"/>
+<wire x1="2.54" y1="-2.54" x2="5.334" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="5.334" y1="-2.54" x2="5.334" y2="-2.032" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-2.032" x2="7.62" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-2.54" x2="10.16" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="5.08" y1="-1.524" x2="6.35" y2="-1.524" width="0.254" layer="94"/>
+<wire x1="6.35" y1="-1.524" x2="7.874" y2="-1.524" width="0.254" layer="94"/>
+<wire x1="6.35" y1="-0.762" x2="6.35" y2="-1.524" width="0.254" layer="94"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -1427,12 +1426,12 @@
 </device>
 </devices>
 </deviceset>
-<deviceset name="BUTTON-4P-SMD-5X5" prefix="SW" uservalue="yes">
+<deviceset name="B3F-3150-52-55" prefix="SW" uservalue="yes">
 <gates>
-<gate name="G$1" symbol="BUTTON-4P" x="0" y="0"/>
+<gate name="G$1" symbol="B3F-3150-52-55" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="BUTTON-4P-SMD-5X5">
+<device name="" package="B3F-3150-52-55">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
@@ -1612,9 +1611,10 @@
 <part name="U$5" library="myparts" deviceset="VEXT" device=""/>
 <part name="GND35" library="myparts" deviceset="GND" device=""/>
 <part name="CON5" library="myparts" deviceset="15EDGRC-3.81-10P" device=""/>
-<part name="SW1" library="myparts" deviceset="BUTTON-4P-SMD-5X5" device=""/>
+<part name="SW1" library="myparts" deviceset="B3F-3150-52-55" device=""/>
 <part name="GND13" library="myparts" deviceset="GND" device=""/>
 <part name="GND24" library="myparts" deviceset="GND" device=""/>
+<part name="GND25" library="myparts" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -2180,15 +2180,18 @@
 <attribute name="NAME" x="-8.636" y="-162.56" size="1.778" layer="95" rot="MR270" align="center-left"/>
 <attribute name="VALUE" x="-10.414" y="-162.56" size="1.778" layer="96" rot="MR270" align="center-left"/>
 </instance>
-<instance part="SW1" gate="G$1" x="-45.72" y="-53.34" smashed="yes">
-<attribute name="NAME" x="-42.926" y="-49.784" size="1.778" layer="95" align="center-left"/>
-<attribute name="VALUE" x="-42.926" y="-48.006" size="1.778" layer="96" align="center-left"/>
+<instance part="SW1" gate="G$1" x="40.64" y="71.12" smashed="yes" rot="R180">
+<attribute name="NAME" x="37.846" y="67.564" size="1.778" layer="95" rot="R180" align="center-left"/>
+<attribute name="VALUE" x="37.846" y="65.786" size="1.778" layer="96" rot="R180" align="center-left"/>
 </instance>
-<instance part="GND13" gate="1" x="-45.72" y="-58.42" smashed="yes">
-<attribute name="VALUE" x="-48.26" y="-61.468" size="1.778" layer="96"/>
+<instance part="GND13" gate="1" x="43.18" y="71.12" smashed="yes" rot="R90">
+<attribute name="VALUE" x="46.228" y="68.58" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="GND24" gate="1" x="-33.02" y="-58.42" smashed="yes">
-<attribute name="VALUE" x="-35.56" y="-61.468" size="1.778" layer="96"/>
+<instance part="GND24" gate="1" x="25.4" y="73.66" smashed="yes" rot="R270">
+<attribute name="VALUE" x="22.352" y="76.2" size="1.778" layer="96" rot="R270"/>
+</instance>
+<instance part="GND25" gate="1" x="25.4" y="71.12" smashed="yes" rot="R270">
+<attribute name="VALUE" x="22.352" y="73.66" size="1.778" layer="96" rot="R270"/>
 </instance>
 </instances>
 <busses>
@@ -2396,12 +2399,16 @@
 <pinref part="GND35" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="SW1" gate="G$1" pin="2"/>
+<pinref part="SW1" gate="G$1" pin="3"/>
 <pinref part="GND13" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="SW1" gate="G$1" pin="3"/>
+<pinref part="SW1" gate="G$1" pin="2"/>
 <pinref part="GND24" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="SW1" gate="G$1" pin="4"/>
+<pinref part="GND25" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -2873,13 +2880,12 @@
 <wire x1="-20.32" y1="-45.72" x2="-20.32" y2="-48.26" width="0.1524" layer="91"/>
 <junction x="-20.32" y="-48.26"/>
 <wire x1="-25.4" y1="-40.64" x2="-25.4" y2="-48.26" width="0.1524" layer="91"/>
+<wire x1="-25.4" y1="-48.26" x2="-45.72" y2="-48.26" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="-48.26" x2="-45.72" y2="-71.12" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="-71.12" x2="45.72" y2="-71.12" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="-71.12" x2="45.72" y2="73.66" width="0.1524" layer="91"/>
 <pinref part="SW1" gate="G$1" pin="1"/>
-<wire x1="-25.4" y1="-48.26" x2="-33.02" y2="-48.26" width="0.1524" layer="91"/>
-<wire x1="-33.02" y1="-48.26" x2="-45.72" y2="-48.26" width="0.1524" layer="91"/>
-<wire x1="-45.72" y1="-48.26" x2="-45.72" y2="-53.34" width="0.1524" layer="91"/>
-<pinref part="SW1" gate="G$1" pin="4"/>
-<wire x1="-33.02" y1="-53.34" x2="-33.02" y2="-48.26" width="0.1524" layer="91"/>
-<junction x="-33.02" y="-48.26"/>
+<wire x1="45.72" y1="73.66" x2="40.64" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$65" class="0">
