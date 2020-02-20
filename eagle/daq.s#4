@@ -1611,6 +1611,7 @@
 <text x="-30.988" y="88.9" size="1.778" layer="91" rot="R270">D+</text>
 <text x="-33.528" y="88.9" size="1.778" layer="91" rot="R270">NC</text>
 <text x="-36.576" y="88.9" size="1.778" layer="91" rot="R270">GND</text>
+<text x="29.464" y="78.74" size="1.778" layer="91">RESET</text>
 </plain>
 <instances>
 <instance part="IC1" gate="G$1" x="-40.64" y="12.7" smashed="yes">

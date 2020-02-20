@@ -6,36 +6,21 @@
 #include <INA226.h>
 #include <WebUSB.h>
 
-const uint8_t INA_ALR_PIN[2]      = {MOSI, MISO};     // PB2/MOSI/PCINT2, PB3/MISO/PCINT3 
-const uint8_t DIG_PIN[2]          = {0, 1};           // 
-const uint8_t ACT_LED_PIN         = 11;               // PB7/PCINT7
-
-const uint8_t RAK_RES_PIN         = 10;               // PB6/ADC13/PCINT6
-const uint8_t JOIN_LED_PIN        = A4;               // PF1/ADC1
-const uint8_t RANDOM_PIN          = A5;               // PF0/ADC0
+const uint8_t DIG_PIN[2]          = {0, 1};           // PD2/RXD1/INT2, PD3/TXD1/INT3
+const uint8_t AN_ALR_PIN[2]       = {8, 9};           // PB4/ADC11/PCINT4, PB5/ADC12/PCINT5 
+const uint8_t LORA_RES_PIN        = 10;               // PB6/ADC13/PCINT6
+const uint8_t RANDOM_PIN          = A0;               // PF7/ADC7 
+const uint8_t LED_PIN             = A5;               // PF0/ADC0
 
 // uint8_t ge_u08[] 
 const uint8_t ge_u08_lora_dr      = 0;  // select
 const uint8_t ge_u08_lora_port    = 1;  // input
 const uint8_t ge_u08_poll         = 2;  // input
-const uint8_t ge_u08_mod_data_bit = 3;  // select
-const uint8_t ge_u08_mod_stop_bit = 4;  // select
-const uint8_t ge_u08_mod_par_bit  = 5;  // select
-// uint16_t ge_u16[]
-const uint8_t ge_u16_report       = 0;  // input
-// uint32_t ge_u32[]
-const uint8_t ge_u32_mod_baud     = 0;  // select 
+const uint8_t ge_u08_report       = 3;  // input max 240min
 
 // uint8_t an_u08[]
 const uint8_t an_u08_enable       = 0;  // checkbox
 const uint8_t an_u08_unit         = 1;  // select
-const uint8_t an_u08_low_relay_1  = 2;  // select
-const uint8_t an_u08_low_relay_2  = 3;  // select 
-const uint8_t an_u08_low_report   = 4;  // checkbox
-const uint8_t an_u08_high_relay_1 = 5;  // select
-const uint8_t an_u08_high_relay_2 = 6;  // select 
-const uint8_t an_u08_high_report  = 7;  // checkbox
-const uint8_t an_u08_within_report= 8;  // checkbox
 // float an_f32[]
 const uint8_t an_f32_in_min       = 0;  // input
 const uint8_t an_f32_in_max       = 1;  // input
@@ -47,97 +32,38 @@ const uint8_t an_f32_high         = 5;  // input
 // uint8_t dg_u08[]
 const uint8_t dg_u08_enable       = 0;  // checkbox
 const uint8_t dg_u08_unit         = 1;  // select
-const uint8_t dg_u08_low_relay_1  = 2;  // select
-const uint8_t dg_u08_low_relay_2  = 3;  // select 
-const uint8_t dg_u08_low_report   = 4;  // checkbox
-const uint8_t dg_u08_high_relay_1 = 5;  // select
-const uint8_t dg_u08_high_relay_2 = 6;  // select 
-const uint8_t dg_u08_high_report  = 7;  // checkbox
-// uint16_t dg_u16[]
-const uint8_t dg_u16_debounce     = 0;  // input
-
-// uint8_t mo_u08[]
-const uint8_t mo_u08_enable       = 0;  // checkbox
-const uint8_t mo_u08_unit         = 1;  // select
-const uint8_t mo_u08_slave        = 2;  // input
-const uint8_t mo_u08_function     = 3;  // select
-const uint8_t mo_u08_type         = 4;  // select
-const uint8_t mo_u08_decimal      = 5;  // input
-const uint8_t mo_u08_low_relay_1  = 6;  // select
-const uint8_t mo_u08_low_relay_2  = 7;  // select 
-const uint8_t mo_u08_low_report   = 8;  // checkbox
-const uint8_t mo_u08_high_relay_1 = 9;  // select
-const uint8_t mo_u08_high_relay_2 = 10; // select 
-const uint8_t mo_u08_high_report  = 11; // checkbox
-const uint8_t mo_u08_within_report= 12; // checkbox
-// uint16_t mo_u16[]
-const uint8_t mo_u16_register     = 0;  // input
-// uint16_t mo_f32[]
-const uint8_t mo_f32_low          = 0;  // input
-const uint8_t mo_f32_high         = 1;  // input
-
-// uint8_t tm_u08[]
-const uint8_t tm_u08_enable       = 0;  // checkbox
-const uint8_t tm_u08_hour         = 1;  // input
-const uint8_t tm_u08_minute       = 2;  // input
-const uint8_t tm_u08_time_relay_1 = 3;  // select
-const uint8_t tm_u08_time_relay_2 = 4;  // select
+const uint8_t dg_u08_debounce     = 2;  // input max 250ms
 
 const uint8_t numAn               = 2;
 const uint8_t numDg               = 2;
-const uint8_t numMo               = 8;
-const uint8_t numTm               = 2;
 
 struct Conf {
-  uint8_t   ge_u08[6];
-  uint16_t  ge_u16[1];
-  uint32_t  ge_u32[1];
-  uint8_t   an_u08[9 * numAn];
+  uint8_t   ge_u08[4];
+  uint8_t   an_u08[2 * numAn];
   float     an_f32[6 * numAn];
-  uint8_t   dg_u08[8 * numDg];
-  uint16_t  dg_u16[1 * numDg];
-  uint8_t   mo_u08[13 * numMo];
-  uint16_t  mo_u16[1 * numMo];
-  uint16_t  mo_f32[2 * numMo];
-  uint8_t   tm_u08[5 * numTm];     
+  uint8_t   dg_u08[3 * numDg];      
 };
 Conf conf;
 
 float       an[numAn];
 uint8_t     dg[numDg];
-float       mo[numMo];
 
 uint8_t     an_prev[numAn];
-uint16_t    mo_prev[numAn];
-
-const uint8_t _u16                = 0;
-const uint8_t _i16                = 1;
 
 const uint8_t within              = 1;
 const uint8_t low                 = 2;  
 const uint8_t high                = 3;
 
-const uint8_t change              = 4;
-
-const uint8_t coil                = 1;
-const uint8_t discrete            = 2;
-const uint8_t holding             = 3;
-const uint8_t input               = 4;
-
-const uint8_t activate            = 1;  
-const uint8_t deactivate          = 2;  
-
 unsigned long tmrPoll, tmrReport, tmrRandom;
+volatile bool isAlarm;
 String strUsbSerial, strRakSerial;
-bool loraJoin = false, loraSend = true, isReportIftt;
-tmElements_t tm;
+bool loraJoin = false, loraReport = true;
 
 AltSoftSerial rakSerial;
 CayenneLPP lpp(51);
 INA226 ina;
 WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/lora");
 #define usbSerial WebUSBSerial
-ModbusMaster modbus;
 
 void setup() {
   wdt_enable(WDTO_8S);
@@ -146,21 +72,18 @@ void setup() {
   loadConf();    
   setAnalog();
   setDigital();
-  setModbus();
-  setTm();
-  //delayRandom();    
+  //delayRandom();  ?? do inloop    
   setRak(); 
   tmrPoll = millis();
   tmrReport = millis();
 }
 void loop() {
   if (isPollInterval()) {
-    readAnalog();
-    readModbus();
+    readAnalog();    
   }  
   readDigital();
   readTime();
-  if (isReportIftt) {
+  if (isAlarm) {
     report();  
   }
   if (isReportInterval()) {
@@ -175,7 +98,7 @@ void readAnalog() {
   for (uint8_t ch = 0; ch < numAn; ch++) {
     const uint8_t _enable = an_u08_enable + ch * sizeof(conf.an_u08) / numAn; 
     if (conf.an_u08[_enable]) {   
-      while (INA_ALR_PIN[ch]);
+      while (AN_ALR_PIN[ch]);
       ina.begin(0x40 + ch);
       an[ch] = ina.readShuntCurrent();
       if (ina.isAlert());      
@@ -431,9 +354,9 @@ void readRakSerial() {
         rakSerial.println(conf.ge_u08[ge_u08_lora_dr]);
       } else if (strRakSerial.endsWith("DR" + String(conf.ge_u08[ge_u08_lora_dr]) +" success")) { 
         loraJoin = true; 
-        digitalWrite(JOIN_LED_PIN, HIGH);       
+        digitalWrite(LED_PIN, HIGH);       
       } else if (strRakSerial.endsWith(F("send success"))) { 
-        loraSend = true;
+        loraReport = true;
       }
       //if (usbSerial) {
       usbSerial.println(strRakSerial); 
@@ -606,19 +529,19 @@ void setPin() {
   pinMode(BUTTON_PIN, INPUT);  
   pinMode(DS_INT_PIN, INPUT);
   pinMode(RS_DIR_PIN, OUTPUT);
-  pinMode(RAK_RES_PIN, OUTPUT);
-  pinMode(JOIN_LED_PIN, OUTPUT);
+  pinMode(LORA_RES_PIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
   pinMode(ACT_LED_PIN, OUTPUT);
   for (uint8_t ch = 0; ch < 2; ch++) {
-    pinMode(INA_ALR_PIN[ch], INPUT);
+    pinMode(AN_ALR_PIN[ch], INPUT);
     pinMode(DIG_PIN[ch], INPUT);
   }
   for (uint8_t ch = 0; ch < 4; ch++) {
     pinMode(RELAY_PIN[ch], OUTPUT);    
   } 
   digitalWrite(RS_DIR_PIN, LOW);  
-  digitalWrite(RAK_RES_PIN, LOW);
-  digitalWrite(JOIN_LED_PIN, LOW);
+  digitalWrite(LORA_RES_PIN, LOW);
+  digitalWrite(LED_PIN, LOW);
   digitalWrite(ACT_LED_PIN, HIGH);
   for (uint8_t ch = 0; ch < 4; ch++) {
     digitalWrite(RELAY_PIN[ch], LOW);    
@@ -678,7 +601,7 @@ void setTm() {
 void setRak() {
   rakSerial.begin(9600);
   delay(100);
-  digitalWrite(RAK_RES_PIN, HIGH);
+  digitalWrite(LORA_RES_PIN, HIGH);
 }
 void setUsb() {
   if (USBSTA >> VBUS & 1) {    
@@ -703,8 +626,8 @@ void doRelay(const uint8_t r, const uint8_t d) {
 void report() {
   wdt_reset();
   isReportIftt = false;  
-  if (loraJoin && loraSend) {
-    loraSend = false;      
+  if (loraJoin && loraReport) {
+    loraReport = false;      
     lpp.reset();  
     for (uint8_t ch = 0; ch < numAn; ch++) {
       const uint8_t _unit = conf.an_u08[an_u08_unit + ch * sizeof(conf.an_u08) / numAn];      

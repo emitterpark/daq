@@ -1984,8 +1984,8 @@ design rules under a new name.</description>
 <wire x1="33.79" y1="42.791" x2="33.528" y2="43.053" width="0.3048" layer="1"/>
 <wire x1="33.528" y1="43.053" x2="29.972" y2="43.053" width="0.3048" layer="1"/>
 <wire x1="29.845" y1="42.926" x2="29.845" y2="42.037" width="0.3048" layer="1"/>
-<wire x1="33.79" y1="39.116" x2="33.79" y2="42.791" width="0.3048" layer="1"/>
 <wire x1="29.972" y1="43.053" x2="29.845" y2="42.926" width="0.3048" layer="1"/>
+<wire x1="33.79" y1="42.791" x2="33.79" y2="39.116" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$17" airwireshidden="yes">
 <contactref element="C27" pad="1"/>
@@ -2237,8 +2237,9 @@ design rules under a new name.</description>
 <wire x1="46.99" y1="20.32" x2="45.593" y2="21.717" width="0.3048" layer="1"/>
 <wire x1="45.593" y1="21.717" x2="45.593" y2="26.22363125" width="0.3048" layer="1"/>
 <wire x1="45.593" y1="26.22363125" x2="43.688" y2="28.12863125" width="0.3048" layer="1"/>
-<wire x1="43.688" y1="28.12863125" x2="43.688" y2="34.417" width="0.3048" layer="1"/>
-<wire x1="43.688" y1="28.12863125" x2="41.91" y2="30.607" width="0" layer="19" extent="1-1"/>
+<wire x1="43.688" y1="28.12863125" x2="43.688" y2="30.607" width="0.3048" layer="1"/>
+<wire x1="43.688" y1="30.607" x2="43.688" y2="34.417" width="0.3048" layer="1"/>
+<wire x1="41.91" y1="30.607" x2="43.688" y2="30.607" width="0.3048" layer="1"/>
 </signal>
 <signal name="N$81" airwireshidden="yes">
 <contactref element="CON5" pad="8"/>
