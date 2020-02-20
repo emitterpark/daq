@@ -1791,8 +1791,8 @@
 <attribute name="NAME" x="-0.254" y="52.578" size="1.778" layer="95" rot="R90" align="center-left"/>
 <attribute name="VALUE" x="-6.35" y="51.308" size="1.778" layer="96" rot="R90" align="center-left"/>
 </instance>
-<instance part="SUP7" gate="G$1" x="15.24" y="71.12" smashed="yes" rot="R270">
-<attribute name="VALUE" x="17.145" y="73.025" size="1.778" layer="96" rot="R270"/>
+<instance part="SUP7" gate="G$1" x="-2.54" y="76.2" smashed="yes">
+<attribute name="VALUE" x="-4.445" y="78.105" size="1.778" layer="96"/>
 </instance>
 <instance part="IC4" gate="G$1" x="-190.5" y="-104.14" smashed="yes">
 <attribute name="NAME" x="-194.056" y="-100.584" size="1.778" layer="94"/>

@@ -1619,18 +1619,16 @@
 <sheets>
 <sheet>
 <plain>
-<text x="-1.524" y="-180.34" size="1.778" layer="91" rot="R90">VIN</text>
-<text x="-4.064" y="-180.34" size="1.778" layer="91" rot="R90">GND</text>
-<text x="11.176" y="-180.34" size="1.778" layer="91" rot="R90">AIN1+</text>
-<text x="13.716" y="-180.34" size="1.778" layer="91" rot="R90">AIN1-</text>
-<text x="16.256" y="-180.34" size="1.778" layer="91" rot="R90">AIN2+</text>
-<text x="18.796" y="-180.34" size="1.778" layer="91" rot="R90">AIN2-</text>
-<text x="1.016" y="-180.34" size="1.778" layer="91" rot="R90">DIN1+</text>
-<text x="3.556" y="-180.34" size="1.778" layer="91" rot="R90">DIN1-</text>
-<text x="6.096" y="-180.34" size="1.778" layer="91" rot="R90">DIN2+</text>
-<text x="8.636" y="-180.34" size="1.778" layer="91" rot="R90">DIN2-</text>
-<text x="21.336" y="-180.34" size="1.778" layer="91" rot="R90">A</text>
-<text x="23.876" y="-180.34" size="1.778" layer="91" rot="R90">B</text>
+<text x="-1.524" y="-177.8" size="1.778" layer="91" rot="R90">VIN</text>
+<text x="-4.064" y="-177.8" size="1.778" layer="91" rot="R90">GND</text>
+<text x="11.176" y="-177.8" size="1.778" layer="91" rot="R90">AIN1+</text>
+<text x="13.716" y="-177.8" size="1.778" layer="91" rot="R90">AIN1-</text>
+<text x="16.256" y="-177.8" size="1.778" layer="91" rot="R90">AIN2+</text>
+<text x="18.796" y="-177.8" size="1.778" layer="91" rot="R90">AIN2-</text>
+<text x="1.016" y="-177.8" size="1.778" layer="91" rot="R90">DIN1+</text>
+<text x="3.556" y="-177.8" size="1.778" layer="91" rot="R90">DIN1-</text>
+<text x="6.096" y="-177.8" size="1.778" layer="91" rot="R90">DIN2+</text>
+<text x="8.636" y="-177.8" size="1.778" layer="91" rot="R90">DIN2-</text>
 <text x="-25.908" y="88.9" size="1.778" layer="91" rot="R270">VUSB</text>
 <text x="-28.448" y="88.9" size="1.778" layer="91" rot="R270">D-</text>
 <text x="-30.988" y="88.9" size="1.778" layer="91" rot="R270">D+</text>

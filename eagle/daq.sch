@@ -3029,6 +3029,12 @@
 <junction x="10.16" y="-111.76"/>
 </segment>
 </net>
+<net name="N$26" class="0">
+<segment>
+<pinref part="R5" gate="G$1" pin="2"/>
+<wire x1="-2.54" y1="60.96" x2="-2.54" y2="63.5" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
