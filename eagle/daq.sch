@@ -490,6 +490,26 @@
 <text x="-3.2385" y="0.889" size="1.016" layer="25">&gt;NAME</text>
 <text x="-3.2385" y="0.889" size="1.016" layer="27">&gt;VALUE</text>
 </package>
+<package name="LED-3MM-RA">
+<description>&lt;b&gt;825433-5&lt;/b&gt;&lt;br&gt;
+</description>
+<text x="-0.284" y="3.295" size="1.016" layer="25" align="center">&gt;NAME</text>
+<pad name="A" x="-1.27" y="0" drill="1.1" diameter="1.65"/>
+<pad name="K" x="1.27" y="0" drill="1.1" diameter="1.65"/>
+<text x="-2.874" y="3.653" size="1.016" layer="27">&gt;VALUE</text>
+<wire x1="-2.032" y1="8.89" x2="2.032" y2="8.89" width="0.0762" layer="51"/>
+<wire x1="2.032" y1="8.89" x2="2.032" y2="3.556" width="0.0762" layer="51"/>
+<wire x1="2.032" y1="3.556" x2="-2.032" y2="3.556" width="0.0762" layer="51"/>
+<wire x1="-2.032" y1="3.556" x2="-2.032" y2="8.89" width="0.0762" layer="51"/>
+<wire x1="-2.032" y1="8.89" x2="-2.032" y2="3.556" width="0.127" layer="21"/>
+<wire x1="-2.032" y1="3.556" x2="2.032" y2="3.556" width="0.127" layer="21"/>
+<wire x1="2.032" y1="3.556" x2="2.032" y2="8.89" width="0.127" layer="21"/>
+<wire x1="2.032" y1="8.89" x2="-2.032" y2="8.89" width="0.127" layer="21"/>
+<wire x1="-0.508" y1="5.461" x2="0.381" y2="6.35" width="0.127" layer="21"/>
+<wire x1="0.381" y1="6.35" x2="-0.508" y2="7.239" width="0.127" layer="21"/>
+<wire x1="-0.508" y1="7.239" x2="-0.508" y2="5.461" width="0.127" layer="21"/>
+<wire x1="0.381" y1="7.239" x2="0.381" y2="5.461" width="0.127" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="RESISTOR">
@@ -840,6 +860,35 @@
 <wire x1="5.08" y1="-1.524" x2="6.35" y2="-1.524" width="0.254" layer="94"/>
 <wire x1="6.35" y1="-1.524" x2="7.874" y2="-1.524" width="0.254" layer="94"/>
 <wire x1="6.35" y1="-0.762" x2="6.35" y2="-1.524" width="0.254" layer="94"/>
+</symbol>
+<symbol name="LED">
+<text x="1.524" y="2.032" size="1.778" layer="95" align="center-left">&gt;NAME</text>
+<text x="1.524" y="3.81" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
+<pin name="K" x="0" y="0" visible="off" length="short"/>
+<pin name="A" x="12.7" y="0" visible="off" length="short" rot="R180"/>
+<wire x1="4.572" y1="0" x2="8.128" y2="1.016" width="0.254" layer="94"/>
+<wire x1="8.128" y1="1.016" x2="8.128" y2="0.762" width="0.254" layer="94"/>
+<wire x1="8.128" y1="0.762" x2="8.128" y2="0" width="0.254" layer="94"/>
+<wire x1="8.128" y1="0" x2="8.128" y2="-0.762" width="0.254" layer="94"/>
+<wire x1="8.128" y1="-0.762" x2="8.128" y2="-1.016" width="0.254" layer="94"/>
+<wire x1="8.128" y1="-1.016" x2="4.572" y2="0" width="0.254" layer="94"/>
+<wire x1="4.572" y1="1.016" x2="4.572" y2="0" width="0.254" layer="94"/>
+<wire x1="4.572" y1="0" x2="4.572" y2="-1.016" width="0.254" layer="94"/>
+<wire x1="2.54" y1="0" x2="4.572" y2="0" width="0.1524" layer="94"/>
+<wire x1="8.128" y1="0" x2="10.16" y2="0" width="0.1524" layer="94"/>
+<wire x1="5.08" y1="0" x2="8.128" y2="0.762" width="0.254" layer="94"/>
+<wire x1="8.128" y1="0.762" x2="5.334" y2="0" width="0.254" layer="94"/>
+<wire x1="5.334" y1="0" x2="8.128" y2="-0.762" width="0.254" layer="94"/>
+<wire x1="8.128" y1="-0.762" x2="7.874" y2="0.762" width="0.254" layer="94"/>
+<wire x1="7.874" y1="0.762" x2="5.842" y2="0" width="0.254" layer="94"/>
+<wire x1="5.842" y1="0" x2="7.874" y2="-0.508" width="0.254" layer="94"/>
+<wire x1="7.874" y1="-0.508" x2="7.874" y2="0.508" width="0.254" layer="94"/>
+<wire x1="7.874" y1="0.508" x2="6.35" y2="0" width="0.254" layer="94"/>
+<wire x1="6.35" y1="0" x2="7.62" y2="-0.254" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-0.254" x2="7.62" y2="0" width="0.254" layer="94"/>
+<wire x1="7.62" y1="0" x2="7.62" y2="0.254" width="0.254" layer="94"/>
+<wire x1="7.62" y1="0.254" x2="6.858" y2="0" width="0.254" layer="94"/>
+<wire x1="6.858" y1="0" x2="7.62" y2="0" width="0.254" layer="94"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -1358,6 +1407,22 @@
 </device>
 </devices>
 </deviceset>
+<deviceset name="LED-3MM-RA" prefix="LED" uservalue="yes">
+<gates>
+<gate name="G$1" symbol="LED" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="LED-3MM-RA">
+<connects>
+<connect gate="G$1" pin="A" pad="A"/>
+<connect gate="G$1" pin="K" pad="K"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 </libraries>
@@ -1526,6 +1591,7 @@
 <part name="GND13" library="myparts" deviceset="GND" device=""/>
 <part name="GND24" library="myparts" deviceset="GND" device=""/>
 <part name="GND25" library="myparts" deviceset="GND" device=""/>
+<part name="LED1" library="myparts" deviceset="LED-3MM-RA" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -2093,6 +2159,10 @@
 <instance part="GND25" gate="1" x="25.4" y="71.12" smashed="yes" rot="R270">
 <attribute name="VALUE" x="22.352" y="73.66" size="1.778" layer="96" rot="R270"/>
 </instance>
+<instance part="LED1" gate="G$1" x="-2.54" y="60.96" smashed="yes" rot="R90">
+<attribute name="NAME" x="-4.572" y="62.484" size="1.778" layer="95" rot="R90" align="center-left"/>
+<attribute name="VALUE" x="-6.35" y="62.484" size="1.778" layer="96" rot="R90" align="center-left"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -2425,6 +2495,10 @@
 <segment>
 <pinref part="SUP22" gate="G$1" pin="VCC"/>
 <pinref part="R30" gate="G$1" pin="1"/>
+</segment>
+<segment>
+<pinref part="SUP7" gate="G$1" pin="VCC"/>
+<pinref part="LED1" gate="G$1" pin="A"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -3032,7 +3106,7 @@
 <net name="N$26" class="0">
 <segment>
 <pinref part="R5" gate="G$1" pin="2"/>
-<wire x1="-2.54" y1="60.96" x2="-2.54" y2="63.5" width="0.1524" layer="91"/>
+<pinref part="LED1" gate="G$1" pin="K"/>
 </segment>
 </net>
 </nets>
