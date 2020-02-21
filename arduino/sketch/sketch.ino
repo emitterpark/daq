@@ -14,8 +14,8 @@ const uint8_t LED_PIN             = A5;               // PF0/ADC0
 // uint8_t ge_u08[] 
 const uint8_t ge_u08_lora_dr      = 0;  
 const uint8_t ge_u08_lora_port    = 1;  
-const uint8_t ge_u08_poll         = 2;  // input max 240sec
-const uint8_t ge_u08_report       = 3;  // input max 240min
+const uint8_t ge_u08_poll         = 2;
+const uint8_t ge_u08_report       = 3;
 
 // uint8_t an_u08[]
 const uint8_t an_u08_enable       = 0;  
@@ -34,7 +34,7 @@ const uint8_t an_f32_high         = 5;
 // uint8_t dg_u08[]
 const uint8_t dg_u08_enable       = 0;  
 const uint8_t dg_u08_unit         = 1;  
-const uint8_t dg_u08_debounce     = 2;  // input max 250ms
+const uint8_t dg_u08_debounce     = 2;
 const uint8_t dg_u08_low_report   = 3;
 const uint8_t dg_u08_high_report  = 4;
 
@@ -60,7 +60,7 @@ uint8_t     dg_prev[numDg]        = {LOW, LOW};
 unsigned long tmrPoll, tmrReport, tmrRandom;
 volatile bool isReport;
 String strUsbSerial, strLoraSerial;
-bool loraJoin = false, loraReport = true;
+bool loraJoin, loraBusy;
 
 CayenneLPP lpp(51);
 INA226 analog;
@@ -181,8 +181,8 @@ bool isPollInterval() {
   }
 }
 bool isReportInterval() {
-  const uint8_t _report = ge_u16_report;
-  if ((millis() - tmrReport) / 60000 >= conf.ge_u16[_report]) {
+  const uint8_t _report = ge_u08_report;
+  if ((millis() - tmrReport) / 60000 >= conf.ge_u08[_report]) {
     tmrReport = millis();
     return true;
   }
@@ -201,7 +201,7 @@ void readLoraSerial() {
         loraJoin = true; 
         digitalWrite(LED_PIN, HIGH);       
       } else if (strLoraSerial.endsWith(F("send success"))) { 
-        loraReport = true;
+        loraBusy = false;
       }
       //if (usbSerial) {
       usbSerial.println(strLoraSerial); 
@@ -235,23 +235,7 @@ void readUsbSerial() {
       } else if (strUsbSerial.startsWith(F("xget_ch"))) {
         getChannels();
       } else if (strUsbSerial.startsWith(F("xfetch"))) {
-        fetchChannels();        
-      } else if (strUsbSerial.startsWith(F("xss"))) {
-        tm.Second = strUsbSerial.substring(3).toInt();
-      } else if (strUsbSerial.startsWith(F("xmm"))) {
-        tm.Minute = strUsbSerial.substring(3).toInt();
-      } else if (strUsbSerial.startsWith(F("xhh"))) {
-        tm.Hour = strUsbSerial.substring(3).toInt();
-      } else if (strUsbSerial.startsWith(F("xdd"))) {
-        tm.Day = strUsbSerial.substring(3).toInt();
-      } else if (strUsbSerial.startsWith(F("xwd"))) {
-        tm.Wday = strUsbSerial.substring(3).toInt();
-      } else if (strUsbSerial.startsWith(F("xmh"))) {
-        tm.Month = strUsbSerial.substring(3).toInt();
-      } else if (strUsbSerial.startsWith(F("xyy"))) {
-        tm.Year = strUsbSerial.substring(3).toInt() - 1970;
-      } else if (strUsbSerial.startsWith(F("xtime"))) {
-        RTC.write(tm);
+        fetchChannels();       
       }
       strUsbSerial = "";
     }
@@ -341,8 +325,8 @@ void setUsb() {
 void report() {
   wdt_reset();
   isReport = false;  
-  if (loraJoin && loraReport) {
-    loraReport = false;      
+  if (loraJoin && (!loraBusy)) {
+    loraBusy = true;      
     lpp.reset();  
     for (uint8_t ch = 0; ch < numAn; ch++) {
       const uint8_t _unit = conf.an_u08[an_u08_unit + ch * sizeof(conf.an_u08) / numAn];      
@@ -385,39 +369,7 @@ void report() {
       } else if (_unit == LPP_PRESENCE) {
         lpp.addPresence(3 + ch, dg[ch]);
       }
-    }
-    for (uint8_t ch = 0; ch < numMo; ch++) {
-      const uint8_t _unit = conf.mo_u08[mo_u08_unit + ch * sizeof(conf.mo_u08) / numMo];      
-      if (_unit == LPP_ANALOG_INPUT) {
-        lpp.addAnalogInput(5 + ch, mo[ch]);
-      } else if (_unit == LPP_LUMINOSITY) {
-        lpp.addLuminosity(5 + ch, mo[ch]);
-      } else if (_unit == LPP_TEMPERATURE) {
-        lpp.addTemperature(5 + ch, mo[ch]);
-      } else if (_unit == LPP_RELATIVE_HUMIDITY) {
-        lpp.addRelativeHumidity(5 + ch, mo[ch]);
-      } else if (_unit == LPP_BAROMETRIC_PRESSURE) {
-        lpp.addBarometricPressure(5 + ch, mo[ch]);
-      } else if (_unit == LPP_VOLTAGE) {
-        lpp.addVoltage(5 + ch, mo[ch]);
-      } else if (_unit == LPP_CURRENT) {
-        lpp.addCurrent(5 + ch, mo[ch]);
-      } else if (_unit == LPP_PERCENTAGE) {
-        lpp.addPercentage(5 + ch, mo[ch]);
-      } else if (_unit == LPP_ALTITUDE) {
-        lpp.addAltitude(5 + ch, mo[ch]);
-      } else if (_unit == LPP_POWER) {
-        lpp.addPower(5 + ch, mo[ch]);
-      } else if (_unit == LPP_DIRECTION) {
-        lpp.addDirection(5 + ch, mo[ch]);
-      } else if (_unit == LPP_DIGITAL_INPUT) {
-        lpp.addDigitalInput(5 + ch, mo[ch]);
-      } else if (_unit == LPP_SWITCH) {
-        lpp.addSwitch(5 + ch, mo[ch]);
-      } else if (_unit == LPP_PRESENCE) {  
-        lpp.addPresence(5 + ch, mo[ch]);      
-      }
-    } 
+    }    
     loraSerial.print("at+send=lora:" + String(conf.ge_u08[ge_u08_lora_port]) + ':'); 
     //loraSerial.println(lppGetBuffer());
     loraSerial.println((char*)(lpp.getBuffer()));
