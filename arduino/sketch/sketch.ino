@@ -202,10 +202,8 @@ void readLoraSerial() {
         digitalWrite(LED_PIN, HIGH);       
       } else if (strLoraSerial.endsWith(F("send success"))) { 
         loraBusy = false;
-      }
-      //if (usbSerial) {
-      usbSerial.println(strLoraSerial); 
-      //}
+      }      
+      usbSerial.println(strLoraSerial);      
       strLoraSerial = "";
     }
   }
@@ -315,7 +313,7 @@ void setLora() {
 }
 void setUsb() {
   if (USBSTA >> VBUS & 1) {    
-    usbSerial.begin(9600);    
+    usbSerial.begin(115200);    
     while (!usbSerial) {
       wdt_reset();
     }
