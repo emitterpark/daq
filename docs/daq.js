@@ -201,7 +201,7 @@
       }       
       // make id      
       let datas = 
-      ['ge_u08','an_u08','an_f32','dg_u08']; 
+      ['ge_u08','an_u08','an_u16','an_f32','dg_u08','dg_u16']; 
       for (let i = 0; i < datas.length; i++) {        
         items = formDiv.querySelectorAll('#x' + datas[i]);        
         for (let j = 0; j < items.length; j++) {

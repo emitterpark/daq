@@ -131,12 +131,9 @@
     <label for="low">Low:</label>
     <input id="xan_f32" type="number" required class="form-control" value="0" step="any" name="low">
     <label for="high">High:</label>
-    <input id="xan_f32" type="number" required class="form-control" value="0" step="any" name="high">
-    <label for="within-report">Report IF Within:</label>
-    <select id="xan_u08" class="form-control" name="within-report">
-      <option value = "0">No</option>
-      <option value = "1">Yes</option>      
-    </select> 
+    <input id="xan_f32" type="number" required class="form-control" value="0" step="any" name="high">    
+    <label for="duration">Duration (Seconds 1-3600):</label>
+    <input id="xan_u16" type="number" required class="form-control" value="0" min="0" max="3600" step="1" maxlength="4" name="duration">
     <label for="low-report">Report IF Low:</label>
     <select id="xan_u08" class="form-control" name="low-report">
       <option value = "0">No</option>
@@ -170,6 +167,8 @@
     </select>    
     <label for="debounce">Debounce (Miliseconds 0-255):</label>
     <input id="xdg_u08" type="number" required class="form-control" value="100" max="250" step="1" maxlength="3" name="debounce">
+    <label for="duration">Duration (Seconds 1-3600):</label>
+    <input id="xdg_u16" type="number" required class="form-control" value="0" min="0" max="3600" step="1" maxlength="4" name="duration">    
     <label for="low-report">Report IF Low:</label>
     <select id="xdg_u08" class="form-control" name="low-report">
       <option value = "0">No</option>

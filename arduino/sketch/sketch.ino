@@ -25,9 +25,10 @@ const uint8_t ge_u08_report       = 3;
 // uint8_t an_u08[]
 const uint8_t an_u08_enable       = 0;  
 const uint8_t an_u08_unit         = 1;
-const uint8_t an_u08_within_report= 2;
-const uint8_t an_u08_low_report   = 3;
-const uint8_t an_u08_high_report  = 4; 
+const uint8_t an_u08_low_report   = 2;
+const uint8_t an_u08_high_report  = 3; 
+// uint16_t an_u16[]
+const uint8_t an_u16_duration     = 0; 
 // float an_f32[]
 const uint8_t an_f32_in_min       = 0;  
 const uint8_t an_f32_in_max       = 1;  
@@ -42,15 +43,19 @@ const uint8_t dg_u08_unit         = 1;
 const uint8_t dg_u08_debounce     = 2;
 const uint8_t dg_u08_low_report   = 3;
 const uint8_t dg_u08_high_report  = 4;
+// uint16_t dg_u16[]
+const uint8_t dg_u16_duration     = 0;
 
 const uint8_t numAn               = 2;
 const uint8_t numDg               = 2;
 
 struct Conf {
   uint8_t   ge_u08[4];
-  uint8_t   an_u08[5 * numAn];
+  uint8_t   an_u08[4 * numAn];
+  uint16_t  an_u16[numAn];
   float     an_f32[6 * numAn];
-  uint8_t   dg_u08[5 * numDg];      
+  uint8_t   dg_u08[5 * numDg];
+  uint16_t  dg_u16[numDg];      
 };
 Conf conf;
 
@@ -64,7 +69,7 @@ uint8_t     dg_prev[numDg]        = {LOW, LOW};
 
 bool isReport, loraJoin, loraBusy;
 String strUsbSerial, strLoraSerial;
-int ledOscForever;
+int anDuration[2], dgDuration[2], ledOscForever;
 
 Timer t;
 CayenneLPP lpp(51);
@@ -82,7 +87,17 @@ void setup() {
   setLora();    // t.after(tmrRandom(), setLora);
   t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
   t.every(conf.ge_u08[conf.ge_u08[ge_u08_report]] * 1000L * 60, report);
-  ledOscForever = t.oscillate(LED_PIN, 500, HIGH);   
+  ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
+  for (uint8_t ch = 0; ch < numAn; ch++) {
+    const uint8_t _duration = an_u16_duration + ch * sizeof(conf.an_u16) / numAn;
+    anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
+    t.stop(anDuration[ch]);
+  }  
+  for (uint8_t ch = 0; ch < numDg; ch++) {
+    const uint8_t _duration = dg_u16_duration + ch * sizeof(conf.dg_u16) / numDg;
+    dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);
+    t.stop(dgDuration[ch]);
+  }    
 }
 void loop() {
   readDigital();  
@@ -115,27 +130,23 @@ void readAnalog() {
 void isAnalogReport(const uint8_t ch) {       
   const uint8_t _low = an_f32_low + ch * sizeof(conf.an_f32) / numAn; 
   const uint8_t _high = an_f32_high + ch * sizeof(conf.an_f32) / numAn;
-  const uint8_t _within_report = an_u08_within_report + ch * sizeof(conf.an_u08) / numAn;
   const uint8_t _low_report = an_u08_low_report + ch * sizeof(conf.an_u08) / numAn; 
   const uint8_t _high_report = an_u08_high_report + ch * sizeof(conf.an_u08) / numAn; 
-  if (an[ch] > conf.an_f32[_low] && an[ch] < conf.an_f32[_high]) {      
-    if (an_prev[ch] != WITHIN) {
-      if (conf.an_u08[_within_report]) {
-        isReport = true;
-      }           
-    }
-    an_prev[ch] = WITHIN;              
+  const uint8_t _duration = an_u16_duration + ch * sizeof(conf.an_u16) / numAn;    
+  if (an[ch] > conf.an_f32[_low] && an[ch] < conf.an_f32[_high]) {    
+    an_prev[ch] = WITHIN;
+    t.stop(anDuration[ch]);              
   } else if (an[ch] <= conf.an_f32[_low]) {    
     if (an_prev[ch] != LOW) {
       if (conf.an_u08[_low_report]) {
-        isReport = true;
+        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
       }                 
     }
     an_prev[ch] = LOW;              
   } else if (an[ch] >= conf.an_f32[_high]) {     
     if (an_prev[ch] != HIGH) {
       if (conf.an_u08[_high_report]) {
-        isReport = true;
+        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
       }                 
     }
     an_prev[ch] = HIGH;
