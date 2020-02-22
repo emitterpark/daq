@@ -1,4 +1,9 @@
+// Bootloader: Board SparkFun Pro Micro 3.3V 8MHZ
+// C:Users/../AppData/Local/Arduino../packages/arduino/hardware/avr/../cores/arduino/USBCore.h 
+// line 130: #define USB_VERSION 0x210
+
 #include <avr/wdt.h>
+#include <Timer.h>
 #include <EEPROM.h>
 #include <CayenneLPP.h>
 #include <Wire.h>
@@ -57,14 +62,14 @@ const uint8_t WITHIN              = 2;
 uint8_t     an_prev[numAn]        = {WITHIN, WITHIN};
 uint8_t     dg_prev[numDg]        = {LOW, LOW};
 
-unsigned long tmrPoll, tmrReport, tmrRandom;
-volatile bool isReport;
+bool isReport, loraJoin, loraBusy;
 String strUsbSerial, strLoraSerial;
-bool loraJoin, loraBusy;
+int ledOscForever;
 
+Timer t;
 CayenneLPP lpp(51);
 INA226 analog;
-WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/lora");
+WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
 #define usbSerial WebUSBSerial
 #define loraSerial Serial1
 
@@ -73,26 +78,21 @@ void setup() {
   setUsb();
   setPin();  
   loadConf();    
-  setAnalog();  
-  //delayRandom();  ?? do inloop    
-  setLora(); 
-  tmrPoll = millis();
-  tmrReport = millis();
+  setAnalog();    
+  setLora();    // t.after(tmrRandom(), setLora);
+  t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
+  t.every(conf.ge_u08[conf.ge_u08[ge_u08_report]] * 1000L * 60, report);
+  ledOscForever = t.oscillate(LED_PIN, 500, HIGH);   
 }
 void loop() {
-  if (isPollInterval()) {
-    readAnalog();    
-  }  
   readDigital();  
   if (isReport) {
     report();  
   }
-  if (isReportInterval()) {
-    report();    
-  }  
   readLoraSerial();
   readUsbSerial();
   wdt_reset();
+  t.update();
 }
 void readAnalog() {
   // wire.end();    
@@ -173,20 +173,6 @@ void isDigitalReport(const uint8_t ch) {
     }
   }         
 }
-bool isPollInterval() {
-  const uint8_t _poll = ge_u08_poll;
-  if ((millis() - tmrPoll) / 1000 >= conf.ge_u08[_poll]) {
-    tmrPoll = millis();
-    return true;
-  }
-}
-bool isReportInterval() {
-  const uint8_t _report = ge_u08_report;
-  if ((millis() - tmrReport) / 60000 >= conf.ge_u08[_report]) {
-    tmrReport = millis();
-    return true;
-  }
-}
 void readLoraSerial() { 
   while (loraSerial.available()) {
     const char chr = (char)loraSerial.read();    
@@ -199,9 +185,10 @@ void readLoraSerial() {
         loraSerial.println(conf.ge_u08[ge_u08_lora_dr]);
       } else if (strLoraSerial.endsWith("DR" + String(conf.ge_u08[ge_u08_lora_dr]) +" success")) { 
         loraJoin = true; 
-        digitalWrite(LED_PIN, HIGH);       
+        t.stop(ledOscForever);
+        digitalWrite(LED_PIN, LOW);       
       } else if (strLoraSerial.endsWith(F("send success"))) { 
-        loraBusy = false;
+        loraBusy = false;        
       }      
       usbSerial.println(strLoraSerial);      
       strLoraSerial = "";
@@ -371,17 +358,15 @@ void report() {
     loraSerial.print("at+send=lora:" + String(conf.ge_u08[ge_u08_lora_port]) + ':'); 
     //loraSerial.println(lppGetBuffer());
     loraSerial.println((char*)(lpp.getBuffer()));
+    t.oscillate(LED_PIN, 200, HIGH, 5);
+    // digitalWrite(LED_PIN, LOW);
   } else {
     resetMe();
   }      
 }
-void delayRandom() {
+unsigned long tmrRandom() {
   randomSeed(analogRead(RANDOM_PIN));
-  const unsigned long rnd = random(24) * 5000;   // max 2 minutes
-  tmrRandom = millis();
-  while (millis() - tmrRandom < rnd) {
-    wdt_reset();    
-  }
+  return random(24) * 5000;   // max 2 minutes  
 }
 void resetMe() {
   wdt_enable(WDTO_15MS);
