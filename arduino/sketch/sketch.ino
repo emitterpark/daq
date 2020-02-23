@@ -68,9 +68,12 @@ const uint8_t MID                 = 2;
 uint8_t     an_prev[numAn]        = {MID, MID};
 uint8_t     dg_prev[numDg]        = {LOW, LOW};
 
+int         anDuration[numAn];
+int         dgDuration[numDg];
+int         ledOscForever;
+
 bool loraJoin, loraBusy;
 String strUsbSerial, strLoraSerial;
-int anDuration[2], dgDuration[2], ledOscForever;
 
 Timer t;
 CayenneLPP lpp(51);
@@ -87,7 +90,7 @@ void setup() {
   setAnalog();    
   setLora();    // t.after(tmrRandom(), setLora);
   t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
-  t.every(conf.ge_u08[conf.ge_u08[ge_u08_report]] * 1000L * 60, report);
+  t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);
   ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
 void loop() {
@@ -102,7 +105,9 @@ void readAnalog() {
   for (uint8_t ch = 0; ch < numAn; ch++) {
     const uint8_t _enable = an_u08_enable + ch * sizeof(conf.an_u08) / numAn; 
     if (conf.an_u08[_enable]) {   
-      while (AN_ALR_PIN[ch]);
+      while (AN_ALR_PIN[ch]) {
+        wdt_reset();
+      }
       analog.begin(0x40 + ch);
       an[ch] = analog.readShuntCurrent();
       if (analog.isAlert());      
@@ -195,6 +200,7 @@ void isDigitalReport(const uint8_t ch) {
 }
 void readLoraSerial() { 
   while (loraSerial.available()) {
+    wdt_reset();
     const char chr = (char)loraSerial.read();    
     strLoraSerial += chr;
     if (chr == '\n') {
@@ -217,6 +223,7 @@ void readLoraSerial() {
 }
 void readUsbSerial() {
   while (usbSerial && usbSerial.available()) {
+    wdt_reset();
     const char chr = (char)usbSerial.read();
     strUsbSerial += chr;
     if (chr == '\n') {
@@ -385,7 +392,7 @@ void report() {
 }
 unsigned long tmrRandom() {
   randomSeed(analogRead(RANDOM_PIN));
-  return random(24) * 5000;   // max 2 minutes  
+  return random(24) * 5000L + 10000L;   // min 10sec, max 2min + 10sec   
 }
 void resetMe() {
   wdt_enable(WDTO_15MS);
