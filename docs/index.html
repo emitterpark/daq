@@ -85,7 +85,7 @@
     <label for="lorawan-port">LoRaWAN Port:</label>
     <input  id="xge_u08" type="number" required class="form-control" value="90" min="1" max="223" step="1" maxlength="3" name="lorawan-port">
     <label for="poll">Poll Interval (Seconds 1-60):</label>
-    <input id="xge_u08" type="number" required class="form-control" value="1" min="1" max="60" step="1" maxlength="2" name="poll">
+    <input id="xge_u08" type="number" required class="form-control" value="10" min="1" max="60" step="1" maxlength="2" name="poll">
     <label for="report">Report Interval (Minutes 5-240):</label>
     <input id="xge_u08" type="number" required class="form-control" value="5" min="5" max="240" step="1" maxlength="3" name="report">     
     <br> 
@@ -101,11 +101,11 @@
     <label for="enable">Enable:</label>
     <select id="xan_u08" class="form-control" name="enable">
       <option value = "0">No</option>
-      <option value = "1">Yes</option>      
+      <option value = "1" selected>Yes</option>      
     </select>
     <label for="unit">Unit:</label>
     <select id="xan_u08" class="form-control" name="unit">    
-      <option value = "2">Analog</option>
+      <option value = "2" selected>Analog</option>
       <option value = "101">Luminosity</option>    
       <option value = "103">Temperature</option>
       <option value = "104">R.Humidity</option>
@@ -129,25 +129,25 @@
     <label for="out-max">Out Max.:</label>
     <input id="xan_f32" type="number" required class="form-control" value="0.020" step="any" name="out-max">    
     <label for="low">Low:</label>
-    <input id="xan_f32" type="number" required class="form-control" value="0" step="any" name="low">
+    <input id="xan_f32" type="number" required class="form-control" value="0.004" step="any" name="low">
     <label for="high">High:</label>
-    <input id="xan_f32" type="number" required class="form-control" value="0" step="any" name="high">    
+    <input id="xan_f32" type="number" required class="form-control" value="0.020" step="any" name="high">    
     <label for="duration">Duration (Seconds 1-3600):</label>
-    <input id="xan_u16" type="number" required class="form-control" value="0" min="0" max="3600" step="1" maxlength="4" name="duration">
+    <input id="xan_u16" type="number" required class="form-control" value="1" min="0" max="3600" step="1" maxlength="4" name="duration">
     <label for="low-report">Report IF Low:</label>
     <select id="xan_u08" class="form-control" name="low-report">
       <option value = "0">No</option>
-      <option value = "1">Yes</option>      
+      <option value = "1" selected>Yes</option>      
     </select>
     <label for="midw-report">Report IF Mid:</label>
     <select id="xan_u08" class="form-control" name="mid-report">
       <option value = "0">No</option>
-      <option value = "1">Yes</option>      
+      <option value = "1" selected>Yes</option>      
     </select>
     <label for="high-report">Report IF High:</label>
     <select id="xan_u08" class="form-control" name="high-report">
       <option value = "0">No</option>
-      <option value = "1">Yes</option>      
+      <option value = "1" selected>Yes</option>      
     </select>
     <br>   
   </div>
@@ -162,27 +162,27 @@
     <label for="enable">Enable:</label>
     <select id="xdg_u08" class="form-control" name="enable">
       <option value = "0">No</option>
-      <option value = "1">Yes</option>      
+      <option value = "1" selected>Yes</option>      
     </select>     
     <label for="unit">Unit:</label>
     <select id="xdg_u08" class="form-control" name="unit">    
-    <option value = "0">Digital</option>
+    <option value = "0" selected>Digital</option>
     <option value = "142">Switch</option>
     <option value = "102">Presence</option>            
     </select>    
     <label for="debounce">Debounce (Miliseconds 0-255):</label>
-    <input id="xdg_u08" type="number" required class="form-control" value="100" max="250" step="1" maxlength="3" name="debounce">
+    <input id="xdg_u08" type="number" required class="form-control" value="20" max="250" step="1" maxlength="3" name="debounce">
     <label for="duration">Duration (Seconds 1-3600):</label>
-    <input id="xdg_u16" type="number" required class="form-control" value="0" min="0" max="3600" step="1" maxlength="4" name="duration">    
+    <input id="xdg_u16" type="number" required class="form-control" value="1" min="0" max="3600" step="1" maxlength="4" name="duration">    
     <label for="low-report">Report IF Low:</label>
     <select id="xdg_u08" class="form-control" name="low-report">
       <option value = "0">No</option>
-      <option value = "1">Yes</option>      
+      <option value = "1" selected>Yes</option>      
     </select>
     <label for="high-report">Report IF High:</label>
     <select id="xdg_u08" class="form-control" name="high-report">
       <option value = "0">No</option>
-      <option value = "1">Yes</option>      
+      <option value = "1" selected>Yes</option>      
     </select>
     <br>
   </div>

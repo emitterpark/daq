@@ -1,9 +1,15 @@
 #include <EEPROM.h>
 
+const uint8_t numAn                     = 2;
+const uint8_t numDg                     = 2;
+
 struct Conf {
-  uint8_t bytes[38] = {0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,2,1};   
-  uint16_t words[3] = {30,1000,1000};  
-  float floats[16]  = {0.004,0.004,0.020,0.020,0,0,100,100,10,10,9,9,50,50,49,49};
+  const uint8_t   ge_u08[4]             = {2,90,10,5};
+  const uint8_t   an_u08[5 * numAn]     = {1,2,1,1,1,1,2,1,1,1};
+  const uint16_t  an_u16[numAn]         = {1,1};
+  const float     an_f32[6 * numAn]     = {0.004,0.020,0.004,0.020,0.004,0.020,0.004,0.020,0.004,0.020,0.004,0.020};
+  const uint8_t   dg_u08[5 * numDg]     = {1,0,20,1,1,1,0,20,1,1};
+  const uint16_t  dg_u16[numDg]         = {1,1};
 };
 
 Conf conf;
