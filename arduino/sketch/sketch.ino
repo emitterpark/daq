@@ -88,19 +88,7 @@ void setup() {
   setLora();    // t.after(tmrRandom(), setLora);
   t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
   t.every(conf.ge_u08[conf.ge_u08[ge_u08_report]] * 1000L * 60, report);
-  ledOscForever = t.oscillate(LED_PIN, 500, HIGH);
-  /*  
-  for (uint8_t ch = 0; ch < numAn; ch++) {
-    const uint8_t _duration = an_u16_duration + ch * sizeof(conf.an_u16) / numAn;
-    anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
-    t.stop(anDuration[ch]);
-  }  
-  for (uint8_t ch = 0; ch < numDg; ch++) {
-    const uint8_t _duration = dg_u16_duration + ch * sizeof(conf.dg_u16) / numDg;
-    dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);
-    t.stop(dgDuration[ch]);
-  }  
-  */  
+  ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
 void loop() {
   readDigital();  
@@ -136,36 +124,33 @@ void isAnalogReport(const uint8_t ch) {
   const uint8_t _duration = an_u16_duration + ch * sizeof(conf.an_u16) / numAn;    
   if (an[ch] > conf.an_f32[_low] && an[ch] < conf.an_f32[_high]) {    
     if (an_prev[ch] != MID) {
-      an_prev[ch] = MID;
-      if (conf.an_u08[_mid_report]) {
-        if (anDuration[ch]) {
-          t.stop(anDuration[ch]);
-        } else {
-          anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
-        }
-      }
+      an_prev[ch] = MID;      
+      if (anDuration[ch]) {
+        t.stop(anDuration[ch]);
+      } else if (conf.an_u08[_mid_report]) {
+        // t.stop(anDuration[ch]);
+        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);          
+      }         
     }                  
   } else if (an[ch] <= conf.an_f32[_low]) {    
     if (an_prev[ch] != LOW) {
       an_prev[ch] = LOW;
-      if (conf.an_u08[_low_report]) {
-        if (!anDuration[ch]) {
-          t.stop(anDuration[ch]);
-        } else {
-          anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
-        }
-      }                 
+      if (anDuration[ch]) {
+        t.stop(anDuration[ch]);
+      } else if (conf.an_u08[_low_report]) {
+        // t.stop(anDuration[ch]);
+        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);          
+      }                  
     }                  
   } else if (an[ch] >= conf.an_f32[_high]) {     
     if (an_prev[ch] != HIGH) {
       an_prev[ch] = HIGH;
-      if (conf.an_u08[_high_report]) {
-        if (anDuration[ch]) {
-          t.stop(anDuration[ch]);
-        } else {
-          anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
-        }
-      }                 
+      if (anDuration[ch]) {
+        t.stop(anDuration[ch]);
+      } else if (conf.an_u08[_high_report]) {
+        // t.stop(anDuration[ch]);
+        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);          
+      }                   
     }    
   }  
 }
@@ -186,18 +171,25 @@ void readDigital() {
 }
 void isDigitalReport(const uint8_t ch) {
   const uint8_t _low_report = dg_u08_low_report + ch * sizeof(conf.dg_u08) / numDg; 
-  const uint8_t _high_report = dg_u08_high_report + ch * sizeof(conf.dg_u08) / numDg;       
+  const uint8_t _high_report = dg_u08_high_report + ch * sizeof(conf.dg_u08) / numDg;
+  const uint8_t _duration = dg_u16_duration + ch * sizeof(conf.dg_u16) / numDg;       
   if (dg[ch] != dg_prev[ch]) {
     if (dg[ch] == LOW) {
-      if (conf.an_u08[_low_report]) {
-        
-      }
-      dg_prev[ch] = LOW;  
+      dg_prev[ch] = LOW;      
+      if (dgDuration[ch]) {
+        t.stop(dgDuration[ch]);
+      } else if (conf.dg_u08[_low_report]) {
+        // t.stop(dgDuration[ch]);
+        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);          
+      }    
     } else if (dg[ch] == HIGH) { 
-      if (conf.an_u08[_high_report]) {
-        
-      }
-      dg_prev[ch] = HIGH;
+      dg_prev[ch] = HIGH;      
+      if (dgDuration[ch]) {
+        t.stop(dgDuration[ch]);
+      } else if (conf.dg_u08[_high_report]) {
+        // t.stop(dgDuration[ch]);
+        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);          
+      }  
     }
   }         
 }
