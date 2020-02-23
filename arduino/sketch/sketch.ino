@@ -26,7 +26,8 @@ const uint8_t ge_u08_report       = 3;
 const uint8_t an_u08_enable       = 0;  
 const uint8_t an_u08_unit         = 1;
 const uint8_t an_u08_low_report   = 2;
-const uint8_t an_u08_high_report  = 3; 
+const uint8_t an_u08_mid_report   = 3;
+const uint8_t an_u08_high_report  = 4; 
 // uint16_t an_u16[]
 const uint8_t an_u16_duration     = 0; 
 // float an_f32[]
@@ -51,7 +52,7 @@ const uint8_t numDg               = 2;
 
 struct Conf {
   uint8_t   ge_u08[4];
-  uint8_t   an_u08[4 * numAn];
+  uint8_t   an_u08[5 * numAn];
   uint16_t  an_u16[numAn];
   float     an_f32[6 * numAn];
   uint8_t   dg_u08[5 * numDg];
@@ -67,7 +68,7 @@ const uint8_t MID                 = 2;
 uint8_t     an_prev[numAn]        = {MID, MID};
 uint8_t     dg_prev[numDg]        = {LOW, LOW};
 
-bool isReport, loraJoin, loraBusy;
+bool loraJoin, loraBusy;
 String strUsbSerial, strLoraSerial;
 int anDuration[2], dgDuration[2], ledOscForever;
 
@@ -103,9 +104,6 @@ void setup() {
 }
 void loop() {
   readDigital();  
-  if (isReport) {
-    report();  
-  }
   readLoraSerial();
   readUsbSerial();
   wdt_reset();
@@ -132,26 +130,43 @@ void readAnalog() {
 void isAnalogReport(const uint8_t ch) {       
   const uint8_t _low = an_f32_low + ch * sizeof(conf.an_f32) / numAn; 
   const uint8_t _high = an_f32_high + ch * sizeof(conf.an_f32) / numAn;
-  const uint8_t _low_report = an_u08_low_report + ch * sizeof(conf.an_u08) / numAn; 
+  const uint8_t _low_report = an_u08_low_report + ch * sizeof(conf.an_u08) / numAn;
+  const uint8_t _mid_report = an_u08_mid_report + ch * sizeof(conf.an_u08) / numAn; 
   const uint8_t _high_report = an_u08_high_report + ch * sizeof(conf.an_u08) / numAn; 
   const uint8_t _duration = an_u16_duration + ch * sizeof(conf.an_u16) / numAn;    
   if (an[ch] > conf.an_f32[_low] && an[ch] < conf.an_f32[_high]) {    
-    an_prev[ch] = MID;
-    t.stop(anDuration[ch]);              
+    if (an_prev[ch] != MID) {
+      an_prev[ch] = MID;
+      if (conf.an_u08[_mid_report]) {
+        if (anDuration[ch]) {
+          t.stop(anDuration[ch]);
+        } else {
+          anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
+        }
+      }
+    }                  
   } else if (an[ch] <= conf.an_f32[_low]) {    
     if (an_prev[ch] != LOW) {
+      an_prev[ch] = LOW;
       if (conf.an_u08[_low_report]) {
-        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
+        if (!anDuration[ch]) {
+          t.stop(anDuration[ch]);
+        } else {
+          anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
+        }
       }                 
-    }
-    an_prev[ch] = LOW;              
+    }                  
   } else if (an[ch] >= conf.an_f32[_high]) {     
     if (an_prev[ch] != HIGH) {
+      an_prev[ch] = HIGH;
       if (conf.an_u08[_high_report]) {
-        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
+        if (anDuration[ch]) {
+          t.stop(anDuration[ch]);
+        } else {
+          anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
+        }
       }                 
-    }
-    an_prev[ch] = HIGH;
+    }    
   }  
 }
 void readDigital() {
@@ -175,12 +190,12 @@ void isDigitalReport(const uint8_t ch) {
   if (dg[ch] != dg_prev[ch]) {
     if (dg[ch] == LOW) {
       if (conf.an_u08[_low_report]) {
-        isReport = true;
+        
       }
       dg_prev[ch] = LOW;  
     } else if (dg[ch] == HIGH) { 
       if (conf.an_u08[_high_report]) {
-        isReport = true;
+        
       }
       dg_prev[ch] = HIGH;
     }
@@ -321,8 +336,7 @@ void setUsb() {
   } 
 }   
 void report() {
-  wdt_reset();
-  isReport = false;  
+  wdt_reset();    
   if (loraJoin && (!loraBusy)) {
     loraBusy = true;      
     lpp.reset();  
