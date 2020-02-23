@@ -62,9 +62,9 @@ Conf conf;
 float       an[numAn];
 uint8_t     dg[numDg];
 
-const uint8_t WITHIN              = 2;
+const uint8_t MID                 = 2;
 
-uint8_t     an_prev[numAn]        = {WITHIN, WITHIN};
+uint8_t     an_prev[numAn]        = {MID, MID};
 uint8_t     dg_prev[numDg]        = {LOW, LOW};
 
 bool isReport, loraJoin, loraBusy;
@@ -87,7 +87,8 @@ void setup() {
   setLora();    // t.after(tmrRandom(), setLora);
   t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
   t.every(conf.ge_u08[conf.ge_u08[ge_u08_report]] * 1000L * 60, report);
-  ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
+  ledOscForever = t.oscillate(LED_PIN, 500, HIGH);
+  /*  
   for (uint8_t ch = 0; ch < numAn; ch++) {
     const uint8_t _duration = an_u16_duration + ch * sizeof(conf.an_u16) / numAn;
     anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);
@@ -97,7 +98,8 @@ void setup() {
     const uint8_t _duration = dg_u16_duration + ch * sizeof(conf.dg_u16) / numDg;
     dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);
     t.stop(dgDuration[ch]);
-  }    
+  }  
+  */  
 }
 void loop() {
   readDigital();  
@@ -134,7 +136,7 @@ void isAnalogReport(const uint8_t ch) {
   const uint8_t _high_report = an_u08_high_report + ch * sizeof(conf.an_u08) / numAn; 
   const uint8_t _duration = an_u16_duration + ch * sizeof(conf.an_u16) / numAn;    
   if (an[ch] > conf.an_f32[_low] && an[ch] < conf.an_f32[_high]) {    
-    an_prev[ch] = WITHIN;
+    an_prev[ch] = MID;
     t.stop(anDuration[ch]);              
   } else if (an[ch] <= conf.an_f32[_low]) {    
     if (an_prev[ch] != LOW) {
@@ -369,7 +371,7 @@ void report() {
     loraSerial.print("at+send=lora:" + String(conf.ge_u08[ge_u08_lora_port]) + ':'); 
     //loraSerial.println(lppGetBuffer());
     loraSerial.println((char*)(lpp.getBuffer()));
-    t.oscillate(LED_PIN, 200, HIGH, 5);
+    t.oscillate(LED_PIN, 100, HIGH, 5);
     // digitalWrite(LED_PIN, LOW);
   } else {
     resetMe();
