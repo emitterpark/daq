@@ -5,18 +5,21 @@
     let lorawanForm = document.querySelector('#lorawan-form');
     let generalForm = document.querySelector('#general-form');     
     let channelsForm = document.querySelector('#channels-form');
+    let atModemForm = document.querySelector('#at-modem-form');
 
     let lorawanTemp = document.querySelectorAll('template')[0];   
     let generalTemp = document.querySelectorAll('template')[1];
     let analogTemp = document.querySelectorAll('template')[2];
-    let digitalTemp = document.querySelectorAll('template')[3];    
+    let digitalTemp = document.querySelectorAll('template')[3];
+    let atModemTemp = document.querySelectorAll('template')[4];    
     
     let formDiv = document.querySelector('#form-div');
     let buttonDiv = document.querySelector('#button-div');
     let lorawanDiv = document.querySelector('#lorawan-div');
     let generalDiv = document.querySelector('#general-div');    
     let analogDiv = document.querySelector('#analog-div');
-    let digitalDiv = document.querySelector('#digital-div');    
+    let digitalDiv = document.querySelector('#digital-div');
+    let atModemDiv = document.querySelector('#at-modem-div');    
      
     let connectBtn = document.querySelector('#connect-btn');    
     let lorawanBtn = document.querySelector('#lorawan-btn');
@@ -31,7 +34,13 @@
     let channelsGetBtn = document.querySelector('#channels-get-btn');
     let channelsSaveBtn = document.querySelector('#channels-save-btn');
     let channelsFetchBtn = document.querySelector('#channels-fetch-btn');
-    let channelsBackBtn = document.querySelector('#channels-back-btn');    
+    let channelsBackBtn = document.querySelector('#channels-back-btn');
+    let atModemBtn = document.querySelector('#at-modem-btn');
+    let atModemSendBtn = document.querySelector('#at-modem-send-btn');
+    let atModemBackBtn = document.querySelector('#at-modem-back-btn');
+    
+    let atModemText = document.querySelector('#at-response');
+
     let port;
     let statusDisp = document.querySelector('#status');
 
@@ -43,7 +52,8 @@
       formDiv.hidden = false;
       lorawanForm.hidden = false;
       generalForm.hidden = true;      
-      channelsForm.hidden = true;                
+      channelsForm.hidden = true; 
+      atModemForm.hidden = true;               
     });
 
     lorawanGetBtn.addEventListener('click', function() {
@@ -79,7 +89,8 @@
       formDiv.hidden = false;
       lorawanForm.hidden = true;
       generalForm.hidden = false;      
-      channelsForm.hidden = true;                
+      channelsForm.hidden = true;
+      atModemForm.hidden = true;                
     });
 
     generalGetBtn.addEventListener('click', function() {
@@ -119,7 +130,8 @@
       formDiv.hidden = false;
       lorawanForm.hidden = true;
       generalForm.hidden = true;      
-      channelsForm.hidden = false;                
+      channelsForm.hidden = false;
+      atModemForm.hidden = true;                
     });
 
     channelsGetBtn.addEventListener('click', function() {
@@ -137,7 +149,6 @@
       if (channelsForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
         items = channelsForm.querySelectorAll('input,select');
-        let value = 0;        
         for (let i = 0; i < items.length; i++) {          
           if (items[i].id[0] == 'x') {             
             str += items[i].id + items[i].value + '\r\n';           
@@ -161,6 +172,31 @@
       buttonDiv.hidden = false;
       formDiv.hidden = true;                      
     });    
+    
+    atModemBtn.addEventListener('click', function() {
+      buttonDiv.hidden = true;
+      formDiv.hidden = false;
+      lorawanForm.hidden = true;
+      generalForm.hidden = true;      
+      channelsForm.hidden = true;
+      atModemForm.hidden = false;                
+    });    
+
+    atModemSendBtn.addEventListener('click', function() {
+      //if (!port) {
+      //  return;
+      //}                    
+      if (lorawanForm.checkValidity()) {
+        statusDisp.textContent = 'validaion ok';
+        item = atModemForm.querySelector('#at-command');
+        //port.send(item.value + '\r\n');                                        
+      }                 
+    });
+
+    atModemBackBtn.addEventListener('click', function() {
+      buttonDiv.hidden = false;
+      formDiv.hidden = true;                      
+    });
     
     function create() {
       // statusDisp.textContent = '';
@@ -198,7 +234,10 @@
         btns[i].setAttribute('aria-controls', 'digital' + i);
         btns[i].textContent = '#' + String(i + 1 + numAn) + ' (Digital ' + String(i + 1) + ')' + ' Value: 0'; 
         divs[i].setAttribute('id', 'digital' + i);      
-      }       
+      } 
+      // AT MODEM
+      clon = atModemTemp.content.cloneNode(true);     
+      atModemDiv.appendChild(clon);      
       // make id      
       let datas = 
       ['ge_u08','an_u08','an_u16','an_f32','dg_u08','dg_u16']; 
@@ -220,7 +259,8 @@
           let textDecoder = new TextDecoder();
           console.log(textDecoder.decode(data));
           // here readline parser, and trim
-          let dataline;         
+          let dataline;
+          atModemText.textContent = dataline;         
 
           let item;
           let value;          

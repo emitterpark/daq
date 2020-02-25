@@ -14,6 +14,7 @@
     <button type="button" class="btn btn-secondary btn-lg btn-block" id="lorawan-btn">LORAWAN</button>
     <button type="button" class="btn btn-secondary btn-lg btn-block" id="general-btn">GENERAL</button>
     <button type="button" class="btn btn-secondary btn-lg btn-block" id="channels-btn">CHANNELS</button>
+    <button type="button" class="btn btn-secondary btn-lg btn-block" id="at-modem-btn">AT MODEM</button>
   </div>
   
   <div id="form-div" hidden>
@@ -40,7 +41,13 @@
       <button type="submit" class="btn btn-secondary btn-lg btn-block" form="channels-form" id="channels-save-btn">SAVE</button>
       <button type="button" class="btn btn-secondary btn-lg btn-block"id ="channels-fetch-btn">FETCH</button>
       <button type="button" class="btn btn-secondary btn-lg btn-block"id ="channels-back-btn">BACK</button>        
-    </form>  
+    </form>
+    <form onsubmit="return false" id="at-modem-form">
+      <div id="at-modem-div"></div>
+      <br>
+      <button type="submit" class="btn btn-secondary btn-lg btn-block" form="at-modem-form" id="at-modem-send-btn">SEND</button>
+      <button type="button" class="btn btn-secondary btn-lg btn-block"id ="at-modem-back-btn">BACK</button>      
+    </form>   
   </div>
     
   <h6 id="status"></h6>
@@ -186,4 +193,15 @@
     </select>
     <br>
   </div>
+</template>
+
+<template>
+  <div id="at-modem"> 
+    <br>    
+    <label for="at-command">Command:</label>
+    <input id="at-command" type="text" required class="form-control" name="at-command"> 
+    <label for="at-response">Response:</label> 
+    <textarea id="at-response" class="form-control" name="at-response"></textarea>    
+    <br>
+  </div>       
 </template>
