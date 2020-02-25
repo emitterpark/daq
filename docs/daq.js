@@ -260,7 +260,7 @@
           console.log(textDecoder.decode(data));
           // here readline parser, and trim
           let dataline;
-          atModemText.textContent = dataline;         
+          atModemText.textContent = dataline + '\r\n';         
 
           let item;
           let value;          
