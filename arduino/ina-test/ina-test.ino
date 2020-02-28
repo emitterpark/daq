@@ -1,7 +1,7 @@
 #include <Timer.h>
 #include <Wire.h>
 #include <INA226.h>
-#include <WebUSB.h>
+//#include <WebUSB.h>
 
 const uint8_t AN_ALR_PIN[2]       = {12, 6};          // PD6/ADC9, PD7/ADC10
 const uint8_t DIG_PIN[2]          = {8, 9};           // PB4/ADC11/PCINT4, PB5/ADC12/PCINT5
@@ -21,8 +21,9 @@ int pollTmr;
 
 Timer t;
 INA226 analog;
-WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
-#define usbSerial WebUSBSerial
+//WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
+//#define usbSerial WebUSBSerial
+#define usbSerial Serial
 
 void setup() {
   setUsb();
@@ -46,8 +47,7 @@ void readAnalog() {
   }    
 }
 void readUsbSerial() {
-  while (usbSerial && usbSerial.available()) {
-    wdt_reset();
+  while (usbSerial && usbSerial.available()) {    
     const char chr = (char)usbSerial.read();
     strUsbSerial += chr;
     if (chr == '\n') {
