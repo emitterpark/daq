@@ -72,7 +72,7 @@ int         anDuration[numAn];
 int         dgDuration[numDg];
 int         ledOscForever;
 
-bool loraJoin, loraBusy;
+bool isLoraJoin, isLoraBusy;
 String strUsbSerial, strLoraSerial;
 
 Timer t;
@@ -210,11 +210,11 @@ void readLoraSerial() {
         loraSerial.print(F("at+set_config=lora:dr:")); 
         loraSerial.println(conf.ge_u08[ge_u08_lora_dr]);
       } else if (strLoraSerial.endsWith("DR" + String(conf.ge_u08[ge_u08_lora_dr]) +" success")) { 
-        loraJoin = true; 
+        isLoraJoin = true; 
         t.stop(ledOscForever);
         digitalWrite(LED_PIN, LOW);       
       } else if (strLoraSerial.endsWith(F("send success"))) { 
-        loraBusy = false;        
+        isLoraBusy = false;        
       }      
       usbSerial.println(strLoraSerial);      
       strLoraSerial = "";
@@ -336,8 +336,8 @@ void setUsb() {
 }   
 void report() {
   wdt_reset();    
-  if (loraJoin && (!loraBusy)) {
-    loraBusy = true;      
+  if (isLoraJoin && (!isLoraBusy)) {
+    isLoraBusy = true;      
     lpp.reset();  
     for (uint8_t ch = 0; ch < numAn; ch++) {
       const uint8_t _unit = conf.an_u08[an_u08_unit + ch * sizeof(conf.an_u08) / numAn];      
