@@ -83,11 +83,11 @@ WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
 #define loraSerial Serial1
 
 void setup() {
-  wdt_enable(WDTO_8S);
-  setUsb();
-  setPin();  
+  wdt_enable(WDTO_8S);  
+  setPin();   
   loadConf();    
-  setAnalog();    
+  setAnalog();
+  setUsb();    
   setLora();    // t.after(tmrRandom(), setLora);
   t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
   t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);

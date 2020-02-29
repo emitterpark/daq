@@ -26,9 +26,9 @@ INA226 analog;
 #define usbSerial Serial
 
 void setup() {
-  setUsb();
-  setPin();  
-  setAnalog();    
+  setPin();      
+  setAnalog();
+  setUsb();    
   pollTmr = t.every(pol * 1000L, readAnalog);    
 }
 void loop() {  
