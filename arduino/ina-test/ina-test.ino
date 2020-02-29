@@ -89,7 +89,8 @@ void setAnalog() {
     //analog.configure(INA226_AVERAGES_128, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT);
     analog.configure(avg, INA226_BUS_CONV_TIME_140US, ctm, INA226_MODE_SHUNT_CONT);
     analog.calibrate(res, amp);
-    analog.enableConversionReadyAlert();               
+    analog.enableConversionReadyAlert(); 
+    // if (analog.isAlert());              
   } 
 }
 void setUsb() {

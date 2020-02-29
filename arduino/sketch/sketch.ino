@@ -316,8 +316,9 @@ void setAnalog() {
     // wire.end();   
     analog.begin(0x40 + ch);
     analog.configure(INA226_AVERAGES_128, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT);
-    analog.calibrate(3.3, 0.30);
-    analog.enableConversionReadyAlert();               
+    analog.calibrate(3.3, 0.020);
+    analog.enableConversionReadyAlert(); 
+    // if (analog.isAlert());              
   } 
 }
 void setLora() {
