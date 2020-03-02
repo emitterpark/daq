@@ -3,12 +3,12 @@
 // line 130: #define USB_VERSION 0x210
 
 #include <avr/wdt.h>
-#include <Timer.h>
+#include <Timer.h>                // https://github.com/JChristensen/Timer
 #include <EEPROM.h>
-#include <CayenneLPP.h>
+#include <CayenneLPP.h>           // https://github.com/ElectronicCats/CayenneLPP
 #include <Wire.h>
-#include <INA226.h>
-#include <WebUSB.h>
+#include <INA226.h>               // https://github.com/jarzebski/Arduino-INA226
+#include <WebUSB.h>               // https://github.com/webusb/arduino
 
 const uint8_t AN_ALR_PIN[2]       = {12, 6};          // PD6/ADC9, PD7/ADC10
 const uint8_t DIG_PIN[2]          = {8, 9};           // PB4/ADC11/PCINT4, PB5/ADC12/PCINT5
