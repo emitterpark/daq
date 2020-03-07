@@ -15,6 +15,9 @@ struct Conf {
 Conf conf;
 
 void setup() {
+  for (int i = 0 ; i < EEPROM.length() ; i++) {
+    EEPROM.write(i, 0);
+  }
   EEPROM.put(0, conf);
 }
 
