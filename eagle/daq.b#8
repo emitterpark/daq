@@ -1802,15 +1802,16 @@ design rules under a new name.</description>
 <contactref element="CON5" pad="4"/>
 <wire x1="23.622" y1="15.369" x2="23.622" y2="14.732" width="0.8128" layer="1"/>
 <wire x1="23.622" y1="14.732" x2="24.638" y2="13.716" width="0.8128" layer="1"/>
-<wire x1="24.638" y1="13.716" x2="24.638" y2="6.985" width="0.8128" layer="1"/>
-<wire x1="24.638" y1="6.985" x2="24.13" y2="6.477" width="0.8128" layer="1"/>
+<wire x1="24.638" y1="13.716" x2="24.638" y2="8.382" width="0.8128" layer="1"/>
+<wire x1="24.638" y1="8.382" x2="24.13" y2="7.874" width="0.8128" layer="1"/>
+<wire x1="24.13" y1="7.874" x2="24.13" y2="6.477" width="0.8128" layer="1"/>
 </signal>
 <signal name="N$85">
 <contactref element="R13" pad="1"/>
 <contactref element="CON5" pad="3"/>
-<wire x1="23.241" y1="12.7" x2="23.241" y2="8.763" width="0.8128" layer="1"/>
-<wire x1="20.955" y1="6.477" x2="20.32" y2="6.477" width="0.8128" layer="1"/>
-<wire x1="23.241" y1="8.763" x2="20.955" y2="6.477" width="0.8128" layer="1"/>
+<wire x1="23.241" y1="12.7" x2="23.241" y2="10.795" width="0.8128" layer="1"/>
+<wire x1="23.241" y1="10.795" x2="20.32" y2="7.874" width="0.8128" layer="1"/>
+<wire x1="20.32" y1="6.477" x2="20.32" y2="7.874" width="0.8128" layer="1"/>
 </signal>
 <signal name="N$57">
 <contactref element="D2" pad="1"/>
@@ -2042,14 +2043,16 @@ design rules under a new name.</description>
 <wire x1="29.972" y1="15.369" x2="29.972" y2="14.605" width="0.8128" layer="1"/>
 <wire x1="29.972" y1="14.605" x2="30.861" y2="13.716" width="0.8128" layer="1"/>
 <contactref element="CON5" pad="6"/>
-<wire x1="30.861" y1="13.716" x2="30.861" y2="7.366" width="0.8128" layer="1"/>
-<wire x1="30.861" y1="7.366" x2="31.75" y2="6.477" width="0.8128" layer="1"/>
+<wire x1="30.861" y1="13.716" x2="30.861" y2="8.763" width="0.8128" layer="1"/>
+<wire x1="31.75" y1="7.874" x2="31.75" y2="6.477" width="0.8128" layer="1"/>
+<wire x1="31.75" y1="7.874" x2="30.861" y2="8.763" width="0.8128" layer="1"/>
 </signal>
 <signal name="N$55">
 <contactref element="R15" pad="1"/>
 <contactref element="CON5" pad="5"/>
-<wire x1="29.464" y1="12.7" x2="29.464" y2="8.001" width="0.8128" layer="1"/>
-<wire x1="29.464" y1="8.001" x2="27.94" y2="6.477" width="0.8128" layer="1"/>
+<wire x1="29.464" y1="12.7" x2="29.464" y2="9.398" width="0.8128" layer="1"/>
+<wire x1="29.464" y1="9.398" x2="27.94" y2="7.874" width="0.8128" layer="1"/>
+<wire x1="27.94" y1="7.874" x2="27.94" y2="6.477" width="0.8128" layer="1"/>
 </signal>
 <signal name="N$42" airwireshidden="yes">
 <contactref element="C25" pad="2"/>
@@ -2355,22 +2358,40 @@ design rules under a new name.</description>
 <signal name="N$28">
 <contactref element="R22" pad="1"/>
 <contactref element="CON5" pad="8"/>
-<wire x1="39.37" y1="6.477" x2="34.798" y2="11.049" width="0" layer="19" extent="1-1"/>
+<via x="34.798" y="9.525" extent="1-16" drill="0.7"/>
+<wire x1="34.798" y1="11.049" x2="34.798" y2="9.525" width="0.8128" layer="1"/>
+<wire x1="34.798" y1="9.525" x2="35.433" y2="8.89" width="0.8128" layer="16"/>
+<wire x1="35.433" y1="8.89" x2="38.354" y2="8.89" width="0.8128" layer="16"/>
+<wire x1="38.354" y1="8.89" x2="39.37" y2="7.874" width="0.8128" layer="16"/>
+<wire x1="39.37" y1="7.874" x2="39.37" y2="6.477" width="0.8128" layer="16"/>
 </signal>
 <signal name="N$29">
 <contactref element="R21" pad="1"/>
 <contactref element="CON5" pad="7"/>
-<wire x1="35.56" y1="6.477" x2="40.132" y2="11.049" width="0" layer="19" extent="1-1"/>
+<wire x1="40.132" y1="11.049" x2="40.132" y2="9.398" width="0.8128" layer="1"/>
+<wire x1="40.132" y1="9.398" x2="39.624" y2="8.89" width="0.8128" layer="1"/>
+<wire x1="39.624" y1="8.89" x2="36.576" y2="8.89" width="0.8128" layer="1"/>
+<wire x1="36.576" y1="8.89" x2="35.56" y2="7.874" width="0.8128" layer="1"/>
+<wire x1="35.56" y1="7.874" x2="35.56" y2="6.477" width="0.8128" layer="1"/>
 </signal>
 <signal name="N$30">
 <contactref element="R29" pad="1"/>
 <contactref element="CON5" pad="10"/>
-<wire x1="46.99" y1="6.477" x2="42.545" y2="11.049" width="0" layer="19" extent="1-1"/>
+<wire x1="42.545" y1="11.049" x2="42.545" y2="9.398" width="0.8128" layer="1"/>
+<wire x1="43.053" y1="8.89" x2="45.974" y2="8.89" width="0.8128" layer="1"/>
+<wire x1="45.974" y1="8.89" x2="46.99" y2="7.874" width="0.8128" layer="1"/>
+<wire x1="46.99" y1="7.874" x2="46.99" y2="6.477" width="0.8128" layer="1"/>
+<wire x1="42.545" y1="9.398" x2="43.053" y2="8.89" width="0.8128" layer="1"/>
 </signal>
 <signal name="N$36">
 <contactref element="R28" pad="1"/>
 <contactref element="CON5" pad="9"/>
-<wire x1="43.18" y1="6.477" x2="47.879" y2="11.049" width="0" layer="19" extent="1-1"/>
+<via x="47.879" y="9.525" extent="1-16" drill="0.7"/>
+<wire x1="47.879" y1="11.049" x2="47.879" y2="9.525" width="0.8128" layer="1"/>
+<wire x1="47.879" y1="9.525" x2="47.244" y2="8.89" width="0.8128" layer="16"/>
+<wire x1="47.244" y1="8.89" x2="44.196" y2="8.89" width="0.8128" layer="16"/>
+<wire x1="44.196" y1="8.89" x2="43.18" y2="7.874" width="0.8128" layer="16"/>
+<wire x1="43.18" y1="7.874" x2="43.18" y2="6.477" width="0.8128" layer="16"/>
 </signal>
 </signals>
 <mfgpreviewcolors>
