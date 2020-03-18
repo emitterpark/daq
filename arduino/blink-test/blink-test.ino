@@ -9,9 +9,9 @@ void setup() {
 }
 void loop() {  
   digitalWrite(LED_PIN, LOW);
-  delay(200);
+  delay(1000);
   digitalWrite(LED_PIN, HIGH);
-  delay(200);  
+  delay(1000);  
 }
 void setPin() {
   for (uint8_t ch = 0; ch < 2; ch++) {

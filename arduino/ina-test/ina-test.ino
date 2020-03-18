@@ -99,5 +99,7 @@ void setUsb() {
     while (!usbSerial) {      
     }
     usbSerial.flush();
+    usbSerial.println("hello");
+    usbSerial.println("world");
   } 
 }

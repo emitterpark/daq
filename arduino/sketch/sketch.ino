@@ -387,9 +387,7 @@ void report() {
     loraSerial.println((char*)(lpp.getBuffer()));
     t.oscillate(LED_PIN, 100, HIGH, 5);
     // digitalWrite(LED_PIN, LOW);
-  } else {
-    resetMe();
-  }      
+  }     
 }
 unsigned long tmrRandom() {
   randomSeed(analogRead(RANDOM_PIN));

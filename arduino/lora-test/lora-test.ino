@@ -29,12 +29,13 @@ void readUsbSerial() {
     if (chr == '\n') {
       strUsbSerial.trim();
       loraSerial.println(strUsbSerial);
+      usbSerial.println(strUsbSerial);
       strUsbSerial = "";           
     }
   }   
 }
 void readLoraSerial() {
-  while (loraSerial && loraSerial.available()) {    
+  while (loraSerial.available()) {    
     const char chr = (char)loraSerial.read();
     strLoraSerial += chr;
     if (chr == '\n') {
@@ -55,15 +56,17 @@ void setPin() {
   digitalWrite(LED_PIN, HIGH);  
 }
 void setUsbSerial() {
-  if (USBSTA >> VBUS & 1) {    
+  //if (USBSTA >> VBUS & 1) {    
     usbSerial.begin(115200);    
     while (!usbSerial) {      
     }
     usbSerial.flush();
-  } 
+    usbSerial.println("hi there");
+    usbSerial.println("this is me daq");
+  //} 
 }
 void setLoraSerial() {     
   loraSerial.begin(115200);    
-  while (!loraSerial) {      
-  }   
+  //while (!loraSerial) {      
+  //}   
 }
