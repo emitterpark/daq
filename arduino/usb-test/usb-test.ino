@@ -25,13 +25,7 @@ void readUsbSerial() {
     strUsbSerial += chr;
     if (chr == '\n') {
       strUsbSerial.trim();
-      const uint8_t valInt = strUsbSerial.substring(2).toInt();
-      const float valFloat = strUsbSerial.substring(2).toFloat();       
-      if (strUsbSerial.startsWith(F("ii"))) {
-        usbSerial.println(valInt);
-      } else if (strUsbSerial.startsWith(F("ff"))) {
-        usbSerial.println(valFloat, 5);            
-      }
+      usbSerial.println(strUsbSerial);
       strUsbSerial = "";           
     }
   }   
