@@ -41,6 +41,7 @@ void setPin() {
   digitalWrite(LED_PIN, HIGH);  
 }
 void setUsb() {
+  /*
   if (USBSTA >> VBUS & 1) {    
     Serial.begin(115200);    
     while (!Serial) {      
@@ -49,4 +50,9 @@ void setUsb() {
     Serial.println("hello");
     Serial.println("this is daq");
   } 
+  */
+  while (!Serial) {
+    ;
+  }
+  Serial.begin(9600);
 }
