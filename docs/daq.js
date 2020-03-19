@@ -257,8 +257,8 @@
         connectBtn.textContent = 'Disconnect';
         port.onReceive = data => {
           let textDecoder = new TextDecoder();
-          //console.log(textDecoder.decode(data));
-          statusDisp.textContent += textDecoder.decode(data);
+          console.log(textDecoder.decode(data));
+          //statusDisp.textContent += textDecoder.decode(data);
 
           /*
           // here readline parser, and trim
