@@ -6,10 +6,10 @@ const uint8_t LORA_RES_PIN        = 10;               // PB6/ADC13/PCINT6
 const uint8_t RANDOM_PIN          = A0;               // PF7/ADC7 
 const uint8_t LED_PIN             = A5;               // PF0/ADC0
 
-String strUsbSerial;
+String strSerial;
 
 WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
-#define usbSerial WebUSBSerial
+#define Serial WebUSBSerial
 //#define usbSerial Serial
 
 void setup() {
@@ -17,16 +17,16 @@ void setup() {
   setUsb();  
 }
 void loop() {  
-  readUsbSerial();  
+  readSerial();  
 }
-void readUsbSerial() {
-  while (usbSerial && usbSerial.available()) {    
-    const char chr = (char)usbSerial.read();
-    strUsbSerial += chr;
+void readSerial() {
+  while (Serial && Serial.available()) {    
+    const char chr = (char)Serial.read();
+    strSerial += chr;
     if (chr == '\n') {
-      strUsbSerial.trim();
-      usbSerial.println(strUsbSerial);
-      strUsbSerial = "";           
+      strSerial.trim();
+      Serial.println(strSerial);
+      strSerial = "";           
     }
   }   
 }
@@ -42,11 +42,11 @@ void setPin() {
 }
 void setUsb() {
   if (USBSTA >> VBUS & 1) {    
-    usbSerial.begin(115200);    
-    while (!usbSerial) {      
+    Serial.begin(115200);    
+    while (!Serial) {      
     }
-    usbSerial.flush();
-    usbSerial.println("hello");
-    usbSerial.println("this is daq");
+    Serial.flush();
+    Serial.println("hello");
+    Serial.println("this is daq");
   } 
 }
