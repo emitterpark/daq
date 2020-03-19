@@ -183,13 +183,13 @@
     });    
 
     atModemSendBtn.addEventListener('click', function() {
-      //if (!port) {
-      //  return;
-      //}                    
+      if (!port) {
+        return;
+      }                    
       if (lorawanForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
         item = atModemForm.querySelector('#at-command');
-        //port.send(item.value + '\r\n');                                        
+        port.send(item.value + '\r\n');                                        
       }                 
     });
 
@@ -253,11 +253,14 @@
 
     function connect() {
       port.connect().then(() => {
-        // statusDisp.textContent = '';
+        statusDisp.textContent = '';
         connectBtn.textContent = 'Disconnect';
         port.onReceive = data => {
           let textDecoder = new TextDecoder();
-          console.log(textDecoder.decode(data));
+          //console.log(textDecoder.decode(data));
+          statusDisp.textContent += textDecoder.decode(data);
+
+          /*
           // here readline parser, and trim
           let dataline;
           atModemText.textContent += dataline + '\r\n';         
@@ -289,34 +292,36 @@
               item = mainForm.querySelector('#' + dataline.slice(0, 9));
               value = dataline.slice(9);            
             }            
-            item.value = value;            
+            item.value = value;  
+                      
           }
+          */
         }
         port.onReceiveError = error => {
           console.error(error);
         };
       }, error => {
-        // statusDisp.textContent = error;
+         statusDisp.textContent = error;
       });
     }    
     connectBtn.addEventListener('click', function() {
       if (port) {
         port.disconnect();
         connectBtn.textContent = 'Connect';
-        // statusDisp.textContent = '';
+        statusDisp.textContent = '';
         port = null;
       } else {
         serial.requestPort().then(selectedPort => {
           port = selectedPort;
           connect();
         }).catch(error => {
-          // statusDisp.textContent = error;
+          statusDisp.textContent = error;
         });
       }
     }); 
     serial.getPorts().then(ports => {
       if (ports.length == 0) {
-        //statusDisp.textContent = 'No device found.';
+        statusDisp.textContent = 'No device found.';
       } else {
         statusDisp.textContent = 'Connecting...';
         port = ports[0];
