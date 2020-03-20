@@ -264,7 +264,7 @@
           let textDecoder = new TextDecoder();
           console.log(textDecoder.decode(data));
           //statusDisp.textContent += textDecoder.decode(data);
-          statusDisp.textContent = 'received';
+          statusDisp.textContent += data;
 
           /*
           // here readline parser, and trim
