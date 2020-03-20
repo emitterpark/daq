@@ -209,7 +209,7 @@
     
     function create() {
       // statusDisp.textContent = '';
-      atModemText.value = 'response';
+      //atModemText.value = 'response';
       let clon;
       let btns;
       let divs;
@@ -269,7 +269,7 @@
           let textDecoder = new TextDecoder();
           console.log(textDecoder.decode(data));
           
-          atModemText.value += textDecoder.decode(data);
+          statusDisp.textContent += textDecoder.decode(data);
 
           /*
           // here readline parser, and trim
