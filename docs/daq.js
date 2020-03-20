@@ -190,7 +190,12 @@
         statusDisp.textContent = 'validaion ok';
         //item = atModemForm.querySelector('#at-command');
         //port.send(item.value + '\r\n');
-        port.send('helloworld\r\n');                                        
+        //port.send('helloworld\r\n');
+        let view = new Uint8Array(3);
+        view[0] = 1;
+        view[1] = 2;
+        view[2] = 3;
+        port.send(view);                                        
       }                 
     });
 
