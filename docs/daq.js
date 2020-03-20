@@ -195,8 +195,10 @@
         //view[1] = 67;
         //view[2] = 68;
         //port.send(view);
+        const encoder = new TextEncoder()
+        const view = encoder.encode('hellothere')
         
-        port.send(Array.from('hello'));
+        port.send(Array.from(view));
       }                 
     });
 
