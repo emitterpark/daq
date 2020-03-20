@@ -191,9 +191,9 @@
         // port.send(item.value + '\r\n');
         
         let view = new Uint8Array(3);
-        view[0] = 65;
-        view[1] = 66;
-        view[2] = 67;
+        view[0] = 66;
+        view[1] = 67;
+        view[2] = 68;
         port.send(view);
         
         //port.send(Array.from(item.value));
