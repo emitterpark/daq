@@ -188,8 +188,9 @@
       }                    
       if (lorawanForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
-        item = atModemForm.querySelector('#at-command');
-        port.send(item.value + '\r\n');                                        
+        //item = atModemForm.querySelector('#at-command');
+        //port.send(item.value + '\r\n');
+        port.send('helloworld\r\n');                                        
       }                 
     });
 
@@ -256,10 +257,10 @@
         statusDisp.textContent = '';
         connectBtn.textContent = 'Disconnect';
         port.onReceive = data => {
-          let textDecoder = new TextDecoder();
-          console.log(textDecoder.decode(data));
+          //let textDecoder = new TextDecoder();
+          //console.log(textDecoder.decode(data));
           //statusDisp.textContent += textDecoder.decode(data);
-          atModemText.textContent = data;
+          //atModemText.textContent = data;
 
           /*
           // here readline parser, and trim

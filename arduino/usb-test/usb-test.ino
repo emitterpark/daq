@@ -20,11 +20,18 @@ void loop() {
   readSerial();  
 }
 void readSerial() {
-  while (Serial && Serial.available()) {    
+  while (Serial && Serial.available()) {
+    digitalWrite(LED_PIN, LOW);
+    delay(200);
+    digitalWrite(LED_PIN, HIGH);
+    delay(200);    
     const char chr = (char)Serial.read();
     strSerial += chr;
     if (chr == '\n') {
       strSerial.trim();
+      digitalWrite(LED_PIN, LOW);
+      delay(1000);
+      digitalWrite(LED_PIN, HIGH);
       Serial.println(strSerial);
       strSerial = "";           
     }
@@ -55,6 +62,12 @@ void setUsb() {
     ;
   }
   Serial.begin(9600);
-  Serial.write("Sketch begins.\r\n");
+  //Serial.write("Sketch begins.\r\n");
   Serial.flush();
+  for (uint8_t i = 0; i < 5; i++) {
+    digitalWrite(LED_PIN, LOW);
+    delay(200);
+    digitalWrite(LED_PIN, HIGH);
+    delay(200);
+  }
 }
