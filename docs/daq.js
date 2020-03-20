@@ -196,7 +196,7 @@
         //view[2] = 68;
         //port.send(view);
         const encoder = new TextEncoder();
-        const view = encoder.encode('hellothere');
+        const view = encoder.encode('hellothere' + '\r\n' + 'hellohey' + '\r\n');
         
         port.send(view);
       }                 
