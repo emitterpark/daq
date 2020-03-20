@@ -40,8 +40,7 @@
     let atModemBackBtn = document.querySelector('#at-modem-back-btn');
     
     let atModemText = document.querySelector('#at-response');
-    atModemText.textContent = '';
-
+    
     let port;
     let statusDisp = document.querySelector('#status');
 
@@ -267,7 +266,7 @@
           //console.log(textDecoder.decode(data));
           //statusDisp.textContent += textDecoder.decode(data);
           
-          atModemText.textContent += data;
+          
 
           /*
           // here readline parser, and trim
