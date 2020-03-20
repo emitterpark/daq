@@ -209,6 +209,7 @@
     
     function create() {
       // statusDisp.textContent = '';
+      atModemText.value = 'response';
       let clon;
       let btns;
       let divs;
