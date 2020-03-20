@@ -265,7 +265,7 @@
           //let textDecoder = new TextDecoder();
           //console.log(textDecoder.decode(data));
           //statusDisp.textContent += textDecoder.decode(data);
-          //atModemText.textContent = data;
+          statusDisp.textContent = 'received';
 
           /*
           // here readline parser, and trim
