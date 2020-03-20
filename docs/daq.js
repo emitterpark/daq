@@ -198,7 +198,7 @@
         const encoder = new TextEncoder();
         const view = encoder.encode('hellothere');
         
-        port.send(Array.from(view));
+        port.send(view);
       }                 
     });
 
