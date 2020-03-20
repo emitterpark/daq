@@ -27,7 +27,7 @@ void readSerial() {
     delay(200);    
     const char chr = (char)Serial.read();
     //Serial.print('A');
-    Serial.write(chr);   // H
+    Serial.write(0x48);   // H
     Serial.flush();
     /*
     strSerial += chr;

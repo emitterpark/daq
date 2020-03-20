@@ -182,21 +182,21 @@
     });    
 
     atModemSendBtn.addEventListener('click', function() {
-      if (!port) {
-        return;
-      }                    
+      //if (!port) {
+      //  return;
+      //}                    
       if (lorawanForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
-        item = atModemForm.querySelector('#at-command');
+        //item = atModemForm.querySelector('#at-command');
         // port.send(item.value + '\r\n');
         
-        //let view = new Uint8Array(3);
-        //view[0] = 1;
-        //view[1] = 2;
-        //view[2] = 3;
-        //port.send(view);
+        let view = new Uint8Array(3);
+        view[0] = 1;
+        view[1] = 2;
+        view[2] = 3;
+        port.send(view);
         
-        port.send(Array.from(item.value));
+        //port.send(Array.from(item.value));
       }                 
     });
 
@@ -264,7 +264,7 @@
         connectBtn.textContent = 'Disconnect';
         port.onReceive = data => {
           let textDecoder = new TextDecoder();
-          //console.log(textDecoder.decode(data));
+          console.log(textDecoder.decode(data));
           //statusDisp.textContent += textDecoder.decode(data);
           statusDisp.textContent += textDecoder.decode(data);
 
