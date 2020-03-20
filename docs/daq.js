@@ -268,7 +268,7 @@
           let textDecoder = new TextDecoder();
           console.log(textDecoder.decode(data));
           
-          atModemText.textContent += textDecoder.decode(data);
+          atModemText.value += textDecoder.decode(data);
 
           /*
           // here readline parser, and trim
