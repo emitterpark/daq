@@ -37,12 +37,11 @@
     let channelsBackBtn = document.querySelector('#channels-back-btn');
     let atModemBtn = document.querySelector('#at-modem-btn');
     let atModemSendBtn = document.querySelector('#at-modem-send-btn');
-    let atModemBackBtn = document.querySelector('#at-modem-back-btn');
-    
+    let atModemBackBtn = document.querySelector('#at-modem-back-btn');    
     let atModemText = document.querySelector('#at-response');
-
-    let port;
+    
     let statusDisp = document.querySelector('#status');
+    let port;
 
     let numAn = 2, numDg = 2;
     let items;
@@ -259,11 +258,11 @@
 
     function connect() {
       port.connect().then(() => {
-        statusDisp.textContent = '';
+        statusDisp.textContent = 'connected';
         connectBtn.textContent = 'Disconnect';
         port.onReceive = data => {
-          //let textDecoder = new TextDecoder();
-          //console.log(textDecoder.decode(data));
+          let textDecoder = new TextDecoder();
+          console.log(textDecoder.decode(data));
           //statusDisp.textContent += textDecoder.decode(data);
           statusDisp.textContent = 'received';
 
