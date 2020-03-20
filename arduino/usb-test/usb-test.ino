@@ -26,6 +26,7 @@ void readSerial() {
     digitalWrite(LED_PIN, HIGH);
     delay(200);    
     const char chr = (char)Serial.read();
+    Serial.print(chr);
     /*
     strSerial += chr;
     if (chr == '\n') {
