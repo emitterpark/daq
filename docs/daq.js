@@ -259,6 +259,7 @@
           let textDecoder = new TextDecoder();
           console.log(textDecoder.decode(data));
           //statusDisp.textContent += textDecoder.decode(data);
+          atModemText.textContent = data;
 
           /*
           // here readline parser, and trim
