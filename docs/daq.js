@@ -190,13 +190,13 @@
         //item = atModemForm.querySelector('#at-command');
         // port.send(item.value + '\r\n');
         
-        let view = new Uint8Array(3);
-        view[0] = 66;
-        view[1] = 67;
-        view[2] = 68;
-        port.send(view);
+        //let view = new Uint8Array(3);
+        //view[0] = 66;
+        //view[1] = 67;
+        //view[2] = 68;
+        //port.send(view);
         
-        //port.send(Array.from(item.value));
+        port.send(Array.from('hello'));
       }                 
     });
 
