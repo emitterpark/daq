@@ -38,8 +38,7 @@
     let atModemBtn = document.querySelector('#at-modem-btn');
     let atModemSendBtn = document.querySelector('#at-modem-send-btn');
     let atModemBackBtn = document.querySelector('#at-modem-back-btn');    
-    let atModemText = document.querySelector('#at-response');
-    
+        
     let statusDisp = document.querySelector('#status');
     let port;
 
@@ -260,6 +259,8 @@
       }
     }
     create();
+    let atModemText = document.querySelector('#at-response');
+    atModemText.value = 'hello' + '\r\n' + 'world' + '\r\n';
 
     function connect() {
       port.connect().then(() => {
@@ -269,7 +270,8 @@
           let textDecoder = new TextDecoder();
           console.log(textDecoder.decode(data));
           
-          statusDisp.textContent += textDecoder.decode(data);
+          atModemText.value
+          //statusDisp.textContent += textDecoder.decode(data);
 
           /*
           // here readline parser, and trim
