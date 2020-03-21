@@ -202,7 +202,8 @@
         statusDisp.textContent = 'validaion ok';
         item = atModemForm.querySelector('#at-command');
         const encoder = new TextEncoder();
-        const view = encoder.encode(item.value + '\r\n');        
+        //const view = encoder.encode(item.value + '\r\n'); 
+        const view = encoder.encode('at+version\r\n');       
         port.send(view);
       }                 
     });
