@@ -43,6 +43,7 @@
     let port;
 
     let numAn = 2, numDg = 2;
+    let item;
     let items;
     
     lorawanBtn.addEventListener('click', function() {
@@ -200,10 +201,10 @@
       }                    
       if (lorawanForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
-        //item = atModemForm.querySelector('#at-command');
+        item = atModemForm.querySelector('#at-command');
         const encoder = new TextEncoder();
-        //const view = encoder.encode(item.value + '\r\n'); 
-        const view = encoder.encode('at+version\r\n');       
+        const view = encoder.encode(item.value + '\r\n'); 
+        //const view = encoder.encode('at+version\r\n');       
         port.send(view);
       }                 
     });
@@ -284,7 +285,7 @@
           let dataline;
           atModemText.textContent += dataline + '\r\n';         
 
-          let item;
+          
           let value;          
           let split;
           let n = Number(dataline.slice(7, 9));
