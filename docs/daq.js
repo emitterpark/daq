@@ -200,10 +200,10 @@
       }                    
       if (lorawanForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
-        //item = atModemForm.querySelector('#at-command');
+        item = atModemForm.querySelector('#at-command');
         // port.send(item.value + '\r\n');        
         const encoder = new TextEncoder();
-        const view = encoder.encode('at+version\r\n');        
+        const view = encoder.encode(item.value + '\r\n');        
         port.send(view);
       }                 
     });
