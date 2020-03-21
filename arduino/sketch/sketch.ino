@@ -83,12 +83,12 @@ WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
 #define loraSerial Serial1
 
 void setup() {
-  wdt_enable(WDTO_8S);  
+  //wdt_enable(WDTO_8S);  
   setPin();   
   loadConf();    
   setAnalog();
-  setUsb();    
-  setLora();    // t.after(tmrRandom(), setLora);
+  setUsbSerial();    
+  setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);
   t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
   t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);
   ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
@@ -97,7 +97,7 @@ void loop() {
   readDigital();  
   readLoraSerial();
   readUsbSerial();
-  wdt_reset();
+  //wdt_reset();
   t.update();
 }
 void readAnalog() {
@@ -106,7 +106,7 @@ void readAnalog() {
     const uint8_t _enable = an_u08_enable + ch * sizeof(conf.an_u08) / numAn; 
     if (conf.an_u08[_enable]) {   
       while (AN_ALR_PIN[ch]) {
-        wdt_reset();
+        //wdt_reset();
       }
       analog.begin(0x40 + ch);
       an[ch] = analog.readShuntCurrent();
@@ -200,7 +200,7 @@ void isDigitalReport(const uint8_t ch) {
 }
 void readLoraSerial() { 
   while (loraSerial.available()) {
-    wdt_reset();
+    //wdt_reset();
     const char chr = (char)loraSerial.read();    
     strLoraSerial += chr;
     if (chr == '\n') {
@@ -216,14 +216,15 @@ void readLoraSerial() {
       } else if (strLoraSerial.endsWith(F("send success"))) { 
         isLoraBusy = false;        
       }      
-      usbSerial.println(strLoraSerial);      
+      usbSerial.println(strLoraSerial); 
+      usbSerial.flush();     
       strLoraSerial = "";
     }
   }
 }
 void readUsbSerial() {
   while (usbSerial && usbSerial.available()) {
-    wdt_reset();
+    //wdt_reset();
     const char chr = (char)usbSerial.read();
     strUsbSerial += chr;
     if (chr == '\n') {
@@ -257,45 +258,63 @@ void getGeneral() {
   String str; 
   for (uint8_t i = 0; i < sizeof(conf.ge_u08); i++) {    
     usbSerial.print(F("xge_u08"));
+    usbSerial.flush();
     str = '0' + i;
     usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.println(conf.ge_u08[i]);    
+    usbSerial.flush();
+    usbSerial.println(conf.ge_u08[i]);
+    usbSerial.flush();    
   }  
 }
 void getChannels() { 
   String str;  
   for (uint8_t i = 0; i < sizeof(conf.an_u08); i++) {
     usbSerial.print(F("xan_u08"));
+    usbSerial.flush();
     str = '0' + i;
     usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.println(conf.an_u08[i]);    
+    usbSerial.flush();
+    usbSerial.println(conf.an_u08[i]);
+    usbSerial.flush();    
   }
   for (uint8_t i = 0; i < sizeof(conf.an_f32); i++) {
     usbSerial.print(F("xan_f32"));
+    usbSerial.flush();
     str = '0' + i;
     usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.println(conf.an_f32[i]);    
+    usbSerial.flush();
+    usbSerial.println(conf.an_f32[i]); 
+    usbSerial.flush();   
   }
   for (uint8_t i = 0; i < sizeof(conf.dg_u08); i++) {
     usbSerial.print(F("xdg_u08"));
+    usbSerial.flush();
     str = '0' + i;
     usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.println(conf.dg_u08[i]);    
+    usbSerial.flush();
+    usbSerial.println(conf.dg_u08[i]);
+    usbSerial.flush();    
   }  
 }
 void fetchChannels() { 
   String str;
   for (uint8_t i = 0; i < numAn; i++) {
     usbSerial.print(F("xan_val"));
+    usbSerial.flush();
     str = '0' + i;
     usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.println(an[i]);    
+    usbSerial.flush();
+    usbSerial.println(an[i]);
+    usbSerial.flush();    
   }
   for (uint8_t i = 0; i < numDg; i++) {
     usbSerial.print(F("xdg_val"));
+    usbSerial.flush();
     str = '0' + i;
     usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.println(dg[i]);    
+    usbSerial.flush();
+    usbSerial.println(dg[i]);
+    usbSerial.flush();    
   }  
 }
 void loadConf() {
@@ -321,22 +340,20 @@ void setAnalog() {
     // if (analog.isAlert());              
   } 
 }
-void setLora() {
+void setLoraSerial() {
   loraSerial.begin(115200);
   delay(100);
   digitalWrite(LORA_RES_PIN, HIGH);
 }
-void setUsb() {
-  if (USBSTA >> VBUS & 1) {    
-    usbSerial.begin(115200);    
-    while (!usbSerial) {
-      wdt_reset();
-    }
-    usbSerial.flush();
-  } 
+void setUsbSerial() {        
+  while (!usbSerial) {
+    //wdt_reset();
+  }
+  usbSerial.begin(9600);
+  usbSerial.flush();   
 }   
 void report() {
-  wdt_reset();    
+  //wdt_reset();    
   if (isLoraJoin && (!isLoraBusy)) {
     isLoraBusy = true;      
     lpp.reset();  
@@ -394,7 +411,7 @@ unsigned long tmrRandom() {
   return random(24) * 5000L + 10000L;   // min 10sec, max 2min + 10sec   
 }
 void resetMe() {
-  wdt_enable(WDTO_15MS);
+  //wdt_enable(WDTO_15MS);
   while(true); 
 }
 /*
