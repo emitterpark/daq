@@ -8,7 +8,8 @@ const uint8_t LED_PIN             = A5;               // PF0/ADC0
 
 String strUsbSerial, strLoraSerial;
 
-WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
+//WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
+WebUSB WebUSBSerial(1 /* https:// */, "127.0.0.1:5500");
 #define usbSerial WebUSBSerial
 //#define usbSerial Serial
 #define loraSerial Serial1
