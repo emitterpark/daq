@@ -74,6 +74,7 @@ int         ledOscForever;
 
 bool isLoraJoin, isLoraBusy;
 String strUsbSerial, strLoraSerial;
+const uint8_t floatToPrint = 6;
 
 Timer t;
 CayenneLPP lpp(51);
@@ -104,7 +105,7 @@ void loop() {
 void readAnalog() {
   // wire.end();    
   for (uint8_t ch = 0; ch < numAn; ch++) {
-    const uint8_t _enable = an_u08_enable + ch * sizeof(conf.an_u08) / numAn; 
+    const uint8_t _enable = an_u08_enable + ch * (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])) / numAn; 
     if (conf.an_u08[_enable]) {   
       while (AN_ALR_PIN[ch]) {
         //wdt_reset();
@@ -112,22 +113,22 @@ void readAnalog() {
       analog.begin(0x40 + ch);
       an[ch] = analog.readShuntCurrent();
       if (analog.isAlert());      
-      const uint8_t _in_min = an_f32_in_min + ch * sizeof(conf.an_f32) / numAn;
-      const uint8_t _in_max = an_f32_in_max + ch * sizeof(conf.an_f32) / numAn;
-      const uint8_t _out_min = an_f32_out_min + ch * sizeof(conf.an_f32) / numAn;
-      const uint8_t _out_max = an_f32_out_max + ch * sizeof(conf.an_f32) / numAn;
+      const uint8_t _in_min = an_f32_in_min + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+      const uint8_t _in_max = an_f32_in_max + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+      const uint8_t _out_min = an_f32_out_min + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+      const uint8_t _out_max = an_f32_out_max + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
       an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
       isAnalogReport(ch);      
     }                    
   }    
 }
 void isAnalogReport(const uint8_t ch) {       
-  const uint8_t _low = an_f32_low + ch * sizeof(conf.an_f32) / numAn; 
-  const uint8_t _high = an_f32_high + ch * sizeof(conf.an_f32) / numAn;
-  const uint8_t _low_report = an_u08_low_report + ch * sizeof(conf.an_u08) / numAn;
-  const uint8_t _mid_report = an_u08_mid_report + ch * sizeof(conf.an_u08) / numAn; 
-  const uint8_t _high_report = an_u08_high_report + ch * sizeof(conf.an_u08) / numAn; 
-  const uint8_t _duration = an_u16_duration + ch * sizeof(conf.an_u16) / numAn;    
+  const uint8_t _low = an_f32_low + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn; 
+  const uint8_t _high = an_f32_high + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+  const uint8_t _low_report = an_u08_low_report + ch * (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])) / numAn;
+  const uint8_t _mid_report = an_u08_mid_report + ch * (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])) / numAn; 
+  const uint8_t _high_report = an_u08_high_report + ch * (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])) / numAn; 
+  const uint8_t _duration = an_u16_duration + ch * (sizeof(conf.an_u16) / sizeof(conf.an_u16[0])) / numAn;    
   if (an[ch] > conf.an_f32[_low] && an[ch] < conf.an_f32[_high]) {    
     if (an_prev[ch] != MID) {
       an_prev[ch] = MID;      
@@ -162,10 +163,10 @@ void isAnalogReport(const uint8_t ch) {
 }
 void readDigital() {
   for (uint8_t ch = 0; ch < numDg; ch++) {
-    const uint8_t _enable = dg_u08_enable + ch * sizeof(conf.dg_u08) / numDg;
+    const uint8_t _enable = dg_u08_enable + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
     if (conf.dg_u08[_enable]) { 
       dg[ch] = digitalRead(DIG_PIN[ch]);
-      const uint8_t _debounce = dg_u08_debounce + ch * sizeof(conf.dg_u08) / numDg;
+      const uint8_t _debounce = dg_u08_debounce + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
       delay(conf.dg_u08[_debounce]); 
       if (dg[ch] == digitalRead(DIG_PIN[ch])) {
         isDigitalReport(ch);
@@ -176,9 +177,9 @@ void readDigital() {
   }
 }
 void isDigitalReport(const uint8_t ch) {
-  const uint8_t _low_report = dg_u08_low_report + ch * sizeof(conf.dg_u08) / numDg; 
-  const uint8_t _high_report = dg_u08_high_report + ch * sizeof(conf.dg_u08) / numDg;
-  const uint8_t _duration = dg_u16_duration + ch * sizeof(conf.dg_u16) / numDg;       
+  const uint8_t _low_report = dg_u08_low_report + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg; 
+  const uint8_t _high_report = dg_u08_high_report + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
+  const uint8_t _duration = dg_u16_duration + ch * (sizeof(conf.dg_u16) / sizeof(conf.dg_u16[0])) / numDg;       
   if (dg[ch] != dg_prev[ch]) {
     if (dg[ch] == LOW) {
       dg_prev[ch] = LOW;      
@@ -264,7 +265,7 @@ void getGeneral() {
   for (uint8_t i = 0; i < sizeof(conf.ge_u08); i++) {    
     usbSerial.print(F("xge_u08"));
     usbSerial.flush();
-    str = '0' + i;
+    str = '0' + String(i);
     usbSerial.print(str.substring(str.length() - 2));
     usbSerial.flush();
     usbSerial.println(conf.ge_u08[i]);
@@ -273,46 +274,46 @@ void getGeneral() {
 }
 void getChannels() { 
   String str;  
-  for (uint8_t i = 0; i < sizeof(conf.an_u08); i++) {
+  for (uint8_t i = 0; i < (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])); i++) {
     usbSerial.print(F("xan_u08"));
     usbSerial.flush();
-    str = '0' + i;
+    str = '0' + String(i);
     usbSerial.print(str.substring(str.length() - 2));
     usbSerial.flush();
     usbSerial.println(conf.an_u08[i]);
     usbSerial.flush();    
   }
-  for (uint8_t i = 0; i < sizeof(conf.an_u16); i++) {
+  for (uint8_t i = 0; i < (sizeof(conf.an_u16) / sizeof(conf.an_u16[0])); i++) {
     usbSerial.print(F("xan_u16"));
     usbSerial.flush();
-    str = '0' + i;
+    str = '0' + String(i);
     usbSerial.print(str.substring(str.length() - 2));
     usbSerial.flush();
     usbSerial.println(conf.an_u16[i]);
     usbSerial.flush();    
   }
-  for (uint8_t i = 0; i < sizeof(conf.an_f32); i++) {
+  for (uint8_t i = 0; i < (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])); i++) {
     usbSerial.print(F("xan_f32"));
     usbSerial.flush();
-    str = '0' + i;
+    str = '0' + String(i);
     usbSerial.print(str.substring(str.length() - 2));
     usbSerial.flush();
-    usbSerial.println(conf.an_f32[i]); 
+    usbSerial.println(conf.an_f32[i], floatToPrint); 
     usbSerial.flush();   
   }
-  for (uint8_t i = 0; i < sizeof(conf.dg_u08); i++) {
+  for (uint8_t i = 0; i < (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])); i++) {
     usbSerial.print(F("xdg_u08"));
     usbSerial.flush();
-    str = '0' + i;
+    str = '0' + String(i);
     usbSerial.print(str.substring(str.length() - 2));
     usbSerial.flush();
     usbSerial.println(conf.dg_u08[i]);
     usbSerial.flush();    
   }
-  for (uint8_t i = 0; i < sizeof(conf.dg_u16); i++) {
+  for (uint8_t i = 0; i < (sizeof(conf.dg_u16) / sizeof(conf.dg_u16[0])); i++) {
     usbSerial.print(F("xdg_u16"));
     usbSerial.flush();
-    str = '0' + i;
+    str = '0' + String(i);
     usbSerial.print(str.substring(str.length() - 2));
     usbSerial.flush();
     usbSerial.println(conf.dg_u16[i]);
@@ -324,16 +325,16 @@ void fetchChannels() {
   for (uint8_t i = 0; i < numAn; i++) {
     usbSerial.print(F("xan_val"));
     usbSerial.flush();
-    str = '0' + i;
+    str = '0' + String(i);
     usbSerial.print(str.substring(str.length() - 2));
     usbSerial.flush();
-    usbSerial.println(an[i]);
+    usbSerial.println(an[i], floatToPrint);
     usbSerial.flush();    
   }
   for (uint8_t i = 0; i < numDg; i++) {
     usbSerial.print(F("xdg_val"));
     usbSerial.flush();
-    str = '0' + i;
+    str = '0' + String(i);
     usbSerial.print(str.substring(str.length() - 2));
     usbSerial.flush();
     usbSerial.println(dg[i]);
@@ -381,7 +382,7 @@ void report() {
     isLoraBusy = true;      
     lpp.reset();  
     for (uint8_t ch = 0; ch < numAn; ch++) {
-      const uint8_t _unit = conf.an_u08[an_u08_unit + ch * sizeof(conf.an_u08) / numAn];      
+      const uint8_t _unit = conf.an_u08[an_u08_unit + ch * (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])) / numAn];      
       if (_unit == LPP_ANALOG_INPUT) {
         lpp.addAnalogInput(1 + ch, an[ch]);
       } else if (_unit == LPP_LUMINOSITY) {
@@ -413,7 +414,7 @@ void report() {
       }
     } 
     for (uint8_t ch = 0; ch < numDg; ch++) {
-      const uint8_t _unit = conf.dg_u08[dg_u08_unit + ch * sizeof(conf.dg_u08) / numDg];      
+      const uint8_t _unit = conf.dg_u08[dg_u08_unit + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg];      
       if (_unit == LPP_DIGITAL_INPUT) {
         lpp.addDigitalInput(3 + ch, dg[ch]);
       } else if (_unit == LPP_SWITCH) {
