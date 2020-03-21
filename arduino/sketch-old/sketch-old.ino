@@ -78,8 +78,7 @@ String strUsbSerial, strLoraSerial;
 Timer t;
 CayenneLPP lpp(51);
 INA226 analog;
-//WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
-WebUSB WebUSBSerial(1 /* https:// */, "127.0.0.1:5500");
+WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
 #define usbSerial WebUSBSerial
 #define loraSerial Serial1
 
@@ -90,12 +89,12 @@ void setup() {
   setAnalog();
   setUsbSerial();    
   setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);
-  //t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
-  //t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);
-  //ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
+  t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
+  t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);
+  ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
 void loop() {
-  //readDigital();  
+  readDigital();  
   readLoraSerial();
   readUsbSerial();
   //wdt_reset();
@@ -206,7 +205,6 @@ void readLoraSerial() {
     strLoraSerial += chr;
     if (chr == '\n') {
       strLoraSerial.trim();
-      /*
       if (strLoraSerial.endsWith(F("Join Success"))) {        
         // delay
         loraSerial.print(F("at+set_config=lora:dr:")); 
@@ -217,8 +215,7 @@ void readLoraSerial() {
         digitalWrite(LED_PIN, LOW);       
       } else if (strLoraSerial.endsWith(F("send success"))) { 
         isLoraBusy = false;        
-      } 
-      */     
+      }      
       usbSerial.println(strLoraSerial); 
       usbSerial.flush();     
       strLoraSerial = "";
@@ -237,7 +234,6 @@ void readUsbSerial() {
       const float valFloat = strUsbSerial.substring(9).toFloat();       
       if (strUsbSerial.startsWith(F("at"))) {
         loraSerial.println(strUsbSerial);
-      /*
       } else if (strUsbSerial.startsWith(F("xge_u08"))) {
         conf.ge_u08[num] = (uint8_t)valInt;
       } else if (strUsbSerial.startsWith(F("xan_u08"))) {
@@ -246,8 +242,7 @@ void readUsbSerial() {
         conf.an_f32[num] = valFloat;
       } else if (strUsbSerial.startsWith(F("xsave"))) {
         EEPROM.put(0, conf);
-        resetMe();
-      */ 
+        resetMe(); 
       } else if (strUsbSerial.startsWith(F("xget_ge"))) {
         getGeneral();
       } else if (strUsbSerial.startsWith(F("xget_ch"))) {
@@ -282,15 +277,6 @@ void getChannels() {
     usbSerial.println(conf.an_u08[i]);
     usbSerial.flush();    
   }
-  for (uint8_t i = 0; i < sizeof(conf.an_u16); i++) {
-    usbSerial.print(F("xan_u16"));
-    usbSerial.flush();
-    str = '0' + i;
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
-    usbSerial.println(conf.an_u16[i]);
-    usbSerial.flush();    
-  }
   for (uint8_t i = 0; i < sizeof(conf.an_f32); i++) {
     usbSerial.print(F("xan_f32"));
     usbSerial.flush();
@@ -308,16 +294,7 @@ void getChannels() {
     usbSerial.flush();
     usbSerial.println(conf.dg_u08[i]);
     usbSerial.flush();    
-  }
-  for (uint8_t i = 0; i < sizeof(conf.dg_u16); i++) {
-    usbSerial.print(F("xdg_u16"));
-    usbSerial.flush();
-    str = '0' + i;
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
-    usbSerial.println(conf.dg_u16[i]);
-    usbSerial.flush();    
-  }    
+  }  
 }
 void fetchChannels() { 
   String str;

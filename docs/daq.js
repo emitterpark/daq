@@ -79,7 +79,7 @@
       statusDisp.textContent = str;
       const encoder = new TextEncoder();
       const view = encoder.encode(str);      
-      port.send(view);           
+      //port.send(view);           
     });
 
     lorawanBackBtn.addEventListener('click', function() {
@@ -124,7 +124,7 @@
       statusDisp.textContent = str;
       const encoder = new TextEncoder();
       const view = encoder.encode(str);      
-      port.send(view);            
+      //port.send(view);            
     });
 
     generalBackBtn.addEventListener('click', function() {
@@ -169,7 +169,7 @@
       statusDisp.textContent = str;
       const encoder = new TextEncoder();
       const view = encoder.encode(str);      
-      port.send(view);      
+      //port.send(view);      
     });
 
     channelsFetchBtn.addEventListener('click', function() {
@@ -203,8 +203,7 @@
         statusDisp.textContent = 'validaion ok';
         item = atModemForm.querySelector('#at-command');
         const encoder = new TextEncoder();
-        const view = encoder.encode(item.value + '\r\n'); 
-        //const view = encoder.encode('at+version\r\n');       
+        const view = encoder.encode(item.value + '\r\n');                
         port.send(view);
       }                 
     });
@@ -214,8 +213,7 @@
       formDiv.hidden = true;                      
     });
     
-    function create() {
-      // statusDisp.textContent = '';      
+    function create() {           
       let clon;
       let btns;
       let divs;
@@ -261,7 +259,7 @@
         items = formDiv.querySelectorAll('#x' + datas[i]);        
         for (let j = 0; j < items.length; j++) {
           items[j].id += ('0' + j).slice(-2);
-          statusDisp.textContent += items[j].id + '\r\n';
+          //statusDisp.textContent += items[j].id + '\r\n';
         }        
       }
     }
@@ -275,10 +273,9 @@
         connectBtn.textContent = 'Disconnect';
         port.onReceive = data => {
           let textDecoder = new TextDecoder();
-          console.log(textDecoder.decode(data));
-          
+          //console.log(textDecoder.decode(data));          
           atModemText.value += textDecoder.decode(data);
-          //statusDisp.textContent += textDecoder.decode(data);
+          
 
           /*
           // here readline parser, and trim
@@ -318,7 +315,7 @@
           */
         }
         port.onReceiveError = error => {
-          console.error(error);
+          //console.error(error);
         };
       }, error => {
          statusDisp.textContent = error;
