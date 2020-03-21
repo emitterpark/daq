@@ -57,14 +57,16 @@
     lorawanGetBtn.addEventListener('click', function() {
       if (!port) {
         return;
-      }      
-      //port.send('at+get_config=lora:status' + '\r\n');                 
+      }
+      const encoder = new TextEncoder();
+      const view = encoder.encode('at+get_config=lora:status\r\n');      
+      port.send(view);                 
     });
 
     lorawanSaveBtn.addEventListener('click', function() {
-      //if (!port) {
-      //  return;
-      //}
+      if (!port) {
+        return;
+      }
       let str = '';               
       if (lorawanForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
@@ -74,7 +76,9 @@
         }                                         
       }                 
       statusDisp.textContent = str;
-      //port.send(str);           
+      const encoder = new TextEncoder();
+      const view = encoder.encode(str);      
+      port.send(view);           
     });
 
     lorawanBackBtn.addEventListener('click', function() {
@@ -92,16 +96,18 @@
     });
 
     generalGetBtn.addEventListener('click', function() {
-      //if (!port) {
-      //  return;
-      //}      
-      //port.send('xget_ge');      
+      if (!port) {
+        return;
+      }
+      const encoder = new TextEncoder();
+      const view = encoder.encode('xget_ge\r\n');      
+      port.send(view);            
     });
 
     generalSaveBtn.addEventListener('click', function() {
-      //if (!port) {
-      //  return;
-      //}
+      if (!port) {
+        return;
+      }
       let str = '';          
       if (generalForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
@@ -112,10 +118,12 @@
             // str += items[i].id + Number(items[i].value) + '\r\n';                        
           }                                 
         }
-        str += 'xsave' + '\r\n';                                 
+        str += 'xsave\r\n';                                 
       }            
       statusDisp.textContent = str;
-      //port.send(str);      
+      const encoder = new TextEncoder();
+      const view = encoder.encode(str);      
+      port.send(view);            
     });
 
     generalBackBtn.addEventListener('click', function() {
@@ -133,16 +141,18 @@
     });
 
     channelsGetBtn.addEventListener('click', function() {
-      //if (!port) {
-      //  return;
-      //}      
-      //port.send('xget_ch');      
+      if (!port) {
+        return;
+      }
+      const encoder = new TextEncoder();
+      const view = encoder.encode('xget_ch\r\n');      
+      port.send(view);            
     });
 
     channelsSaveBtn.addEventListener('click', function() {
-      //if (!port) {
-      //  return;
-      //}
+      if (!port) {
+        return;
+      }
       let str = '';          
       if (channelsForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
@@ -156,14 +166,18 @@
         str += 'xsave' + '\r\n';                                 
       }            
       statusDisp.textContent = str;
-      //port.send(str);      
+      const encoder = new TextEncoder();
+      const view = encoder.encode(str);      
+      port.send(view);      
     });
 
     channelsFetchBtn.addEventListener('click', function() {
-      //if (!port) {
-      //  return;
-      //}      
-      //port.send('xfetch');      
+      if (!port) {
+        return;
+      }
+      const encoder = new TextEncoder();
+      const view = encoder.encode('xfetch\r\n');      
+      port.send(view);            
     });
 
     channelsBackBtn.addEventListener('click', function() {
@@ -187,16 +201,9 @@
       if (lorawanForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
         //item = atModemForm.querySelector('#at-command');
-        // port.send(item.value + '\r\n');
-        
-        //let view = new Uint8Array(3);
-        //view[0] = 66;
-        //view[1] = 67;
-        //view[2] = 68;
-        //port.send(view);
+        // port.send(item.value + '\r\n');        
         const encoder = new TextEncoder();
-        const view = encoder.encode('at+version\r\n');
-        
+        const view = encoder.encode('at+version\r\n');        
         port.send(view);
       }                 
     });
@@ -207,8 +214,7 @@
     });
     
     function create() {
-      // statusDisp.textContent = '';
-      //atModemText.value = 'response';
+      // statusDisp.textContent = '';      
       let clon;
       let btns;
       let divs;
