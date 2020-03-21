@@ -195,7 +195,7 @@
         //view[2] = 68;
         //port.send(view);
         const encoder = new TextEncoder();
-        const view = encoder.encode('at+version' + '\r\n');
+        const view = encoder.encode('at+version\r\n');
         
         port.send(view);
       }                 
