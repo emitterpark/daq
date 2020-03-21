@@ -195,7 +195,7 @@
         //view[2] = 68;
         //port.send(view);
         const encoder = new TextEncoder();
-        const view = encoder.encode('hellothere' + '\r\n' + 'hellohey' + '\r\n');
+        const view = encoder.encode('hellothere' + '\r\n' + 'hellothere' + '\r\n' + 'hellothere' + '\r\n');
         
         port.send(view);
       }                 
@@ -260,7 +260,7 @@
     }
     create();
     let atModemText = document.querySelector('#at-response');
-    atModemText.value = 'hello' + '\r\n' + 'world' + '\r\n';
+    atModemText.value = '';
 
     function connect() {
       port.connect().then(() => {
@@ -270,7 +270,7 @@
           let textDecoder = new TextDecoder();
           console.log(textDecoder.decode(data));
           
-          atModemText.value
+          atModemText.value += textDecoder.decode(data);
           //statusDisp.textContent += textDecoder.decode(data);
 
           /*
