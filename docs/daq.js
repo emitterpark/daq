@@ -186,7 +186,7 @@
       }                    
       if (lorawanForm.checkValidity()) {
         statusDisp.textContent = 'validaion ok';
-        item = atModemForm.querySelector('#at-command');
+        //item = atModemForm.querySelector('#at-command');
         // port.send(item.value + '\r\n');
         
         //let view = new Uint8Array(3);
@@ -195,7 +195,7 @@
         //view[2] = 68;
         //port.send(view);
         const encoder = new TextEncoder();
-        const view = encoder.encode(item.value + '\r\n');
+        const view = encoder.encode('at+version' + '\r\n');
         
         port.send(view);
       }                 
