@@ -44,7 +44,7 @@
 
     let numAn = 2, numDg = 2;
     let item;
-    let items;
+    let items;    
     
     lorawanBtn.addEventListener('click', function() {
       buttonDiv.hidden = true;
@@ -115,8 +115,7 @@
         items = generalForm.querySelectorAll('input,select');               
         for (let i = 0; i < items.length; i++) {          
           if (items[i].id[0] == 'x') { 
-            str += items[i].id + items[i].value + '\r\n';           
-            // str += items[i].id + Number(items[i].value) + '\r\n';                        
+            str += items[i].id + items[i].value + '\r\n';                                     
           }                                 
         }
         str += 'xsave\r\n';                                 
@@ -160,8 +159,7 @@
         items = channelsForm.querySelectorAll('input,select');
         for (let i = 0; i < items.length; i++) {          
           if (items[i].id[0] == 'x') {             
-            str += items[i].id + items[i].value + '\r\n';           
-            // str += items[i].id + Number(items[i].value) + '\r\n';                        
+            str += items[i].id + items[i].value + '\r\n';                                  
           }                                 
         }
         str += 'xsave' + '\r\n';                                 
@@ -270,49 +268,44 @@
     function connect() {
       port.connect().then(() => {
         statusDisp.textContent = 'connected';
-        connectBtn.textContent = 'Disconnect';
+        connectBtn.textContent = 'DISCONNECT';
         port.onReceive = data => {
           let textDecoder = new TextDecoder();
-          //console.log(textDecoder.decode(data));          
-          atModemText.value += textDecoder.decode(data);
+          let dataline = textDecoder.decode(data);
+          atModemText.value += dataline;
+          dataline = dataline.trim();
           
-
-          /*
-          // here readline parser, and trim
-          let dataline;
-          atModemText.textContent += dataline + '\r\n';         
-
-          
-          let value;          
-          let split;
-          let n = Number(dataline.slice(7, 9));
-          let btns = channelsForm.querySelectorAll('button');
-          if (dataline.startsWith('xan_val')) {            
-            value = dataline.slice(9);
-            split = btns[n].textContent.split('Value: ');
+          if (dataline.startsWith('xan_val')) {
+            let btns = channelsForm.querySelectorAll('button');
+            let n = Number(dataline.slice(7, 9));            
+            let value = dataline.slice(9);
+            let split = btns[n].textContent.split('Value: ');
             btns[n].textContent = btns[n].textContent.replace(split[1], value);
-          } else if (dataline.startsWith('xdg_val')) {            
-            value = dataline.slice(9);
-            split = btns[n + numAn].textContent.split('Value: ');
+          } else if (dataline.startsWith('xdg_val')) {
+            let btns = channelsForm.querySelectorAll('button'); 
+            let n = Number(dataline.slice(7, 9));           
+            let value = dataline.slice(9);
+            let split = btns[n + numAn].textContent.split('Value: ');
             btns[n + numAn].textContent = btns[n + numAn].textContent.replace(split[1], value);                   
-          } else {
-            if (dataline.startsWith('DevEui: ')) {
-              item = loraForm.querySelector('#dev-eui');
-              value = dataline.slice(8);                        
-            } else if (dataline.startsWith('AppEui: ')) {
-              item = loraForm.querySelector('#app-eui');
-              value = dataline.slice(8);            
-            } else if (dataline.startsWith('AppKey: ')) {
-              item = loraForm.querySelector('#app-key');
-              value = dataline.slice(8);            
-            } else if (dataline.startsWith('x')) {
-              item = mainForm.querySelector('#' + dataline.slice(0, 9));
-              value = dataline.slice(9);            
-            }            
-            item.value = value;  
-                      
-          }
-          */
+          } else if (dataline.startsWith('DevEui: ')) {
+            item = lorawanForm.querySelector('#dev_eui');
+            let value = dataline.slice(8);               
+            item.value = value;                        
+          } else if (dataline.startsWith('AppEui: ')) {
+            item = lorawanForm.querySelector('#app_eui');
+            let value = dataline.slice(8);               
+            item.value = value;            
+          } else if (dataline.startsWith('AppKey: ')) {
+            item = lorawanForm.querySelector('#app_key');
+            let value = dataline.slice(8);               
+            item.value = value;           
+          } else if (dataline.startsWith('x')) {
+            let split = dataline.split('_');
+            item = formDiv.querySelector('#' + split[0] + '_' + split[1].slice(0, 5));
+            let value = split[1].slice(5);
+            item.value = value;          
+          } 
+                                              
         }
         port.onReceiveError = error => {
           //console.error(error);
@@ -324,7 +317,7 @@
     connectBtn.addEventListener('click', function() {
       if (port) {
         port.disconnect();
-        connectBtn.textContent = 'Connect';
+        connectBtn.textContent = 'CONNECT';
         statusDisp.textContent = '';
         port = null;
       } else {

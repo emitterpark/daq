@@ -263,11 +263,9 @@ void readUsbSerial() {
 void getGeneral() {
   String str; 
   for (uint8_t i = 0; i < sizeof(conf.ge_u08); i++) {    
-    usbSerial.print(F("xge_u08"));
-    usbSerial.flush();
+    usbSerial.print(F("xge_u08"));    
     str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
+    usbSerial.print(str.substring(str.length() - 2));    
     usbSerial.println(conf.ge_u08[i]);
     usbSerial.flush();    
   }  
@@ -275,47 +273,37 @@ void getGeneral() {
 void getChannels() { 
   String str;  
   for (uint8_t i = 0; i < (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])); i++) {
-    usbSerial.print(F("xan_u08"));
-    usbSerial.flush();
+    usbSerial.print(F("xan_u08"));    
     str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
+    usbSerial.print(str.substring(str.length() - 2));    
     usbSerial.println(conf.an_u08[i]);
     usbSerial.flush();    
   }
   for (uint8_t i = 0; i < (sizeof(conf.an_u16) / sizeof(conf.an_u16[0])); i++) {
-    usbSerial.print(F("xan_u16"));
-    usbSerial.flush();
+    usbSerial.print(F("xan_u16"));    
     str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
+    usbSerial.print(str.substring(str.length() - 2));    
     usbSerial.println(conf.an_u16[i]);
     usbSerial.flush();    
   }
   for (uint8_t i = 0; i < (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])); i++) {
-    usbSerial.print(F("xan_f32"));
-    usbSerial.flush();
+    usbSerial.print(F("xan_f32"));    
     str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
+    usbSerial.print(str.substring(str.length() - 2));    
     usbSerial.println(conf.an_f32[i], floatToPrint); 
     usbSerial.flush();   
   }
   for (uint8_t i = 0; i < (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])); i++) {
-    usbSerial.print(F("xdg_u08"));
-    usbSerial.flush();
+    usbSerial.print(F("xdg_u08"));    
     str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
+    usbSerial.print(str.substring(str.length() - 2));    
     usbSerial.println(conf.dg_u08[i]);
     usbSerial.flush();    
   }
   for (uint8_t i = 0; i < (sizeof(conf.dg_u16) / sizeof(conf.dg_u16[0])); i++) {
-    usbSerial.print(F("xdg_u16"));
-    usbSerial.flush();
+    usbSerial.print(F("xdg_u16"));    
     str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
+    usbSerial.print(str.substring(str.length() - 2));    
     usbSerial.println(conf.dg_u16[i]);
     usbSerial.flush();    
   }    
@@ -323,20 +311,16 @@ void getChannels() {
 void fetchChannels() { 
   String str;
   for (uint8_t i = 0; i < numAn; i++) {
-    usbSerial.print(F("xan_val"));
-    usbSerial.flush();
+    usbSerial.print(F("xan_val"));    
     str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
+    usbSerial.print(str.substring(str.length() - 2));    
     usbSerial.println(an[i], floatToPrint);
     usbSerial.flush();    
   }
   for (uint8_t i = 0; i < numDg; i++) {
-    usbSerial.print(F("xdg_val"));
-    usbSerial.flush();
+    usbSerial.print(F("xdg_val"));    
     str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));
-    usbSerial.flush();
+    usbSerial.print(str.substring(str.length() - 2));    
     usbSerial.println(dg[i]);
     usbSerial.flush();    
   }  
