@@ -123,7 +123,7 @@
       statusDisp.textContent = str;
       const encoder = new TextEncoder();
       const view = encoder.encode(str);      
-      //port.send(view);            
+      port.send(view);            
     });
 
     generalBackBtn.addEventListener('click', function() {
@@ -167,7 +167,7 @@
       statusDisp.textContent = str;
       const encoder = new TextEncoder();
       const view = encoder.encode(str);      
-      //port.send(view);      
+      port.send(view);      
     });
 
     channelsFetchBtn.addEventListener('click', function() {
@@ -256,8 +256,7 @@
       for (let i = 0; i < datas.length; i++) {        
         items = formDiv.querySelectorAll('#x' + datas[i]);        
         for (let j = 0; j < items.length; j++) {
-          items[j].id += ('0' + j).slice(-2);
-          //statusDisp.textContent += items[j].id + '\r\n';
+          items[j].id += ('0' + j).slice(-2);          
         }        
       }
     }
@@ -273,8 +272,7 @@
           let textDecoder = new TextDecoder();
           let dataline = textDecoder.decode(data);
           atModemText.value += dataline;
-          dataline = dataline.trim();
-          
+          dataline = dataline.trim();          
           if (dataline.startsWith('xan_val')) {
             let btns = channelsForm.querySelectorAll('button');
             let split = dataline.split('_');
@@ -306,8 +304,7 @@
             item = formDiv.querySelector('#' + split[0] + '_' + split[1].slice(0, 5));
             let value = split[1].slice(5);
             item.value = value;          
-          } 
-                                              
+          }                                              
         }
         port.onReceiveError = error => {
           //console.error(error);

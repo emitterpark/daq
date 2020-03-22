@@ -422,7 +422,7 @@ unsigned long tmrRandom() {
 }
 void resetMe() {
   //wdt_enable(WDTO_15MS);
-  while(true); 
+  //while(true); 
 }
 /*
 String lppGetBuffer() {
