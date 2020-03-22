@@ -277,16 +277,18 @@
           
           if (dataline.startsWith('xan_val')) {
             let btns = channelsForm.querySelectorAll('button');
-            let n = Number(dataline.slice(7, 9));            
-            let value = dataline.slice(9);
-            let split = btns[n].textContent.split('Value: ');
+            let split = dataline.split('_');
+            let n = Number(split[1].slice(3, 5));                        
+            let value = split[1].slice(5);
+            split = btns[n].textContent.split('Value: ');
             btns[n].textContent = btns[n].textContent.replace(split[1], value);
           } else if (dataline.startsWith('xdg_val')) {
-            let btns = channelsForm.querySelectorAll('button'); 
-            let n = Number(dataline.slice(7, 9));           
-            let value = dataline.slice(9);
-            let split = btns[n + numAn].textContent.split('Value: ');
-            btns[n + numAn].textContent = btns[n + numAn].textContent.replace(split[1], value);                   
+            let btns = channelsForm.querySelectorAll('button');
+            let split = dataline.split('_');
+            let n = Number(split[1].slice(3, 5));                        
+            let value = split[1].slice(5);
+            split = btns[n + numAn].textContent.split('Value: ');
+            btns[n + numAn].textContent = btns[n + numAn].textContent.replace(split[1], value);                  
           } else if (dataline.startsWith('DevEui: ')) {
             item = lorawanForm.querySelector('#dev_eui');
             let value = dataline.slice(8);               

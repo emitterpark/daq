@@ -207,7 +207,6 @@ void readLoraSerial() {
     strLoraSerial += chr;
     if (chr == '\n') {
       strLoraSerial.trim();
-      /*
       if (strLoraSerial.endsWith(F("Join Success"))) {        
         // delay
         loraSerial.print(F("at+set_config=lora:dr:")); 
@@ -219,7 +218,6 @@ void readLoraSerial() {
       } else if (strLoraSerial.endsWith(F("send success"))) { 
         isLoraBusy = false;        
       } 
-      */     
       usbSerial.println(strLoraSerial); 
       usbSerial.flush();     
       strLoraSerial = "";
@@ -234,21 +232,25 @@ void readUsbSerial() {
     if (chr == '\n') {
       strUsbSerial.trim();
       const uint8_t num = strUsbSerial.substring(7,9).toInt();
-      const int16_t valInt = strUsbSerial.substring(9).toInt();
+      const uint16_t valInt = strUsbSerial.substring(9).toInt();
       const float valFloat = strUsbSerial.substring(9).toFloat();       
       if (strUsbSerial.startsWith(F("at"))) {
-        loraSerial.println(strUsbSerial);
-      /*
+        loraSerial.println(strUsbSerial);      
       } else if (strUsbSerial.startsWith(F("xge_u08"))) {
         conf.ge_u08[num] = (uint8_t)valInt;
       } else if (strUsbSerial.startsWith(F("xan_u08"))) {
         conf.an_u08[num] = (uint8_t)valInt;
+      } else if (strUsbSerial.startsWith(F("xan_u16"))) {
+        conf.an_u16[num] = (uint16_t)valInt;
       } else if (strUsbSerial.startsWith(F("xan_f32"))) {
         conf.an_f32[num] = valFloat;
+      } else if (strUsbSerial.startsWith(F("xdg_u08"))) {
+        conf.dg_u08[num] = (uint8_t)valInt;
+      } else if (strUsbSerial.startsWith(F("xdg_u16"))) {
+        conf.dg_u16[num] = (uint16_t)valInt;
       } else if (strUsbSerial.startsWith(F("xsave"))) {
         EEPROM.put(0, conf);
-        resetMe();
-      */ 
+        resetMe();      
       } else if (strUsbSerial.startsWith(F("xget_ge"))) {
         getGeneral();
       } else if (strUsbSerial.startsWith(F("xget_ch"))) {
