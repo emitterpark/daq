@@ -70,13 +70,11 @@
       }
       let str = '';               
       if (lorawanForm.checkValidity()) {
-        statusDisp.textContent = 'validaion ok';
         items = lorawanForm.querySelectorAll('input,select');                
         for (let i = 0; i < items.length; i++) {          
           str += 'at+set_config=lora:' + items[i].id + ':' + items[i].value + '\r\n';                                           
         }                                         
       }                 
-      statusDisp.textContent = str;
       const encoder = new TextEncoder();
       const view = encoder.encode(str);      
       //port.send(view);           
@@ -111,7 +109,6 @@
       }
       let str = '';          
       if (generalForm.checkValidity()) {
-        statusDisp.textContent = 'validaion ok';
         items = generalForm.querySelectorAll('input,select');               
         for (let i = 0; i < items.length; i++) {          
           if (items[i].id[0] == 'x') { 
@@ -120,7 +117,6 @@
         }
         str += 'xsave\r\n';                                 
       }            
-      statusDisp.textContent = str;
       const encoder = new TextEncoder();
       const view = encoder.encode(str);      
       port.send(view);            
@@ -155,7 +151,6 @@
       }
       let str = '';          
       if (channelsForm.checkValidity()) {
-        statusDisp.textContent = 'validaion ok';
         items = channelsForm.querySelectorAll('input,select');
         for (let i = 0; i < items.length; i++) {          
           if (items[i].id[0] == 'x') {             
@@ -164,7 +159,6 @@
         }
         str += 'xsave' + '\r\n';                                 
       }            
-      statusDisp.textContent = str;
       const encoder = new TextEncoder();
       const view = encoder.encode(str);      
       port.send(view);      
@@ -198,7 +192,6 @@
         return;
       }                    
       if (lorawanForm.checkValidity()) {
-        statusDisp.textContent = 'validaion ok';
         item = atModemForm.querySelector('#at-command');
         const encoder = new TextEncoder();
         const view = encoder.encode(item.value + '\r\n');                
@@ -266,7 +259,7 @@
 
     function connect() {
       port.connect().then(() => {
-        statusDisp.textContent = 'connected';
+        statusDisp.textContent = 'Connected.';
         connectBtn.textContent = 'DISCONNECT';
         port.onReceive = data => {
           let textDecoder = new TextDecoder();
@@ -340,19 +333,3 @@
     
   });
 })();
-
-/*    
-serialport.parsers.readline('\n');
-parser: SerialPort.parsers.readline('\r')
-var serialPort = new SerialPort('/dev/ttyACM0", {
-  autoOpen: false,
-  parser: SerialPort.parsers.readline('\n'),
-  baudrate:115200
-}); 
-
-var myPort = new serialport(portName, {
-  baudRate: 9600,
-  parser: new serialport.parsers.Readline('\r\n')
-});
-*/
-

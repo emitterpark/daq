@@ -86,11 +86,11 @@ WebUSB WebUSBSerial(1 /* https:// */, "127.0.0.1:5500");
 
 void setup() {
   //wdt_enable(WDTO_8S);  
-  setPin();   
+  setPin();
   loadConf();    
-  setAnalog();
-  setUsbSerial();    
-  setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);
+  //setAnalog();    
+  setUsbSerial();
+  setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);   
   //t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
   //t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);
   //ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
@@ -207,17 +207,36 @@ void readLoraSerial() {
     strLoraSerial += chr;
     if (chr == '\n') {
       strLoraSerial.trim();
+      
       if (strLoraSerial.endsWith(F("Join Success"))) {        
         // delay
+
+        isLoraJoin = true; 
+        //t.stop(ledOscForever);
+        digitalWrite(LED_PIN, LOW);
+        delay(100);
+        digitalWrite(LED_PIN, HIGH);
+        delay(100);
+        digitalWrite(LED_PIN, LOW);
+        delay(100);
+        digitalWrite(LED_PIN, HIGH);
+        delay(100);
+        digitalWrite(LED_PIN, LOW);
+        delay(100);
+        digitalWrite(LED_PIN, HIGH);
+        delay(100);
+     /*   
         loraSerial.print(F("at+set_config=lora:dr:")); 
         loraSerial.println(conf.ge_u08[ge_u08_lora_dr]);
       } else if (strLoraSerial.endsWith("DR" + String(conf.ge_u08[ge_u08_lora_dr]) +" success")) { 
         isLoraJoin = true; 
         t.stop(ledOscForever);
-        digitalWrite(LED_PIN, LOW);       
+        digitalWrite(LED_PIN, LOW);  
+      */     
       } else if (strLoraSerial.endsWith(F("send success"))) { 
         isLoraBusy = false;        
       } 
+      
       usbSerial.println(strLoraSerial); 
       usbSerial.flush();     
       strLoraSerial = "";
@@ -351,16 +370,19 @@ void setAnalog() {
   } 
 }
 void setLoraSerial() {
-  loraSerial.begin(115200);
+  loraSerial.begin(115200);  
   delay(100);
-  digitalWrite(LORA_RES_PIN, HIGH);
+  digitalWrite(LORA_RES_PIN, HIGH);  
 }
-void setUsbSerial() {        
-  while (!usbSerial) {
-    //wdt_reset();
-  }
+void setUsbSerial() {
+  if (USBSTA >> VBUS & 1) {          
+    while (!usbSerial) {
+      //wdt_reset();
+    }
+  }  
   usbSerial.begin(9600);
-  usbSerial.flush();   
+  //Serial.write("Sketch begins.\r\n");
+  usbSerial.flush();    
 }   
 void report() {
   //wdt_reset();    
@@ -413,7 +435,7 @@ void report() {
     //loraSerial.println(lppGetBuffer());
     loraSerial.println((char*)(lpp.getBuffer()));
     t.oscillate(LED_PIN, 100, HIGH, 5);
-    // digitalWrite(LED_PIN, LOW);
+    digitalWrite(LED_PIN, LOW);
   }     
 }
 unsigned long tmrRandom() {
