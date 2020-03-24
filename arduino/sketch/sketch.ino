@@ -100,7 +100,7 @@ void loop() {
   readLoraSerial();
   readUsbSerial();
   //wdt_reset();
-  t.update();
+  //t.update();
 }
 void readAnalog() {
   // wire.end();    
@@ -370,9 +370,15 @@ void setAnalog() {
   } 
 }
 void setLoraSerial() {
-  loraSerial.begin(115200);  
+  while (!loraSerial) {
+    //wdt_reset();
+  }
+  loraSerial.begin(115200);    
   delay(100);
   digitalWrite(LORA_RES_PIN, HIGH);  
+  delay(1000);
+  loraSerial.println("at+version");
+  loraSerial.flush();  
 }
 void setUsbSerial() {
   if (USBSTA >> VBUS & 1) {          
@@ -381,7 +387,7 @@ void setUsbSerial() {
     }
   }  
   usbSerial.begin(9600);
-  //Serial.write("Sketch begins.\r\n");
+  //usbSerial.write("Sketch begins.\r\n");
   usbSerial.flush();    
 }   
 void report() {
