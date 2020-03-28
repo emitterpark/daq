@@ -95,18 +95,17 @@ void setup() {
   setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);   
   ////t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
   //t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);
-  //ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
+  ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
 void loop() {
-  //readAnalog();
+  readAnalog();
   readDigital();  
-  //readLoraSerial();
-  //readUsbSerial();
+  readLoraSerial();
+  readUsbSerial();
   //wdt_reset();
   t.update();
 }
-void readAnalog() {
-  // wire.end();    
+void readAnalog() {      
   for (uint8_t ch = 0; ch < numAn; ch++) {
     const uint8_t _enable = an_u08_enable + ch * (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])) / numAn; 
     if (conf.an_u08[_enable]) {   
@@ -126,8 +125,8 @@ void readAnalog() {
         an[ch] *= (1 + conf.an_f32[_calibrate]);
         usbSerial.println(an[ch], 8);
         usbSerial.flush();            
-        //an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
-        //isAnalogReport(ch);
+        an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
+        isAnalogReport(ch);
       }      
     }                    
   }    
@@ -141,33 +140,42 @@ void isAnalogReport(const uint8_t ch) {
   const uint8_t _duration = an_u16_duration + ch * (sizeof(conf.an_u16) / sizeof(conf.an_u16[0])) / numAn;    
   if (an[ch] > conf.an_f32[_low] && an[ch] < conf.an_f32[_high]) {    
     if (an_prev[ch] != MID) {
-      an_prev[ch] = MID;      
-      if (anDuration[ch]) {
+      an_prev[ch] = MID;                 
+      if (anDuration[ch] == 0) {
         t.stop(anDuration[ch]);
-      } else if (conf.an_u08[_mid_report]) {
-        // t.stop(anDuration[ch]);
-        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);          
-      }         
+        anDuration[ch] = -1;
+        return;
+      }        
+      if (conf.an_u08[_mid_report]) {        
+        t.stop(anDuration[ch]);
+        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);                          
+      }            
     }                  
   } else if (an[ch] <= conf.an_f32[_low]) {    
     if (an_prev[ch] != LOW) {
-      an_prev[ch] = LOW;
-      if (anDuration[ch]) {
+      an_prev[ch] = LOW;                      
+      if (anDuration[ch] == 0) {
         t.stop(anDuration[ch]);
-      } else if (conf.an_u08[_low_report]) {
-        // t.stop(anDuration[ch]);
-        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);          
-      }                  
+        anDuration[ch] = -1;
+        return; 
+      } 
+      if (conf.an_u08[_low_report]) {        
+        t.stop(anDuration[ch]);
+        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);                        
+      }                       
     }                  
   } else if (an[ch] >= conf.an_f32[_high]) {     
     if (an_prev[ch] != HIGH) {
-      an_prev[ch] = HIGH;
-      if (anDuration[ch]) {
+      an_prev[ch] = HIGH;                 
+      if (anDuration[ch] == 0) {
         t.stop(anDuration[ch]);
-      } else if (conf.an_u08[_high_report]) {
-        // t.stop(anDuration[ch]);
-        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);          
-      }                   
+        anDuration[ch] = -1;
+        return;
+      }        
+      if (conf.an_u08[_high_report]) {        
+        t.stop(anDuration[ch]);
+        anDuration[ch] = t.after(conf.an_u16[_duration] * 1000L, report);                          
+      }                       
     }    
   }  
 }
@@ -175,13 +183,13 @@ void readDigital() {
   for (uint8_t ch = 0; ch < numDg; ch++) {  
     const uint8_t _enable = dg_u08_enable + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
     if (conf.dg_u08[_enable]) { 
-      dg[ch] = digitalRead(DIG_PIN[ch]);
+      dg[ch] = !digitalRead(DIG_PIN[ch]);
       const uint8_t _debounce = dg_u08_debounce + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
       delay(conf.dg_u08[_debounce]); 
-      if (dg[ch] == digitalRead(DIG_PIN[ch])) {
+      if (dg[ch] == !digitalRead(DIG_PIN[ch])) {
         isDigitalReport(ch);
       } else {
-        dg[ch] = digitalRead(DIG_PIN[ch]);           
+        dg[ch] = !digitalRead(DIG_PIN[ch]);           
       }                
     }    
   }
@@ -192,9 +200,7 @@ void isDigitalReport(const uint8_t ch) {
   const uint8_t _duration = dg_u16_duration + ch * (sizeof(conf.dg_u16) / sizeof(conf.dg_u16[0])) / numDg;       
   if (dg[ch] != dg_prev[ch]) {
     if (dg[ch] == LOW) {
-      dg_prev[ch] = LOW; 
-      usbSerial.println("low"); 
-      usbSerial.flush();                
+      dg_prev[ch] = LOW;                      
       if (dgDuration[ch] == 0) {
         t.stop(dgDuration[ch]);
         dgDuration[ch] = -1;
@@ -202,12 +208,10 @@ void isDigitalReport(const uint8_t ch) {
       } 
       if (conf.dg_u08[_low_report]) {        
         t.stop(dgDuration[ch]);
-        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 3 * 1000L, report);                        
+        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);                        
       }          
     } else if (dg[ch] == HIGH) { 
-      dg_prev[ch] = HIGH;
-      usbSerial.println("high"); 
-      usbSerial.flush();           
+      dg_prev[ch] = HIGH;                 
       if (dgDuration[ch] == 0) {
         t.stop(dgDuration[ch]);
         dgDuration[ch] = -1;
@@ -215,7 +219,7 @@ void isDigitalReport(const uint8_t ch) {
       }        
       if (conf.dg_u08[_high_report]) {        
         t.stop(dgDuration[ch]);
-        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 3 * 1000L, report);                          
+        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);                          
       }       
     }
   }         
@@ -232,7 +236,9 @@ void readLoraSerial() {
         // delay
 
         isLoraJoin = true; 
-        //t.stop(ledOscForever);
+        t.stop(ledOscForever);
+        digitalWrite(LED_PIN, LOW);
+        /*
         digitalWrite(LED_PIN, LOW);
         delay(100);
         digitalWrite(LED_PIN, HIGH);
@@ -245,9 +251,11 @@ void readLoraSerial() {
         delay(100);
         digitalWrite(LED_PIN, HIGH);
         delay(100);
+        */
      /*   
         loraSerial.print(F("at+set_config=lora:dr:")); 
         loraSerial.println(conf.ge_u08[ge_u08_lora_dr]);
+        loraSerial.flush();
       } else if (strLoraSerial.endsWith("DR" + String(conf.ge_u08[ge_u08_lora_dr]) +" success")) { 
         isLoraJoin = true; 
         t.stop(ledOscForever);
@@ -406,21 +414,21 @@ void setUsbSerial() {
       //wdt_reset();
     }
   }  
-  usbSerial.begin(9600);
-  //usbSerial.write("Sketch begins.\r\n");
+  usbSerial.begin(9600);  
   usbSerial.flush();    
 }
 void report() {
+  //wdt_reset(); 
+  for (uint8_t ch = 0; ch < numAn; ch++) {
+    t.stop(anDuration[ch]);
+    anDuration[ch] = -1;
+  }
   for (uint8_t ch = 0; ch < numDg; ch++) {
     t.stop(dgDuration[ch]);
     dgDuration[ch] = -1;
   }
   usbSerial.println("alarm");
-  usbSerial.flush();     
-}
-/*
-void report() {
-  //wdt_reset();    
+  usbSerial.flush();    
   if (isLoraJoin && (!isLoraBusy)) {
     isLoraBusy = true;      
     lpp.reset();  
@@ -467,13 +475,15 @@ void report() {
       }
     }    
     loraSerial.print("at+send=lora:" + String(conf.ge_u08[ge_u08_lora_port]) + ':'); 
-    //loraSerial.println(lppGetBuffer());
-    loraSerial.println((char*)(lpp.getBuffer()));
+    loraSerial.println(lppGetBuffer());
+    //loraSerial.println((char*)(lpp.getBuffer()));
+    loraSerial.flush();
+    usbSerial.println("send ok");
+    usbSerial.flush();
     t.oscillate(LED_PIN, 100, HIGH, 5);
     digitalWrite(LED_PIN, LOW);
   }     
 }
-*/
 unsigned long tmrRandom() {
   randomSeed(analogRead(RANDOM_PIN));
   return random(24) * 5000L + 10000L;   // min 10sec, max 2min + 10sec   
@@ -482,7 +492,6 @@ void resetMe() {
   //wdt_enable(WDTO_15MS);
   //while(true); 
 }
-/*
 String lppGetBuffer() {
   String str;
   for(uint8_t ii = 0; ii < lpp.getSize(); ii++){    
@@ -494,11 +503,11 @@ String lppGetBuffer() {
   }
   return str;
 } 
+/*
 char buf[15];
 str.toCharArray(buf, sizeof(buf));
 float f = atof(buf);
 int32_t i = atol(buf);
 // string.toFloat()
 // atol() atof()
-
- */
+*/
