@@ -69,8 +69,8 @@ const uint8_t MID                 = 2;
 uint8_t     an_prev[numAn]        = {MID, MID};
 uint8_t     dg_prev[numDg]        = {LOW, LOW};
 
-int         anDuration[numAn];
-int         dgDuration[numDg];
+int         anDuration[numAn] = {-1, -1};
+int         dgDuration[numDg] = {-1, -1};
 int         ledOscForever;
 
 bool isLoraJoin, isLoraBusy;
@@ -90,7 +90,7 @@ void setup() {
   //wdt_enable(WDTO_8S);  
   setPin();
   loadConf();    
-  //setAnalog();    
+  setAnalog();    
   setUsbSerial();
   setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);   
   ////t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
@@ -99,11 +99,11 @@ void setup() {
 }
 void loop() {
   //readAnalog();
-  //readDigital();  
-  readLoraSerial();
-  readUsbSerial();
+  readDigital();  
+  //readLoraSerial();
+  //readUsbSerial();
   //wdt_reset();
-  //t.update();
+  t.update();
 }
 void readAnalog() {
   // wire.end();    
@@ -123,9 +123,11 @@ void readAnalog() {
         const uint8_t _out_max = an_f32_out_max + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
         const uint8_t _calibrate = an_f32_calibrate + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
         an[ch] /= rshunt;
-        an[ch] *= (1 + conf.an_f32[_calibrate]);            
-        an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
-        isAnalogReport(ch);
+        an[ch] *= (1 + conf.an_f32[_calibrate]);
+        usbSerial.println(an[ch], 8);
+        usbSerial.flush();            
+        //an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
+        //isAnalogReport(ch);
       }      
     }                    
   }    
@@ -170,7 +172,7 @@ void isAnalogReport(const uint8_t ch) {
   }  
 }
 void readDigital() {
-  for (uint8_t ch = 0; ch < numDg; ch++) {
+  for (uint8_t ch = 0; ch < numDg; ch++) {  
     const uint8_t _enable = dg_u08_enable + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
     if (conf.dg_u08[_enable]) { 
       dg[ch] = digitalRead(DIG_PIN[ch]);
@@ -190,21 +192,31 @@ void isDigitalReport(const uint8_t ch) {
   const uint8_t _duration = dg_u16_duration + ch * (sizeof(conf.dg_u16) / sizeof(conf.dg_u16[0])) / numDg;       
   if (dg[ch] != dg_prev[ch]) {
     if (dg[ch] == LOW) {
-      dg_prev[ch] = LOW;      
-      if (dgDuration[ch]) {
+      dg_prev[ch] = LOW; 
+      usbSerial.println("low"); 
+      usbSerial.flush();                
+      if (dgDuration[ch] == 0) {
         t.stop(dgDuration[ch]);
-      } else if (conf.dg_u08[_low_report]) {
-        // t.stop(dgDuration[ch]);
-        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);          
-      }    
+        dgDuration[ch] = -1;
+        return; 
+      } 
+      if (conf.dg_u08[_low_report]) {        
+        t.stop(dgDuration[ch]);
+        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 3 * 1000L, report);                        
+      }          
     } else if (dg[ch] == HIGH) { 
-      dg_prev[ch] = HIGH;      
-      if (dgDuration[ch]) {
+      dg_prev[ch] = HIGH;
+      usbSerial.println("high"); 
+      usbSerial.flush();           
+      if (dgDuration[ch] == 0) {
         t.stop(dgDuration[ch]);
-      } else if (conf.dg_u08[_high_report]) {
-        // t.stop(dgDuration[ch]);
-        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);          
-      }  
+        dgDuration[ch] = -1;
+        return;
+      }        
+      if (conf.dg_u08[_high_report]) {        
+        t.stop(dgDuration[ch]);
+        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 3 * 1000L, report);                          
+      }       
     }
   }         
 }
@@ -371,10 +383,10 @@ void setAnalog() {
   for (uint8_t ch = 0; ch < numAn; ch++) { 
     // wire.end();   
     analog.begin(0x40 + ch);
-    analog.configure(INA226_AVERAGES_128, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT);
+    analog.configure(INA226_AVERAGES_1024, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT);
     analog.calibrate(3.3, 0.020);
     analog.enableConversionReadyAlert(); 
-    // if (analog.isAlert());              
+    if (analog.isAlert());              
   } 
 }
 void setLoraSerial() {
@@ -397,7 +409,16 @@ void setUsbSerial() {
   usbSerial.begin(9600);
   //usbSerial.write("Sketch begins.\r\n");
   usbSerial.flush();    
-}   
+}
+void report() {
+  for (uint8_t ch = 0; ch < numDg; ch++) {
+    t.stop(dgDuration[ch]);
+    dgDuration[ch] = -1;
+  }
+  usbSerial.println("alarm");
+  usbSerial.flush();     
+}
+/*
 void report() {
   //wdt_reset();    
   if (isLoraJoin && (!isLoraBusy)) {
@@ -452,6 +473,7 @@ void report() {
     digitalWrite(LED_PIN, LOW);
   }     
 }
+*/
 unsigned long tmrRandom() {
   randomSeed(analogRead(RANDOM_PIN));
   return random(24) * 5000L + 10000L;   // min 10sec, max 2min + 10sec   
