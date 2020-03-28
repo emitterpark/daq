@@ -121,6 +121,7 @@ void readAnalog() {
         const uint8_t _out_min = an_f32_out_min + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
         const uint8_t _out_max = an_f32_out_max + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
         const uint8_t _calibrate = an_f32_calibrate + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+        an[ch] *= 1000;
         an[ch] /= rshunt;
         an[ch] *= (1 + conf.an_f32[_calibrate]);
         usbSerial.println(an[ch], 8);
