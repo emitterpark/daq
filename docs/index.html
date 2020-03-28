@@ -93,8 +93,6 @@
     </select>  
     <label for="lorawan-port">LoRaWAN Port:</label>
     <input  id="xge_u08" type="number" required class="form-control" value="90" min="1" max="223" step="1" maxlength="3" name="lorawan-port">
-    <label for="poll">Poll Interval (Seconds 1-60):</label>
-    <input id="xge_u08" type="number" required class="form-control" value="10" min="1" max="60" step="1" maxlength="2" name="poll">
     <label for="report">Report Interval (Minutes 5-240):</label>
     <input id="xge_u08" type="number" required class="form-control" value="5" min="5" max="240" step="1" maxlength="3" name="report">     
     <br> 
@@ -140,7 +138,9 @@
     <label for="low">Low:</label>
     <input id="xan_f32" type="number" required class="form-control" value="0.004" step="any" name="low">
     <label for="high">High:</label>
-    <input id="xan_f32" type="number" required class="form-control" value="0.020" step="any" name="high">    
+    <input id="xan_f32" type="number" required class="form-control" value="0.020" step="any" name="high"> 
+    <label for="calibrate">High:</label>
+    <input id="xan_f32" type="number" required class="form-control" value="0" step="any" name="calibrate">   
     <label for="duration">Duration (Seconds 1-3600):</label>
     <input id="xan_u16" type="number" required class="form-control" value="1" min="0" max="3600" step="1" maxlength="4" name="duration">
     <label for="low-report">Report IF Low:</label>

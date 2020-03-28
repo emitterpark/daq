@@ -19,8 +19,7 @@ const uint8_t LED_PIN             = A5;               // PF0/ADC0
 // uint8_t ge_u08[] 
 const uint8_t ge_u08_lora_dr      = 0;  
 const uint8_t ge_u08_lora_port    = 1;  
-const uint8_t ge_u08_poll         = 2;
-const uint8_t ge_u08_report       = 3;
+const uint8_t ge_u08_report       = 2;
 
 // uint8_t an_u08[]
 const uint8_t an_u08_enable       = 0;  
@@ -36,7 +35,9 @@ const uint8_t an_f32_in_max       = 1;
 const uint8_t an_f32_out_min      = 2;  
 const uint8_t an_f32_out_max      = 3;  
 const uint8_t an_f32_low          = 4;  
-const uint8_t an_f32_high         = 5;  
+const uint8_t an_f32_high         = 5;
+const uint8_t an_f32_calibrate    = 6;
+  
 
 // uint8_t dg_u08[]
 const uint8_t dg_u08_enable       = 0;  
@@ -51,10 +52,10 @@ const uint8_t numAn               = 2;
 const uint8_t numDg               = 2;
 
 struct Conf {
-  uint8_t   ge_u08[4];
+  uint8_t   ge_u08[3];
   uint8_t   an_u08[5 * numAn];
   uint16_t  an_u16[numAn];
-  float     an_f32[6 * numAn];
+  float     an_f32[7 * numAn];
   uint8_t   dg_u08[5 * numDg];
   uint16_t  dg_u16[numDg];      
 };
@@ -75,6 +76,7 @@ int         ledOscForever;
 bool isLoraJoin, isLoraBusy;
 String strUsbSerial, strLoraSerial;
 const uint8_t floatToPrint = 6;
+const float rshunt = 3.3;
 
 Timer t;
 CayenneLPP lpp(51);
@@ -91,11 +93,12 @@ void setup() {
   //setAnalog();    
   setUsbSerial();
   setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);   
-  //t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
+  ////t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
   //t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);
   //ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
 void loop() {
+  //readAnalog();
   //readDigital();  
   readLoraSerial();
   readUsbSerial();
@@ -107,18 +110,23 @@ void readAnalog() {
   for (uint8_t ch = 0; ch < numAn; ch++) {
     const uint8_t _enable = an_u08_enable + ch * (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])) / numAn; 
     if (conf.an_u08[_enable]) {   
-      while (AN_ALR_PIN[ch]) {
-        //wdt_reset();
-      }
-      analog.begin(0x40 + ch);
-      an[ch] = analog.readShuntCurrent();
-      if (analog.isAlert());      
-      const uint8_t _in_min = an_f32_in_min + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
-      const uint8_t _in_max = an_f32_in_max + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
-      const uint8_t _out_min = an_f32_out_min + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
-      const uint8_t _out_max = an_f32_out_max + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
-      an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
-      isAnalogReport(ch);      
+      if (!digitalRead(AN_ALR_PIN[ch])) {        
+        analog.begin(0x40 + ch);
+        an[ch] = analog.readShuntVoltage();
+        if (analog.isAlert()); 
+        while (!digitalRead(AN_ALR_PIN[ch])) {
+          //wdt_reset();
+        }       
+        const uint8_t _in_min = an_f32_in_min + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+        const uint8_t _in_max = an_f32_in_max + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+        const uint8_t _out_min = an_f32_out_min + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+        const uint8_t _out_max = an_f32_out_max + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+        const uint8_t _calibrate = an_f32_calibrate + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
+        an[ch] /= rshunt;
+        an[ch] *= (1 + conf.an_f32[_calibrate]);            
+        an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
+        isAnalogReport(ch);
+      }      
     }                    
   }    
 }

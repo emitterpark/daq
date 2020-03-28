@@ -15,6 +15,8 @@ const uint8_t LORA_RES_PIN        = 10;               // PB6/ADC13/PCINT6
 const uint8_t RANDOM_PIN          = A0;               // PF7/ADC7 
 const uint8_t LED_PIN             = A5;               // PF0/ADC0
 
+float rs = 3.3;
+
 INA226 ina;
 
 void checkConfig()
@@ -80,19 +82,19 @@ void checkConfig()
     }
     
     Serial.print("Max possible current:  ");
-    Serial.print(ina.getMaxPossibleCurrent(), 5);
+    Serial.print(ina.getMaxPossibleCurrent(), 8);
     Serial.println(" A");
     
     Serial.print("Max current:           ");
-    Serial.print(ina.getMaxCurrent(), 5);
+    Serial.print(ina.getMaxCurrent(), 8);
     Serial.println(" A");
     
     Serial.print("Max shunt voltage:     ");
-    Serial.print(ina.getMaxShuntVoltage(), 5);
+    Serial.print(ina.getMaxShuntVoltage(), 8);
     Serial.println(" V");
     
     Serial.print("Max power:             ");
-    Serial.print(ina.getMaxPower(), 5);
+    Serial.print(ina.getMaxPower(), 8);
     Serial.println(" W");
 
   }
@@ -102,16 +104,19 @@ void setup()
 {
   setPin();
   Serial.begin(115200);
-  while (!Serial);
+  while (!Serial);  ;
 
   Serial.println("Initialize INA226");
   Serial.println("-----------------------------------------------");
 
   for (uint8_t ch = 0; ch < 2; ch++) {  
     ina.begin(0x40 + ch); 
-    ina.configure(INA226_AVERAGES_128, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT); 
-    //ina.configure(INA226_AVERAGES_1, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_140US, INA226_MODE_SHUNT_CONT);  
+    //ina.configure(INA226_AVERAGES_1024, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT); 
+    ina.configure(INA226_AVERAGES_1024, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT);  
     ina.calibrate(3.3, 0.020);
+    ina.enableConversionReadyAlert(); 
+    //ina.setAlertLatch(true);
+    if (ina.isAlert());         
   }  
 
   // Display configuration
@@ -122,29 +127,39 @@ void setup()
 
 void loop()
 {
-  for (uint8_t ch = 0; ch < 2; ch++) {  
+  for (uint8_t ch = 0; ch < 2; ch++) { 
+    while (digitalRead(AN_ALR_PIN[ch])) {
+        //wdt_reset();
+    } 
     ina.begin(0x40 + ch);
     
     Serial.print("Bus voltage:   ");
-    Serial.print(ina.readBusVoltage(), 5);
+    Serial.print(ina.readBusVoltage(), 8);
     Serial.println(" V");
   
     Serial.print("Bus power:     ");
-    Serial.print(ina.readBusPower(), 5);
+    Serial.print(ina.readBusPower(), 8);
     Serial.println(" W");
   
-  
+    /*
     Serial.print("Shunt voltage: ");
-    Serial.print(ina.readShuntVoltage(), 5);
+    Serial.print(ina.readShuntVoltage(), 8);
     Serial.println(" V");
   
     Serial.print("Shunt current: ");
-    Serial.print(ina.readShuntCurrent(), 5);
+    Serial.print(ina.readShuntCurrent(), 8);
     Serial.println(" A");
+    */
+    // ch1 0.0065658333
+    // ch2 0.0050508333
+    Serial.print("Shunt current: ");
+    Serial.print(ina.readShuntVoltage() * (1 + 0.0050508333) / rs, 8);
+    Serial.println(" A");
+    if (ina.isAlert());
 
   }
   Serial.println("");
-  delay(5000);
+  //delay(10000);
   
 }
 void setPin() {
