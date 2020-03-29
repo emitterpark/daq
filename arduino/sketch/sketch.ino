@@ -16,28 +16,25 @@ const uint8_t LORA_RES_PIN        = 10;               // PB6/ADC13/PCINT6
 const uint8_t RANDOM_PIN          = A0;               // PF7/ADC7 
 const uint8_t LED_PIN             = A5;               // PF0/ADC0
 
-// uint8_t ge_u08[] 
 const uint8_t ge_u08_lora_dr      = 0;  
 const uint8_t ge_u08_lora_port    = 1;  
 const uint8_t ge_u08_report       = 2;
 
-// uint8_t an_u08[]
 const uint8_t an_u08_enable       = 0;  
 const uint8_t an_u08_unit         = 1;
 const uint8_t an_u08_low_report   = 2;
 const uint8_t an_u08_mid_report   = 3;
 const uint8_t an_u08_high_report  = 4; 
-// uint16_t an_u16[]
+
 const uint8_t an_u16_duration     = 0; 
-// float an_f32[]
+
 const uint8_t an_f32_in_min       = 0;  
 const uint8_t an_f32_in_max       = 1;  
 const uint8_t an_f32_out_min      = 2;  
 const uint8_t an_f32_out_max      = 3;  
 const uint8_t an_f32_low          = 4;  
 const uint8_t an_f32_high         = 5;
-const uint8_t an_f32_calibrate    = 6;
-  
+const uint8_t an_f32_calibrate    = 6;  
 
 // uint8_t dg_u08[]
 const uint8_t dg_u08_enable       = 0;  
@@ -73,9 +70,9 @@ int         anDuration[numAn] = {-1, -1};
 int         dgDuration[numDg] = {-1, -1};
 int         ledOscForever;
 
-bool isLoraJoin, isLoraBusy;
+bool isLoraJoin;
 String strUsbSerial, strLoraSerial;
-const uint8_t floatToPrint = 6;
+const uint8_t floatToPrint = 8;
 const float rshunt = 3.3;
 
 Timer t;
@@ -93,8 +90,7 @@ void setup() {
   setAnalog();    
   setUsbSerial();
   setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);   
-  ////t.every(conf.ge_u08[ge_u08_poll] * 1000L, readAnalog);
-  //t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);
+  t.every(conf.ge_u08[ge_u08_report] * 1000L * 60, report);
   ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
 void loop() {
@@ -235,25 +231,10 @@ void readLoraSerial() {
       
       if (strLoraSerial.endsWith(F("Join Success"))) {        
         // delay
-
         isLoraJoin = true; 
         t.stop(ledOscForever);
-        digitalWrite(LED_PIN, LOW);
-        /*
-        digitalWrite(LED_PIN, LOW);
-        delay(100);
-        digitalWrite(LED_PIN, HIGH);
-        delay(100);
-        digitalWrite(LED_PIN, LOW);
-        delay(100);
-        digitalWrite(LED_PIN, HIGH);
-        delay(100);
-        digitalWrite(LED_PIN, LOW);
-        delay(100);
-        digitalWrite(LED_PIN, HIGH);
-        delay(100);
-        */
-     /*   
+        digitalWrite(LED_PIN, LOW);        
+      /*   
         loraSerial.print(F("at+set_config=lora:dr:")); 
         loraSerial.println(conf.ge_u08[ge_u08_lora_dr]);
         loraSerial.flush();
@@ -261,9 +242,7 @@ void readLoraSerial() {
         isLoraJoin = true; 
         t.stop(ledOscForever);
         digitalWrite(LED_PIN, LOW);  
-      */     
-      } else if (strLoraSerial.endsWith(F("send success"))) { 
-        isLoraBusy = false;        
+      */        
       } 
       
       usbSerial.println(strLoraSerial); 
@@ -298,7 +277,7 @@ void readUsbSerial() {
         conf.dg_u16[num] = (uint16_t)valInt;
       } else if (strUsbSerial.startsWith(F("xsave"))) {
         EEPROM.put(0, conf);
-        resetMe();      
+        //resetMe();      
       } else if (strUsbSerial.startsWith(F("xget_ge"))) {
         getGeneral();
       } else if (strUsbSerial.startsWith(F("xget_ch"))) {
@@ -389,11 +368,10 @@ void setPin() {
   digitalWrite(LED_PIN, HIGH);  
 }
 void setAnalog() {
-  for (uint8_t ch = 0; ch < numAn; ch++) { 
-    // wire.end();   
+  for (uint8_t ch = 0; ch < numAn; ch++) {       
     analog.begin(0x40 + ch);
     analog.configure(INA226_AVERAGES_1024, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT);
-    analog.calibrate(3.3, 0.020);
+    //analog.calibrate(3.3, 0.020);
     analog.enableConversionReadyAlert(); 
     if (analog.isAlert());              
   } 
@@ -430,8 +408,7 @@ void report() {
   }
   usbSerial.println("alarm");
   usbSerial.flush();    
-  if (isLoraJoin && (!isLoraBusy)) {
-    isLoraBusy = true;      
+  if (isLoraJoin) {         
     lpp.reset();  
     for (uint8_t ch = 0; ch < numAn; ch++) {
       const uint8_t _unit = conf.an_u08[an_u08_unit + ch * (sizeof(conf.an_u08) / sizeof(conf.an_u08[0])) / numAn];      
@@ -476,8 +453,7 @@ void report() {
       }
     }    
     loraSerial.print("at+send=lora:" + String(conf.ge_u08[ge_u08_lora_port]) + ':'); 
-    loraSerial.println(lppGetBuffer());
-    //loraSerial.println((char*)(lpp.getBuffer()));
+    loraSerial.println(lppGetBuffer());    
     loraSerial.flush();
     usbSerial.println("send ok");
     usbSerial.flush();
@@ -490,8 +466,8 @@ unsigned long tmrRandom() {
   return random(24) * 5000L + 10000L;   // min 10sec, max 2min + 10sec   
 }
 void resetMe() {
-  //wdt_enable(WDTO_15MS);
-  //while(true); 
+  wdt_enable(WDTO_15MS);
+  while(true); 
 }
 String lppGetBuffer() {
   String str;
@@ -503,12 +479,4 @@ String lppGetBuffer() {
     str.toUpperCase();        
   }
   return str;
-} 
-/*
-char buf[15];
-str.toCharArray(buf, sizeof(buf));
-float f = atof(buf);
-int32_t i = atol(buf);
-// string.toFloat()
-// atol() atof()
-*/
+}
