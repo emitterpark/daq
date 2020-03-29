@@ -14,7 +14,6 @@
   <div id="button-div">    
     <button type="button" class="btn btn-secondary btn-lg btn-block" id="connect-btn">CONNECT</button>
     <button type="button" class="btn btn-secondary btn-lg btn-block" id="lorawan-btn">LORAWAN</button>
-    <button type="button" class="btn btn-secondary btn-lg btn-block" id="general-btn">GENERAL</button>
     <button type="button" class="btn btn-secondary btn-lg btn-block" id="channels-btn">CHANNELS</button>
     <button type="button" class="btn btn-secondary btn-lg btn-block" id="at-modem-btn">AT MODEM</button>
   </div>
@@ -28,13 +27,6 @@
       <button type="submit" class="btn btn-secondary btn-lg btn-block" form="lorawan-form" id="lorawan-save-btn">SAVE</button>
       <button type="button" class="btn btn-secondary btn-lg btn-block"id ="lorawan-back-btn">BACK</button>      
     </form>    
-    <form onsubmit="return false" id="general-form">
-      <div id="general-div"></div>
-      <br>
-      <button type="button" class="btn btn-secondary btn-lg btn-block"id ="general-get-btn">GET</button>
-      <button type="submit" class="btn btn-secondary btn-lg btn-block" form="general-form" id="general-save-btn">SAVE</button>
-      <button type="button" class="btn btn-secondary btn-lg btn-block"id ="general-back-btn">BACK</button>      
-    </form>
     <form class="accordion" onsubmit="return false" id="channels-form">
       <div id="analog-div"></div>
       <div id="digital-div"></div>      
@@ -75,15 +67,8 @@
     <input id="app_eui" type="text" required class="form-control" value="0000000000000000" pattern="[0-9A-F]{16}" maxlength ="16" name="app-eui">                
     <label for="app-key">App KEY:</label>
     <input id="app_key" type="text" required class="form-control" value="00000000000000000000000000000000" pattern="[0-9A-F]{32}" maxlength ="32" name="app-key">    
-    <br>
-  </div>       
-</template>
-
-<template>
-  <div id="general">
-    <br>    
-    <label for="lorawan-dr">LoRaWAN Data Rate:</label>
-    <select id="xge_u08" class="form-control" name="lorawan-dr">
+    <label for="dr">Data Rate:</label>
+    <select id="xlr_u08" class="form-control" name="dr">
       <option value = "0">0 - SF12BW125</option>
       <option value = "1">1 - SF11BW125</option>
       <option value = "2" selected>2 - SF10BW125</option>
@@ -91,12 +76,12 @@
       <option value = "4">4 - SF8BW125</option>
       <option value = "5">5 - SF7BW125</option>
     </select>  
-    <label for="lorawan-port">LoRaWAN Port:</label>
-    <input  id="xge_u08" type="number" required class="form-control" value="90" min="1" max="223" step="1" maxlength="3" name="lorawan-port">
+    <label for="port">Port:</label>
+    <input  id="xlr_u08" type="number" required class="form-control" value="90" min="1" max="223" step="1" maxlength="3" name="port">
     <label for="report">Report Interval (Minutes 5-240):</label>
-    <input id="xge_u08" type="number" required class="form-control" value="5" min="1" max="240" step="1" maxlength="3" name="report">     
-    <br> 
-  </div>
+    <input id="xlr_u08" type="number" required class="form-control" value="5" min="1" max="240" step="1" maxlength="3" name="report"> 
+    <br>
+  </div>       
 </template>
 
 <template>

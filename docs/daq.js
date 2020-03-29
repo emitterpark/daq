@@ -3,20 +3,17 @@
 
   document.addEventListener('DOMContentLoaded', event => {
     let lorawanForm = document.querySelector('#lorawan-form');
-    let generalForm = document.querySelector('#general-form');     
     let channelsForm = document.querySelector('#channels-form');
     let atModemForm = document.querySelector('#at-modem-form');
 
     let lorawanTemp = document.querySelectorAll('template')[0];   
-    let generalTemp = document.querySelectorAll('template')[1];
-    let analogTemp = document.querySelectorAll('template')[2];
-    let digitalTemp = document.querySelectorAll('template')[3];
-    let atModemTemp = document.querySelectorAll('template')[4];    
+    let analogTemp = document.querySelectorAll('template')[1];
+    let digitalTemp = document.querySelectorAll('template')[2];
+    let atModemTemp = document.querySelectorAll('template')[3];    
     
     let formDiv = document.querySelector('#form-div');
     let buttonDiv = document.querySelector('#button-div');
     let lorawanDiv = document.querySelector('#lorawan-div');
-    let generalDiv = document.querySelector('#general-div');    
     let analogDiv = document.querySelector('#analog-div');
     let digitalDiv = document.querySelector('#digital-div');
     let atModemDiv = document.querySelector('#at-modem-div');    
@@ -26,10 +23,6 @@
     let lorawanGetBtn = document.querySelector('#lorawan-get-btn');
     let lorawanSaveBtn = document.querySelector('#lorawan-save-btn');
     let lorawanBackBtn = document.querySelector('#lorawan-back-btn');
-    let generalBtn = document.querySelector('#general-btn');
-    let generalGetBtn = document.querySelector('#general-get-btn');
-    let generalSaveBtn = document.querySelector('#general-save-btn');
-    let generalBackBtn = document.querySelector('#general-back-btn');    
     let channelsBtn = document.querySelector('#channels-btn'); 
     let channelsGetBtn = document.querySelector('#channels-get-btn');
     let channelsSaveBtn = document.querySelector('#channels-save-btn');
@@ -50,7 +43,6 @@
       buttonDiv.hidden = true;
       formDiv.hidden = false;
       lorawanForm.hidden = false;
-      generalForm.hidden = true;      
       channelsForm.hidden = true; 
       atModemForm.hidden = true;               
     });
@@ -60,69 +52,36 @@
         return;
       }
       const encoder = new TextEncoder();
-      const view = encoder.encode('at+get_config=lora:status\r\n');      
-      port.send(view);                 
+      let view;
+      view = encoder.encode('at+get_config=lora:status\r\n');      
+      port.send(view);      
+      //view = encoder.encode('xget_lr\r\n');      
+      //port.send(view);
     });
 
     lorawanSaveBtn.addEventListener('click', function() {
       if (!port) {
         return;
       }
+      const encoder = new TextEncoder();
+      let view;
       let str = '';               
       if (lorawanForm.checkValidity()) {
         items = lorawanForm.querySelectorAll('input,select');                
         for (let i = 0; i < items.length; i++) {          
-          str += 'at+set_config=lora:' + items[i].id + ':' + items[i].value + '\r\n';                                           
-        }                                         
-      }                 
-      const encoder = new TextEncoder();
-      const view = encoder.encode(str);      
-      //port.send(view);           
+          if (items[i].id[0] == 'x') { 
+            str += items[i].id + items[i].value + '\r\n';                                     
+          } else {
+            str += 'at+set_config=lora:' + items[i].id + ':' + items[i].value + '\r\n';
+          }                                 
+        }
+        str += 'xsave\r\n';
+        view = encoder.encode(str);      
+        //port.send(view);
+      } 
     });
 
     lorawanBackBtn.addEventListener('click', function() {
-      buttonDiv.hidden = false;
-      formDiv.hidden = true;                      
-    });
-
-    generalBtn.addEventListener('click', function() {
-      buttonDiv.hidden = true;
-      formDiv.hidden = false;
-      lorawanForm.hidden = true;
-      generalForm.hidden = false;      
-      channelsForm.hidden = true;
-      atModemForm.hidden = true;                
-    });
-
-    generalGetBtn.addEventListener('click', function() {
-      if (!port) {
-        return;
-      }
-      const encoder = new TextEncoder();
-      const view = encoder.encode('xget_ge\r\n');      
-      port.send(view);            
-    });
-
-    generalSaveBtn.addEventListener('click', function() {
-      if (!port) {
-        return;
-      }
-      let str = '';          
-      if (generalForm.checkValidity()) {
-        items = generalForm.querySelectorAll('input,select');               
-        for (let i = 0; i < items.length; i++) {          
-          if (items[i].id[0] == 'x') { 
-            str += items[i].id + items[i].value + '\r\n';                                     
-          }                                 
-        }
-        str += 'xsave\r\n';                                 
-      }            
-      const encoder = new TextEncoder();
-      const view = encoder.encode(str);      
-      port.send(view);            
-    });
-
-    generalBackBtn.addEventListener('click', function() {
       buttonDiv.hidden = false;
       formDiv.hidden = true;                      
     });
@@ -130,8 +89,7 @@
     channelsBtn.addEventListener('click', function() {
       buttonDiv.hidden = true;
       formDiv.hidden = false;
-      lorawanForm.hidden = true;
-      generalForm.hidden = true;      
+      lorawanForm.hidden = true;           
       channelsForm.hidden = false;
       atModemForm.hidden = true;                
     });
@@ -141,7 +99,7 @@
         return;
       }
       const encoder = new TextEncoder();
-      const view = encoder.encode('xget_ch\r\n');      
+      let view = encoder.encode('xget_ch\r\n');      
       port.send(view);            
     });
 
@@ -149,6 +107,8 @@
       if (!port) {
         return;
       }
+      const encoder = new TextEncoder();
+      let view;
       let str = '';          
       if (channelsForm.checkValidity()) {
         items = channelsForm.querySelectorAll('input,select');
@@ -157,11 +117,10 @@
             str += items[i].id + items[i].value + '\r\n';                                  
           }                                 
         }
-        str += 'xsave' + '\r\n';                                 
-      }            
-      const encoder = new TextEncoder();
-      const view = encoder.encode(str);      
-      port.send(view);      
+        str += 'xsave' + '\r\n';        
+        view = encoder.encode(str);      
+        port.send(view);                                
+      }             
     });
 
     channelsFetchBtn.addEventListener('click', function() {
@@ -169,7 +128,7 @@
         return;
       }
       const encoder = new TextEncoder();
-      const view = encoder.encode('xfetch\r\n');      
+      let view = encoder.encode('xfetch\r\n');      
       port.send(view);            
     });
 
@@ -181,8 +140,7 @@
     atModemBtn.addEventListener('click', function() {
       buttonDiv.hidden = true;
       formDiv.hidden = false;
-      lorawanForm.hidden = true;
-      generalForm.hidden = true;      
+      lorawanForm.hidden = true;            
       channelsForm.hidden = true;
       atModemForm.hidden = false;                
     });    
@@ -190,11 +148,12 @@
     atModemSendBtn.addEventListener('click', function() {
       if (!port) {
         return;
-      }                    
+      }
+      const encoder = new TextEncoder();
+      let view;                    
       if (lorawanForm.checkValidity()) {
-        item = atModemForm.querySelector('#at-command');
-        const encoder = new TextEncoder();
-        const view = encoder.encode(item.value + '\r\n');                
+        item = atModemForm.querySelector('#at-command');        
+        view = encoder.encode(item.value + '\r\n');                
         port.send(view);
       }                 
     });
@@ -210,10 +169,7 @@
       let divs;
       // LORAWAN
       clon = lorawanTemp.content.cloneNode(true);     
-      lorawanDiv.appendChild(clon);                     
-      // GENERAL
-      clon = generalTemp.content.cloneNode(true);     
-      generalDiv.appendChild(clon);     
+      lorawanDiv.appendChild(clon);           
       // ANALOG
       for (let i = 0; i < numAn; i++) {
         clon = analogTemp.content.cloneNode(true);
@@ -245,7 +201,7 @@
       atModemDiv.appendChild(clon);      
       // make id      
       let datas = 
-      ['ge_u08','an_u08','an_u16','an_f32','dg_u08','dg_u16']; 
+      ['lr_u08','an_u08','an_u16','an_f32','dg_u08','dg_u16']; 
       for (let i = 0; i < datas.length; i++) {        
         items = formDiv.querySelectorAll('#x' + datas[i]);        
         for (let j = 0; j < items.length; j++) {
