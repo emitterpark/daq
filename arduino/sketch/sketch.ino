@@ -94,7 +94,7 @@ void setup() {
   ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
 void loop() {
-  //readAnalog();
+  readAnalog();
   readDigital();  
   readLoraSerial();
   readUsbSerial();
@@ -180,7 +180,15 @@ void readDigital() {
     if (conf.dg_u08[_enable]) { 
       dg[ch] = !digitalRead(DIG_PIN[ch]);
       const uint8_t _debounce = dg_u08_debounce + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
-      //delay(conf.dg_u08[_debounce]);      
+      /*
+      for (uint8_t i = 0; i < conf.dg_u08[_debounce]; i++) {
+        const unsigned long curMicros = micros();
+        while ((micros() - curMicros) < 1000L) {
+          //wdt_reset();
+        }
+      } 
+      */
+      delay(1);     
       if (dg[ch] == !digitalRead(DIG_PIN[ch])) {
         isDigitalReport(ch);
       } else {
@@ -469,11 +477,11 @@ void resetMe() {
 }
 String lppGetBuffer() {
   String str;
-  for(uint8_t ii = 0; ii < lpp.getSize(); ii++){    
-    if (lpp.getBuffer()[ii] < 16) {
+  for(uint8_t i = 0; i < lpp.getSize(); i++){    
+    if (lpp.getBuffer()[i] < 16) {
       str += '0';       
     }
-    str += String(lpp.getBuffer()[ii], HEX);
+    str += String(lpp.getBuffer()[i], HEX);
     str.toUpperCase();        
   }
   return str;

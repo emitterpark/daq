@@ -55,8 +55,8 @@
       let view;
       view = encoder.encode('at+get_config=lora:status\r\n');      
       port.send(view);      
-      //view = encoder.encode('xget_lr\r\n');      
-      //port.send(view);
+      view = encoder.encode('xget_lr\r\n');      
+      port.send(view);
     });
 
     lorawanSaveBtn.addEventListener('click', function() {
