@@ -170,7 +170,7 @@
       for (let i = 0; i < numAn; i++) {
         btns[i].setAttribute('data-target', '#analog' + i);
         btns[i].setAttribute('aria-controls', 'analog' + i);        
-        btns[i].textContent = '#' + String(i + 1) + ' (Analog ' + String(i + 1) + ')' + ' Value: '; 
+        btns[i].textContent = '#' + String(i + 1) + ' (Analog ' + String(i + 1) + ')' + ' : '; 
         divs[i].setAttribute('id', 'analog' + i);      
       } 
       // DIGITAL
@@ -183,7 +183,7 @@
       for (let i = 0; i < numDg; i++) {
         btns[i].setAttribute('data-target', '#digital' + i);
         btns[i].setAttribute('aria-controls', 'digital' + i);
-        btns[i].textContent = '#' + String(i + 1 + numAn) + ' (Digital ' + String(i + 1) + ')' + ' Value: '; 
+        btns[i].textContent = '#' + String(i + 1 + numAn) + ' (Digital ' + String(i + 1) + ')' + ' : '; 
         divs[i].setAttribute('id', 'digital' + i);      
       } 
       // AT MODEM
@@ -217,15 +217,15 @@
             let split = dataline.split('_');
             let n = Number(split[1].slice(3, 5));                        
             let value = split[1].slice(5);            
-            btns[n].textContent = btns[n].textContent.slice(0, 21);
+            btns[n].textContent = btns[n].textContent.slice(0, 16);
             btns[n].textContent += value;
           } else if (dataline.startsWith('xdg_val')) {
             let btns = channelsForm.querySelectorAll('button');
             let split = dataline.split('_');
             let n = Number(split[1].slice(3, 5));                        
             let value = split[1].slice(5);
-            btns[n + numAn].textContent = btns[n + numAn].textContent.slice(0, 22);
-            btns[n + numAn].textContent += value;                              
+            btns[n + numAn].textContent = btns[n + numAn].textContent.slice(0, 17);
+            btns[n + numAn].textContent += parseInt(value) ? 'HIGH' : 'LOW';                              
           } else if (dataline.startsWith('DevEui: ')) {
             item = lorawanForm.querySelector('#dev_eui');
             let value = dataline.slice(8);               
