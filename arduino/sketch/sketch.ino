@@ -118,10 +118,11 @@ void readAnalog() {
         const uint8_t _out_min = an_f32_out_min + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
         const uint8_t _out_max = an_f32_out_max + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
         const uint8_t _calibrate = an_f32_calibrate + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn;
-        an[ch] *= 1000;
+        an[ch] *= 1000L;
         an[ch] /= rshunt;
-        an[ch] *= (1 + conf.an_f32[_calibrate]);                    
         an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
+        an[ch] *= (1.0 + conf.an_f32[_calibrate]);
+        an[ch] = round(an[ch]*100.0)/100.0 + 0.0005;
         fetchAnalog(ch);
         isAnalogReport(ch);
       }      
@@ -159,7 +160,7 @@ void isAnalogReport(const uint8_t ch) {
   } else if (an[ch] <= conf.an_f32[_low]) {    
     if (an_prev[ch] != LOW) {
       an_prev[ch] = LOW;                      
-      if (anDuration[ch] == 0) {
+      if (anDuration[ch] > 0) {
         t.stop(anDuration[ch]);
         anDuration[ch] = -1;
         return; 
@@ -172,7 +173,7 @@ void isAnalogReport(const uint8_t ch) {
   } else if (an[ch] >= conf.an_f32[_high]) {     
     if (an_prev[ch] != HIGH) {
       an_prev[ch] = HIGH;                 
-      if (anDuration[ch] == 0) {
+      if (anDuration[ch] > 0) {
         t.stop(anDuration[ch]);
         anDuration[ch] = -1;
         return;
@@ -216,26 +217,26 @@ void isDigitalReport(const uint8_t ch) {
   if (dg[ch] != dg_prev[ch]) {
     fetchDigital(ch);
     if (dg[ch] == LOW) {
-      dg_prev[ch] = LOW;                      
-      if (dgDuration[ch] == 0) {
+      dg_prev[ch] = LOW;                            
+      if (dgDuration[ch] > 0) {
         t.stop(dgDuration[ch]);
-        dgDuration[ch] = -1;
+        dgDuration[ch] = -1;        
         return; 
-      } 
-      if (conf.dg_u08[_low_report]) {        
-        t.stop(dgDuration[ch]);
-        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);                        
+      }       
+      if (conf.dg_u08[_low_report]) {                
+        t.stop(dgDuration[ch]);        
+        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);                               
       }          
     } else if (dg[ch] == HIGH) { 
-      dg_prev[ch] = HIGH;                 
-      if (dgDuration[ch] == 0) {
+      dg_prev[ch] = HIGH;                       
+      if (dgDuration[ch] > 0) {
         t.stop(dgDuration[ch]);
-        dgDuration[ch] = -1;
+        dgDuration[ch] = -1;        
         return;
-      }        
-      if (conf.dg_u08[_high_report]) {        
-        t.stop(dgDuration[ch]);
-        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);                          
+      }            
+      if (conf.dg_u08[_high_report]) {                
+        t.stop(dgDuration[ch]);        
+        dgDuration[ch] = t.after(conf.dg_u16[_duration] * 1000L, report);                                  
       }       
     }
   }         
@@ -372,7 +373,7 @@ void setPin() {
 void setAnalog() {
   for (uint8_t ch = 0; ch < numAn; ch++) {       
     analog.begin(0x40 + ch);
-    analog.configure(INA226_AVERAGES_1024, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT);
+    analog.configure(INA226_AVERAGES_1024, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_1100US, INA226_MODE_SHUNT_CONT);
     //analog.calibrate(3.3, 0.020);
     analog.readShuntVoltage();
     analog.enableConversionReadyAlert(); 
