@@ -86,9 +86,10 @@ WebUSB WebUSBSerial(1 /* https:// */, "127.0.0.1:5500");
 void setup() {
   //wdt_enable(WDTO_8S);  
   setPin();
-  loadConf();    
-  setAnalog();    
-  setUsbSerial();
+  loadConf(); 
+  setUsbSerial();   
+  setAnalog();
+  setDigital();  
   setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);   
   t.every(conf.lr_u08[lr_u08_report] * 1000L * 60, report);
   ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
@@ -121,10 +122,19 @@ void readAnalog() {
         an[ch] /= rshunt;
         an[ch] *= (1 + conf.an_f32[_calibrate]);                    
         an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
+        fetchAnalog(ch);
         isAnalogReport(ch);
       }      
     }                    
   }    
+}
+void fetchAnalog(const uint8_t ch) { 
+  String str;  
+  usbSerial.print(F("xan_val"));    
+  str = '0' + String(ch);
+  usbSerial.print(str.substring(str.length() - 2));    
+  usbSerial.println(an[ch], floatToPrint);
+  usbSerial.flush();    
 }
 void isAnalogReport(const uint8_t ch) {       
   const uint8_t _low = an_f32_low + ch * (sizeof(conf.an_f32) / sizeof(conf.an_f32[0])) / numAn; 
@@ -177,31 +187,34 @@ void isAnalogReport(const uint8_t ch) {
 void readDigital() {
   for (uint8_t ch = 0; ch < numDg; ch++) {  
     const uint8_t _enable = dg_u08_enable + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
-    if (conf.dg_u08[_enable]) { 
+    if (conf.dg_u08[_enable]) {
       dg[ch] = !digitalRead(DIG_PIN[ch]);
-      const uint8_t _debounce = dg_u08_debounce + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
-      /*
-      for (uint8_t i = 0; i < conf.dg_u08[_debounce]; i++) {
-        const unsigned long curMicros = micros();
-        while ((micros() - curMicros) < 1000L) {
-          //wdt_reset();
+      if (dg[ch] != dg_prev[ch]) {        
+        const uint8_t _debounce = dg_u08_debounce + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;        
+        delay(conf.dg_u08[_debounce]);     
+        if (dg[ch] == !digitalRead(DIG_PIN[ch])) {
+          isDigitalReport(ch);
+        } else {
+          dg[ch] = !digitalRead(DIG_PIN[ch]);           
         }
-      } 
-      */
-      delay(1);     
-      if (dg[ch] == !digitalRead(DIG_PIN[ch])) {
-        isDigitalReport(ch);
-      } else {
-        dg[ch] = !digitalRead(DIG_PIN[ch]);           
-      }                
+      }                       
     }    
   }
+}
+void fetchDigital(const uint8_t ch) {  
+  String str;
+  usbSerial.print(F("xdg_val"));    
+  str = '0' + String(ch);
+  usbSerial.print(str.substring(str.length() - 2));    
+  usbSerial.println(dg[ch]);
+  usbSerial.flush();    
 }
 void isDigitalReport(const uint8_t ch) {
   const uint8_t _low_report = dg_u08_low_report + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg; 
   const uint8_t _high_report = dg_u08_high_report + ch * (sizeof(conf.dg_u08) / sizeof(conf.dg_u08[0])) / numDg;
   const uint8_t _duration = dg_u16_duration + ch * (sizeof(conf.dg_u16) / sizeof(conf.dg_u16[0])) / numDg;       
   if (dg[ch] != dg_prev[ch]) {
+    fetchDigital(ch);
     if (dg[ch] == LOW) {
       dg_prev[ch] = LOW;                      
       if (dgDuration[ch] == 0) {
@@ -288,8 +301,8 @@ void readUsbSerial() {
         getLorawan();
       } else if (strUsbSerial.startsWith(F("xget_ch"))) {
         getChannels();
-      } else if (strUsbSerial.startsWith(F("xfetch"))) {
-        fetchChannels();       
+      //} else if (strUsbSerial.startsWith(F("xfetch"))) {
+      //  fetchChannels();       
       }
       strUsbSerial = "";
     }
@@ -343,23 +356,6 @@ void getChannels() {
     usbSerial.flush();    
   }    
 }
-void fetchChannels() { 
-  String str;
-  for (uint8_t i = 0; i < numAn; i++) {
-    usbSerial.print(F("xan_val"));    
-    str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(an[i], floatToPrint);
-    usbSerial.flush();    
-  }
-  for (uint8_t i = 0; i < numDg; i++) {
-    usbSerial.print(F("xdg_val"));    
-    str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(dg[i]);
-    usbSerial.flush();    
-  }  
-}
 void loadConf() {
   EEPROM.get(0, conf);  
 }
@@ -378,9 +374,17 @@ void setAnalog() {
     analog.begin(0x40 + ch);
     analog.configure(INA226_AVERAGES_1024, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_8244US, INA226_MODE_SHUNT_CONT);
     //analog.calibrate(3.3, 0.020);
+    analog.readShuntVoltage();
     analog.enableConversionReadyAlert(); 
     if (analog.isAlert());              
   } 
+}
+void setDigital() {
+  for (uint8_t ch = 0; ch < numDg; ch++) {
+    dg[ch] = !digitalRead(DIG_PIN[ch]);
+    dg_prev[ch] = dg[ch];
+    fetchDigital(ch);
+  }  
 }
 void setLoraSerial() {
   while (!loraSerial) {
