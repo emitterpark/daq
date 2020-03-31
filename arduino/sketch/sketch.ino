@@ -122,7 +122,7 @@ void readAnalog() {
         an[ch] /= rshunt;
         an[ch] = (an[ch] - conf.an_f32[_in_min]) * (conf.an_f32[_out_max] - conf.an_f32[_out_min]) / (conf.an_f32[_in_max] - conf.an_f32[_in_min]) + conf.an_f32[_out_min];      
         an[ch] *= (1.0 + conf.an_f32[_calibrate]);
-        an[ch] = round(an[ch]*100.0)/100.0 + 0.0005;
+        an[ch] = round(an[ch]*1000.0)/1000.0 + 0.0005;
         fetchAnalog(ch);
         isAnalogReport(ch);
       }      

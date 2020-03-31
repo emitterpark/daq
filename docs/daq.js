@@ -207,6 +207,8 @@
       port.connect().then(() => {
         statusDisp.textContent = 'Connected.';
         connectBtn.textContent = 'DISCONNECT';
+        //view = encoder.encode('xfetch\r\n');      
+        //port.send(view);
         port.onReceive = data => {
           let textDecoder = new TextDecoder();
           let dataline = textDecoder.decode(data);
