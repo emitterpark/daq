@@ -251,19 +251,15 @@ void readLoraSerial() {
       
       if (strLoraSerial.endsWith(F("Join Success"))) {         
         isLoraJoin = true; 
-        t.stop(ledOscForever);
-        digitalWrite(LED_PIN, LOW);         
+        t.stop(ledOscForever);        
+        digitalWrite(LED_PIN, LOW);
+        delay(10);         
         loraSerial.print(F("at+set_config=lora:dr:")); 
         loraSerial.println(conf.lr_u08[lr_u08_dr]);
-        loraSerial.flush();
-      /*
-      } else if (strLoraSerial.endsWith("DR" + String(conf.lr_u08[lr_u08_dr]) +" success")) { 
-        isLoraJoin = true; 
-        t.stop(ledOscForever);
-        digitalWrite(LED_PIN, LOW);  
-      */        
-      } 
-      
+        //loraSerial.flush();          
+      } else if (strLoraSerial.indexOf(F("Join retry")) >= 0) {
+        ledOscForever = t.oscillate(LED_PIN, 500, HIGH);       
+      }
       usbSerial.println(strLoraSerial); 
       usbSerial.flush();     
       strLoraSerial = "";
@@ -400,7 +396,7 @@ void setLoraSerial() {
   digitalWrite(LORA_RES_PIN, HIGH);  
   delay(1000);
   loraSerial.println("at+version");
-  loraSerial.flush();  
+  //loraSerial.flush();  
 }
 void setUsbSerial() {
   if (USBSTA >> VBUS & 1) {          
@@ -469,9 +465,7 @@ void report() {
     }    
     loraSerial.print("at+send=lora:" + String(conf.lr_u08[lr_u08_port]) + ':'); 
     loraSerial.println(lppGetBuffer());    
-    loraSerial.flush();    
-    t.oscillate(LED_PIN, 100, HIGH, 5);
-    //digitalWrite(LED_PIN, LOW);
+    //loraSerial.flush();      
   }     
 }
 unsigned long tmrRandom() {

@@ -36,7 +36,22 @@
 
     let numAn = 2, numDg = 2;
     let item;
-    let items;    
+    let items; 
+    
+    let lorawanBuf = [];
+
+    setInterval(function(){ 
+      if (!port) {
+        return;
+      }
+      if (lorawanBuf.length > 0) {
+        const encoder = new TextEncoder();
+        let view;
+        view = encoder.encode(lorawanBuf[0]);
+        lorawanBuf.shift();
+        port.send(view);        
+      }
+    }, 1000);
     
     lorawanBtn.addEventListener('click', function() {
       buttonDiv.hidden = true;
@@ -68,15 +83,15 @@
       if (lorawanForm.checkValidity()) {
         items = lorawanForm.querySelectorAll('input,select');                
         for (let i = 0; i < items.length; i++) {          
-          if (items[i].id[0] == 'x') { 
+          if (items[i].id[0] == 'x') {           
             str += items[i].id + items[i].value + '\r\n';                                     
           } else {
-            str += 'at+set_config=lora:' + items[i].id + ':' + items[i].value + '\r\n';
+            lorawanBuf.push('at+set_config=lora:' + items[i].id + ':' + items[i].value + '\r\n');            
           }                                 
         }
         str += 'xsave\r\n';
         view = encoder.encode(str);      
-        //port.send(view);
+        port.send(view);
       } 
     });
 
