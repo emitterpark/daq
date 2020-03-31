@@ -206,9 +206,7 @@
     function connect() {
       port.connect().then(() => {
         statusDisp.textContent = 'Connected.';
-        connectBtn.textContent = 'DISCONNECT';
-        //view = encoder.encode('xfetch\r\n');      
-        //port.send(view);
+        connectBtn.textContent = 'DISCONNECT';        
         port.onReceive = data => {
           let textDecoder = new TextDecoder();
           let dataline = textDecoder.decode(data);
@@ -250,6 +248,10 @@
         port.onReceiveError = error => {
           //console.error(error);
         };
+        const encoder = new TextEncoder();
+        let view;
+        view = encoder.encode('xfetch\r\n');      
+        port.send(view);
       }, error => {
          statusDisp.textContent = error;
       });

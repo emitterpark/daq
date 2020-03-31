@@ -302,8 +302,13 @@ void readUsbSerial() {
         getLorawan();
       } else if (strUsbSerial.startsWith(F("xget_ch"))) {
         getChannels();
-      //} else if (strUsbSerial.startsWith(F("xfetch"))) {
-      //  fetchChannels();       
+      } else if (strUsbSerial.startsWith(F("xfetch"))) {
+        for (uint8_t ch = 0; ch < numAn; ch++) {
+          fetchAnalog(ch);       
+        }
+        for (uint8_t ch = 0; ch < numDg; ch++) {
+          fetchDigital(ch);       
+        }
       }
       strUsbSerial = "";
     }
@@ -384,7 +389,7 @@ void setDigital() {
   for (uint8_t ch = 0; ch < numDg; ch++) {
     dg[ch] = !digitalRead(DIG_PIN[ch]);
     dg_prev[ch] = dg[ch];
-    fetchDigital(ch);
+    //fetchDigital(ch);
   }  
 }
 void setLoraSerial() {
@@ -465,9 +470,7 @@ void report() {
     }    
     loraSerial.print("at+send=lora:" + String(conf.lr_u08[lr_u08_port]) + ':'); 
     loraSerial.println(lppGetBuffer());    
-    loraSerial.flush();
-    usbSerial.println("send ok");
-    usbSerial.flush();
+    loraSerial.flush();    
     t.oscillate(LED_PIN, 100, HIGH, 5);
     digitalWrite(LED_PIN, LOW);
   }     
