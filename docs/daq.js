@@ -271,6 +271,12 @@
         let view;
         view = encoder.encode('xfetch\r\n');      
         port.send(view);
+        view = encoder.encode('xget_ch\r\n');      
+        port.send(view);
+        view = encoder.encode('xget_lr\r\n');      
+        port.send(view);
+        view = encoder.encode('at+get_config=lora:status\r\n');      
+        port.send(view);        
       }, error => {
          statusDisp.textContent = error;
       });
