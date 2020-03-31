@@ -66,6 +66,15 @@
     <input id="app_eui" type="text" required class="form-control" value="0000000000000000" pattern="[0-9A-F]{16}" maxlength ="16" name="app-eui">                
     <label for="app-key">App KEY:</label>
     <input id="app_key" type="text" required class="form-control" value="00000000000000000000000000000000" pattern="[0-9A-F]{32}" maxlength ="32" name="app-key">    
+    <label for="region">Region:</label>
+    <select id="region" class="form-control" name="region">
+      <option value = "EU868" selected>EU868</option>
+      <option value = "US915">US915</option>
+      <option value = "AU915" >AU915</option>
+      <option value = "AS923">AS923</option>
+      <option value = "IN865">IN865</option>
+      <option value = "KR920">KR920</option>
+    </select>      
     <label for="dr">Data Rate:</label>
     <select id="xlr_u08" class="form-control" name="dr">
       <option value = "0">0 - SF12BW125</option>

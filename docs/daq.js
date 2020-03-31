@@ -237,6 +237,10 @@
           } else if (dataline.startsWith('AppKey: ')) {
             item = lorawanForm.querySelector('#app_key');
             let value = dataline.slice(8);               
+            item.value = value;
+          } else if (dataline.startsWith('Region: ')) {
+            item = lorawanForm.querySelector('#region');
+            let value = dataline.slice(8);               
             item.value = value;           
           } else if (dataline.startsWith('x')) {
             let split = dataline.split('_');

@@ -249,15 +249,14 @@ void readLoraSerial() {
     if (chr == '\n') {
       strLoraSerial.trim();
       
-      if (strLoraSerial.endsWith(F("Join Success"))) {        
-        // delay
+      if (strLoraSerial.endsWith(F("Join Success"))) {         
         isLoraJoin = true; 
         t.stop(ledOscForever);
-        digitalWrite(LED_PIN, LOW);        
-      /*   
+        digitalWrite(LED_PIN, LOW);         
         loraSerial.print(F("at+set_config=lora:dr:")); 
         loraSerial.println(conf.lr_u08[lr_u08_dr]);
         loraSerial.flush();
+      /*
       } else if (strLoraSerial.endsWith("DR" + String(conf.lr_u08[lr_u08_dr]) +" success")) { 
         isLoraJoin = true; 
         t.stop(ledOscForever);
@@ -472,7 +471,7 @@ void report() {
     loraSerial.println(lppGetBuffer());    
     loraSerial.flush();    
     t.oscillate(LED_PIN, 100, HIGH, 5);
-    digitalWrite(LED_PIN, LOW);
+    //digitalWrite(LED_PIN, LOW);
   }     
 }
 unsigned long tmrRandom() {
