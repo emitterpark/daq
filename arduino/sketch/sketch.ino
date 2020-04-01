@@ -147,7 +147,7 @@ void isAnalogReport(const uint8_t ch) {
   if (an[ch] > conf.an_f32[_low] && an[ch] < conf.an_f32[_high]) {    
     if (an_prev[ch] != MID) {
       an_prev[ch] = MID;                 
-      if (anDuration[ch] == 0) {
+      if (anDuration[ch] > 0) {
         t.stop(anDuration[ch]);
         anDuration[ch] = -1;
         return;
