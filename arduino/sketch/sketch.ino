@@ -258,6 +258,7 @@ void readLoraSerial() {
         loraSerial.println(conf.lr_u08[lr_u08_dr]);
         //loraSerial.flush();          
       } else if (strLoraSerial.indexOf(F("Join retry")) >= 0) {
+        t.stop(ledOscForever);
         ledOscForever = t.oscillate(LED_PIN, 500, HIGH);       
       }
       usbSerial.println(strLoraSerial); 
@@ -292,11 +293,13 @@ void readUsbSerial() {
         conf.dg_u16[num] = (uint16_t)valInt;
       } else if (strUsbSerial.startsWith(F("xsave"))) {
         EEPROM.put(0, conf);
-        //resetMe();      
-      } else if (strUsbSerial.startsWith(F("xget_lr"))) {
-        getLorawan();
-      } else if (strUsbSerial.startsWith(F("xget_ch"))) {
-        getChannels();
+        //resetMe();
+      } else if (strUsbSerial.startsWith(F("xdevice"))) {
+        usbSerial.println(F("xdeviceLoraWAN Wireless DAQ"));
+        usbSerial.flush();
+      } else if (strUsbSerial.startsWith(F("xversion"))) {
+        usbSerial.println(F("xversion1.0.1"));
+        usbSerial.flush();
       } else if (strUsbSerial.startsWith(F("xfetch"))) {
         for (uint8_t ch = 0; ch < numAn; ch++) {
           fetchAnalog(ch);       
@@ -304,6 +307,10 @@ void readUsbSerial() {
         for (uint8_t ch = 0; ch < numDg; ch++) {
           fetchDigital(ch);       
         }
+      } else if (strUsbSerial.startsWith(F("xchannels"))) {
+        getChannels();      
+      } else if (strUsbSerial.startsWith(F("xlorawan"))) {
+        getLorawan();      
       }
       strUsbSerial = "";
     }

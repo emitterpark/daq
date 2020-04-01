@@ -11,6 +11,7 @@
     let digitalTemp = document.querySelectorAll('template')[2];
     let atModemTemp = document.querySelectorAll('template')[3];    
     
+    let headerDiv = document.querySelector('#header-div');
     let formDiv = document.querySelector('#form-div');
     let buttonDiv = document.querySelector('#button-div');
     let lorawanDiv = document.querySelector('#lorawan-div');
@@ -20,18 +21,17 @@
      
     let connectBtn = document.querySelector('#connect-btn');    
     let lorawanBtn = document.querySelector('#lorawan-btn');
-    let lorawanGetBtn = document.querySelector('#lorawan-get-btn');
     let lorawanSaveBtn = document.querySelector('#lorawan-save-btn');
     let lorawanBackBtn = document.querySelector('#lorawan-back-btn');
     let channelsBtn = document.querySelector('#channels-btn'); 
-    let channelsGetBtn = document.querySelector('#channels-get-btn');
     let channelsSaveBtn = document.querySelector('#channels-save-btn');    
     let channelsBackBtn = document.querySelector('#channels-back-btn');
     let atModemBtn = document.querySelector('#at-modem-btn');
     let atModemSendBtn = document.querySelector('#at-modem-send-btn');
     let atModemBackBtn = document.querySelector('#at-modem-back-btn');    
         
-    let statusDisp = document.querySelector('#status');
+    let deviceDisp = document.querySelector('#device');
+    let versionDisp = document.querySelector('#version');
     let port;
 
     let numAn = 2, numDg = 2;
@@ -54,24 +54,13 @@
     }, 1000);
     
     lorawanBtn.addEventListener('click', function() {
+      headerDiv.hidden = true;
       buttonDiv.hidden = true;
       formDiv.hidden = false;
       lorawanForm.hidden = false;
       channelsForm.hidden = true; 
       atModemForm.hidden = true;               
-    });
-
-    lorawanGetBtn.addEventListener('click', function() {
-      if (!port) {
-        return;
-      }
-      const encoder = new TextEncoder();
-      let view;
-      view = encoder.encode('at+get_config=lora:status\r\n');      
-      port.send(view);      
-      view = encoder.encode('xget_lr\r\n');      
-      port.send(view);
-    });
+    });    
 
     lorawanSaveBtn.addEventListener('click', function() {
       if (!port) {
@@ -96,26 +85,19 @@
     });
 
     lorawanBackBtn.addEventListener('click', function() {
+      headerDiv.hidden = false;
       buttonDiv.hidden = false;
       formDiv.hidden = true;                      
     });
     
     channelsBtn.addEventListener('click', function() {
+      headerDiv.hidden = true;
       buttonDiv.hidden = true;
       formDiv.hidden = false;
       lorawanForm.hidden = true;           
       channelsForm.hidden = false;
       atModemForm.hidden = true;                
-    });
-
-    channelsGetBtn.addEventListener('click', function() {
-      if (!port) {
-        return;
-      }
-      const encoder = new TextEncoder();
-      let view = encoder.encode('xget_ch\r\n');      
-      port.send(view);            
-    });
+    });    
 
     channelsSaveBtn.addEventListener('click', function() {
       if (!port) {
@@ -138,11 +120,13 @@
     });    
 
     channelsBackBtn.addEventListener('click', function() {
+      headerDiv.hidden = false;
       buttonDiv.hidden = false;
       formDiv.hidden = true;                      
     });    
     
     atModemBtn.addEventListener('click', function() {
+      headerDiv.hidden = true;
       buttonDiv.hidden = true;
       formDiv.hidden = false;
       lorawanForm.hidden = true;            
@@ -164,6 +148,7 @@
     });
 
     atModemBackBtn.addEventListener('click', function() {
+      headerDiv.hidden = false;
       buttonDiv.hidden = false;
       formDiv.hidden = true;                      
     });
@@ -220,7 +205,7 @@
 
     function connect() {
       port.connect().then(() => {
-        statusDisp.textContent = 'Connected.';
+        deviceDisp.textContent = 'Connected.';
         connectBtn.textContent = 'DISCONNECT';        
         port.onReceive = data => {
           let textDecoder = new TextDecoder();
@@ -240,7 +225,13 @@
             let n = Number(split[1].slice(3, 5));                        
             let value = split[1].slice(5);
             btns[n + numAn].textContent = btns[n + numAn].textContent.slice(0, 17);
-            btns[n + numAn].textContent += parseInt(value) ? 'HIGH' : 'LOW';                              
+            btns[n + numAn].textContent += parseInt(value) ? 'HIGH' : 'LOW'; 
+          } else if (dataline.startsWith('xdevice')) {            
+            let value = dataline.slice(7);               
+            deviceDisp.textContent = value;
+          } else if (dataline.startsWith('xversion')) {
+            let value = dataline.slice(8);               
+            versionDisp.textContent = value;                             
           } else if (dataline.startsWith('DevEui: ')) {
             item = lorawanForm.querySelector('#dev_eui');
             let value = dataline.slice(8);               
@@ -269,38 +260,47 @@
         };
         const encoder = new TextEncoder();
         let view;
+        view = encoder.encode('xdevice\r\n');      
+        port.send(view);
+        view = encoder.encode('xversion\r\n');      
+        port.send(view);
         view = encoder.encode('xfetch\r\n');      
         port.send(view);
-        view = encoder.encode('xget_ch\r\n');      
+        view = encoder.encode('xchannels\r\n');      
         port.send(view);
-        view = encoder.encode('xget_lr\r\n');      
+        view = encoder.encode('xlorawan\r\n');      
         port.send(view);
         view = encoder.encode('at+get_config=lora:status\r\n');      
         port.send(view);        
       }, error => {
-         statusDisp.textContent = error;
+         deviceDisp.textContent = error;
+         versionDisp.textContent = '';
       });
     }    
     connectBtn.addEventListener('click', function() {
       if (port) {
         port.disconnect();
         connectBtn.textContent = 'CONNECT';
-        statusDisp.textContent = '';
+        deviceDisp.textContent = '';
+        versionDisp.textContent = '';
         port = null;
       } else {
         serial.requestPort().then(selectedPort => {
           port = selectedPort;
           connect();
         }).catch(error => {
-          statusDisp.textContent = error;
+          deviceDisp.textContent = error;
+          versionDisp.textContent = '';
         });
       }
     }); 
     serial.getPorts().then(ports => {
       if (ports.length == 0) {
-        statusDisp.textContent = 'No device found.';
+        deviceDisp.textContent = 'No device found.';
+        versionDisp.textContent = '';
       } else {
-        statusDisp.textContent = 'Connecting...';
+        deviceDisp.textContent = 'Connecting...';
+        versionDisp.textContent = '';
         port = ports[0];
         connect();
       }
