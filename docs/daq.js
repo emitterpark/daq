@@ -52,6 +52,10 @@
         port.send(view);        
       }
     }, 1000);
+
+    formDiv.addEventListener('click', function() {
+      this.scrollIntoView();               
+    });  
     
     lorawanBtn.addEventListener('click', function() {
       headerDiv.hidden = true;
