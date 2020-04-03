@@ -195,7 +195,7 @@
       atModemDiv.appendChild(clon);      
       // make id      
       let datas = 
-      ['lr_u08','an_u08','an_u16','an_f32','dg_u08','dg_u16']; 
+      ['lru08','anu08','anu16','anf32','dgu08','dgu16']; 
       for (let i = 0; i < datas.length; i++) {        
         items = formDiv.querySelectorAll('#x' + datas[i]);        
         for (let j = 0; j < items.length; j++) {
@@ -216,47 +216,35 @@
           let dataline = textDecoder.decode(data);
           atModemText.value += dataline;
           dataline = dataline.trim(); 
+          let value = dataline.slice(8);
           let btns = channelsForm.querySelectorAll('button');         
-          if (dataline.startsWith('xan_val')) {            
-            let split = dataline.split('_');
-            let n = Number(split[1].slice(3, 5));                        
-            let value = split[1].slice(5);            
+          if (dataline.startsWith('xanval')) {            
+            let n = Number(dataline.slice(6, 8));                        
             btns[n].textContent = btns[n].textContent.slice(0, 16);
             btns[n].textContent += value;
-          } else if (dataline.startsWith('xdg_val')) {
-            let btns = channelsForm.querySelectorAll('button');
-            let split = dataline.split('_');
-            let n = Number(split[1].slice(3, 5));                        
-            let value = split[1].slice(5);
+          } else if (dataline.startsWith('xdgval')) {
+            let n = Number(dataline.slice(6, 8));
             btns[n + numAn].textContent = btns[n + numAn].textContent.slice(0, 17);
-            btns[n + numAn].textContent += parseInt(value) ? 'HIGH' : 'LOW'; 
-          } else if (dataline.startsWith('xdevice')) {            
-            let value = dataline.slice(7);               
+            btns[n + numAn].textContent += parseInt(value) ? 'HIGH' : 'LOW';          
+          } else if (dataline.startsWith('xdevicee')) {
             deviceDisp.textContent = value;
           } else if (dataline.startsWith('xversion')) {
-            let value = dataline.slice(8);               
-            versionDisp.textContent = value;                             
+            versionDisp.textContent = value; 
+          } else if (dataline.startsWith('x')) {
+            item = formDiv.querySelector('#' + dataline.slice(0, 8));
+            item.value = value;                             
           } else if (dataline.startsWith('DevEui: ')) {
             item = lorawanForm.querySelector('#dev_eui');
-            let value = dataline.slice(8);               
             item.value = value;                        
           } else if (dataline.startsWith('AppEui: ')) {
             item = lorawanForm.querySelector('#app_eui');
-            let value = dataline.slice(8);               
             item.value = value;            
           } else if (dataline.startsWith('AppKey: ')) {
             item = lorawanForm.querySelector('#app_key');
-            let value = dataline.slice(8);               
             item.value = value;
           } else if (dataline.startsWith('Region: ')) {
             item = lorawanForm.querySelector('#region');
-            let value = dataline.slice(8);               
-            item.value = value;           
-          } else if (dataline.startsWith('x')) {
-            let split = dataline.split('_');
-            item = formDiv.querySelector('#' + split[0] + '_' + split[1].slice(0, 5));
-            let value = split[1].slice(5);
-            item.value = value;          
+            item.value = value;                  
           }                                              
         }
         port.onReceiveError = error => {

@@ -75,7 +75,7 @@
       <option value = "KR920">KR920</option>
     </select>      
     <label for="dr">Data Rate:</label>
-    <select id="xlr_u08" class="form-control" name="dr">
+    <select id="xlru08" class="form-control" name="dr">
       <option value = "0">0 - SF12BW125</option>
       <option value = "1">1 - SF11BW125</option>
       <option value = "2" selected>2 - SF10BW125</option>
@@ -84,9 +84,9 @@
       <option value = "5">5 - SF7BW125</option>
     </select>  
     <label for="port">Port:</label>
-    <input  id="xlr_u08" type="number" required class="form-control" value="90" min="1" max="223" step="1" maxlength="3" name="port">
+    <input  id="xlru08" type="number" required class="form-control" value="90" min="1" max="223" step="1" maxlength="3" name="port">
     <label for="report">Report Interval (Minutes 5-240):</label>
-    <input id="xlr_u08" type="number" required class="form-control" value="5" min="1" max="240" step="1" maxlength="3" name="report"> 
+    <input id="xlru08" type="number" required class="form-control" value="5" min="1" max="240" step="1" maxlength="3" name="report"> 
     <br>
   </div>       
 </template>
@@ -98,12 +98,12 @@
   <div id="analog" class="collapse" data-parent="#channels-form">    
     <br>
     <label for="enable">Enable:</label>
-    <select id="xan_u08" class="form-control" name="enable">
+    <select id="xanu08" class="form-control" name="enable">
       <option value = "0">No</option>
       <option value = "1" selected>Yes</option>      
     </select>
     <label for="unit">Unit:</label>
-    <select id="xan_u08" class="form-control" name="unit">    
+    <select id="xanu08" class="form-control" name="unit">    
       <option value = "2" selected>Analog</option>
       <option value = "101">Luminosity</option>    
       <option value = "103">Temperature</option>
@@ -120,33 +120,33 @@
       <option value = "102">Presence</option>                   
     </select>    
     <label for="in-min">In Min. (mA):</label>
-    <input id="xan_f32" type="number" required class="form-control" value="4" step="any" name="in-min">
+    <input id="xanf32" type="number" required class="form-control" value="4" step="any" name="in-min">
     <label for="in-max">In Max. (mA):</label>
-    <input id="xan_f32" type="number" required class="form-control" value="20" step="any" name="in-max">
+    <input id="xanf32" type="number" required class="form-control" value="20" step="any" name="in-max">
     <label for="out-min">Out Min.:</label>
-    <input id="xan_f32" type="number" required class="form-control" value="4" step="any" name="out-min">
+    <input id="xanf32" type="number" required class="form-control" value="4" step="any" name="out-min">
     <label for="out-max">Out Max.:</label>
-    <input id="xan_f32" type="number" required class="form-control" value="20" step="any" name="out-max">    
+    <input id="xanf32" type="number" required class="form-control" value="20" step="any" name="out-max">    
     <label for="low">Low:</label>
-    <input id="xan_f32" type="number" required class="form-control" value="11" step="any" name="low">
+    <input id="xanf32" type="number" required class="form-control" value="11" step="any" name="low">
     <label for="high">High:</label>
-    <input id="xan_f32" type="number" required class="form-control" value="13" step="any" name="high"> 
+    <input id="xanf32" type="number" required class="form-control" value="13" step="any" name="high"> 
     <label for="calibrate">Calibrate:</label>
-    <input id="xan_f32" type="number" required class="form-control" value="0" step="any" name="calibrate">   
+    <input id="xanf32" type="number" required class="form-control" value="0" step="any" name="calibrate">   
     <label for="duration">Duration (Seconds 1-3600):</label>
-    <input id="xan_u16" type="number" required class="form-control" value="1" min="0" max="3600" step="1" maxlength="4" name="duration">
+    <input id="xanu16" type="number" required class="form-control" value="1" min="0" max="3600" step="1" maxlength="4" name="duration">
     <label for="low-report">Report IF Low:</label>
-    <select id="xan_u08" class="form-control" name="low-report">
+    <select id="xanu08" class="form-control" name="low-report">
       <option value = "0">No</option>
       <option value = "1" selected>Yes</option>      
     </select>
     <label for="midw-report">Report IF Mid:</label>
-    <select id="xan_u08" class="form-control" name="mid-report">
+    <select id="xanu08" class="form-control" name="mid-report">
       <option value = "0">No</option>
       <option value = "1" selected>Yes</option>      
     </select>
     <label for="high-report">Report IF High:</label>
-    <select id="xan_u08" class="form-control" name="high-report">
+    <select id="xanu08" class="form-control" name="high-report">
       <option value = "0">No</option>
       <option value = "1" selected>Yes</option>      
     </select>
@@ -161,27 +161,27 @@
   <div id="digital" class="collapse" data-parent="#channels-form">    
     <br>
     <label for="enable">Enable:</label>
-    <select id="xdg_u08" class="form-control" name="enable">
+    <select id="xdgu08" class="form-control" name="enable">
       <option value = "0">No</option>
       <option value = "1" selected>Yes</option>      
     </select>     
     <label for="unit">Unit:</label>
-    <select id="xdg_u08" class="form-control" name="unit">    
+    <select id="xdgu08" class="form-control" name="unit">    
     <option value = "0" selected>Digital</option>
     <option value = "142">Switch</option>
     <option value = "102">Presence</option>            
     </select>    
     <label for="debounce">Debounce (Miliseconds 0-255):</label>
-    <input id="xdg_u08" type="number" required class="form-control" value="20" max="250" step="1" maxlength="3" name="debounce">
+    <input id="xdgu08" type="number" required class="form-control" value="20" max="250" step="1" maxlength="3" name="debounce">
     <label for="duration">Duration (Seconds 1-3600):</label>
-    <input id="xdg_u16" type="number" required class="form-control" value="1" min="0" max="3600" step="1" maxlength="4" name="duration">    
+    <input id="xdgu16" type="number" required class="form-control" value="1" min="0" max="3600" step="1" maxlength="4" name="duration">    
     <label for="low-report">Report IF Low:</label>
-    <select id="xdg_u08" class="form-control" name="low-report">
+    <select id="xdgu08" class="form-control" name="low-report">
       <option value = "0">No</option>
       <option value = "1" selected>Yes</option>      
     </select>
     <label for="high-report">Report IF High:</label>
-    <select id="xdg_u08" class="form-control" name="high-report">
+    <select id="xdgu08" class="form-control" name="high-report">
       <option value = "0">No</option>
       <option value = "1" selected>Yes</option>      
     </select>
