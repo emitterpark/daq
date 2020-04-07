@@ -1,5 +1,6 @@
 // Bootloader: Board SparkFun Pro Micro 3.3V 8MHZ
-// C:Users/../AppData/Local/Arduino../packages/arduino/hardware/avr/../cores/arduino/USBCore.h 
+// sparkfun boards.txt promicro.build.extra_flags={build.usb_flags} "-DUSB_VERSION=0x210"
+// or C:Users/../AppData/Local/Arduino../packages/arduino/hardware/avr/../cores/arduino/USBCore.h 
 // line 130: #define USB_VERSION 0x210
 
 #include <avr/wdt.h>
@@ -117,13 +118,16 @@ void readAnalog() {
         const uint8_t _out_min = anf32_out_min + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;
         const uint8_t _out_max = anf32_out_max + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;
         const uint8_t _calibrate = anf32_calibrate + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;
+        /*
         an[ch] *= 1000L;
         an[ch] /= rshunt;
         an[ch] = (an[ch] - conf.anf32[_in_min]) * (conf.anf32[_out_max] - conf.anf32[_out_min]) / (conf.anf32[_in_max] - conf.anf32[_in_min]) + conf.anf32[_out_min];      
         an[ch] *= (1.0 + conf.anf32[_calibrate]);
-        an[ch] = round(an[ch]*1000.0)/1000.0 + 0.0005;
+        an[ch] += 0.005;
+        */
+        //an[ch] = round(an[ch]*100.0)/100.0;
         fetchAnalog(ch);
-        isAnalogReport(ch);
+        //isAnalogReport(ch);
       }      
     }                    
   }    
