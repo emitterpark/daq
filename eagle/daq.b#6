@@ -1014,11 +1014,11 @@ design rules under a new name.</description>
 <attribute name="NAME" x="47.864" y="12.296" size="0.8128" layer="25" rot="R180" align="center"/>
 <attribute name="VALUE" x="49.4665" y="11.1125" size="1.016" layer="27" rot="R180"/>
 </element>
-<element name="D4" library="myparts" package="SOD123-DIODE" value="" x="22.352" y="13.081" smashed="yes">
+<element name="D3" library="myparts" package="SOD123-DIODE" value="" x="22.352" y="13.081" smashed="yes">
 <attribute name="NAME" x="19.1675" y="12.9925" size="0.8128" layer="25" align="center"/>
 <attribute name="VALUE" x="22.4695" y="13.6275" size="1.016" layer="27" align="center"/>
 </element>
-<element name="D5" library="myparts" package="SOD123-DIODE" value="" x="28.702" y="13.081" smashed="yes">
+<element name="D4" library="myparts" package="SOD123-DIODE" value="" x="28.702" y="13.081" smashed="yes">
 <attribute name="NAME" x="31.9945" y="13.1195" size="0.8128" layer="25" align="center"/>
 <attribute name="VALUE" x="28.8195" y="13.6275" size="1.016" layer="27" align="center"/>
 </element>
@@ -1797,7 +1797,7 @@ design rules under a new name.</description>
 <wire x1="24.13" y1="8.255" x2="24.13" y2="6.477" width="0.8128" layer="1"/>
 <wire x1="24.13" y1="8.255" x2="24.638" y2="8.763" width="0.8128" layer="1"/>
 <contactref element="IC3" pad="2"/>
-<contactref element="D4" pad="2"/>
+<contactref element="D3" pad="2"/>
 <wire x1="24.638" y1="8.763" x2="24.638" y2="12.065" width="0.8128" layer="1"/>
 <wire x1="24.1935" y1="12.5095" x2="24.1935" y2="13.081" width="0.8128" layer="1"/>
 <wire x1="24.638" y1="12.065" x2="24.1935" y2="12.5095" width="0.8128" layer="1"/>
@@ -2048,7 +2048,7 @@ design rules under a new name.</description>
 <contactref element="CON5" pad="6"/>
 <wire x1="31.75" y1="8.509" x2="31.75" y2="6.477" width="0.8128" layer="1"/>
 <wire x1="31.75" y1="8.509" x2="30.988" y2="9.271" width="0.8128" layer="1"/>
-<contactref element="D5" pad="2"/>
+<contactref element="D4" pad="2"/>
 <wire x1="30.988" y1="9.271" x2="30.988" y2="12.065" width="0.8128" layer="1"/>
 <wire x1="30.5435" y1="12.5095" x2="30.5435" y2="13.081" width="0.8128" layer="1"/>
 <wire x1="30.988" y1="12.065" x2="30.5435" y2="12.5095" width="0.8128" layer="1"/>
@@ -2405,7 +2405,7 @@ design rules under a new name.</description>
 <signal name="N$20">
 <contactref element="IC3" pad="1"/>
 <contactref element="R13" pad="2"/>
-<contactref element="D4" pad="1"/>
+<contactref element="D3" pad="1"/>
 <wire x1="21.463" y1="11.049" x2="21.463" y2="13.081" width="0.8128" layer="1"/>
 <wire x1="21.463" y1="13.081" x2="21.463" y2="13.97" width="0.8128" layer="1"/>
 <wire x1="21.082" y1="14.351" x2="21.082" y2="15.369" width="0.8128" layer="1"/>
@@ -2415,7 +2415,7 @@ design rules under a new name.</description>
 <signal name="N$33">
 <contactref element="IC4" pad="1"/>
 <contactref element="R15" pad="2"/>
-<contactref element="D5" pad="1"/>
+<contactref element="D4" pad="1"/>
 <wire x1="27.813" y1="11.049" x2="27.813" y2="13.081" width="0.8128" layer="1"/>
 <wire x1="27.813" y1="13.081" x2="27.813" y2="13.97" width="0.8128" layer="1"/>
 <wire x1="27.432" y1="14.351" x2="27.432" y2="15.369" width="0.8128" layer="1"/>

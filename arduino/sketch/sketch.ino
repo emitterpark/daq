@@ -70,7 +70,7 @@ int         anDuration[numAn] = {-1, -1};
 int         dgDuration[numDg] = {-1, -1};
 int         ledOscForever;
 
-bool isLoraJoin, isIntervalReport;
+bool isLoraJoin, isIntervalReport, isLoraSerial;
 String strUsbSerial, strLoraSerial;
 const uint8_t floatToPrint = 8;
 const float rshunt = 3.3;
@@ -90,7 +90,8 @@ void setup() {
   setUsbSerial();   
   setAnalog();
   setDigital();  
-  setLoraSerial();    // t.after(tmrRandom(), setLoraSerial);   
+  setLoraSerial();
+  //t.after(tmrRandom(), setLoraSerial);       
   t.every(conf.lru08[lru08_report] * 1000L * 60, intervalReport);
   ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
@@ -118,16 +119,14 @@ void readAnalog() {
         const uint8_t _out_min = anf32_out_min + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;
         const uint8_t _out_max = anf32_out_max + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;
         const uint8_t _calibrate = anf32_calibrate + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;
-        /*
         an[ch] *= 1000L;
         an[ch] /= rshunt;
         an[ch] = (an[ch] - conf.anf32[_in_min]) * (conf.anf32[_out_max] - conf.anf32[_out_min]) / (conf.anf32[_in_max] - conf.anf32[_in_min]) + conf.anf32[_out_min];      
-        an[ch] *= (1.0 + conf.anf32[_calibrate]);
-        an[ch] += 0.005;
-        */
+        //an[ch] *= (1.0 + conf.anf32[_calibrate]);
+        //an[ch] += 0.005;        
         //an[ch] = round(an[ch]*100.0)/100.0;
         fetchAnalog(ch);
-        //isAnalogReport(ch);
+        isAnalogReport(ch);
       }      
     }                    
   }    
@@ -402,6 +401,7 @@ void setLoraSerial() {
   delay(100);
   digitalWrite(LORA_RES_PIN, HIGH);  
   delay(1000);
+  isLoraSerial = true;
   loraSerial.println("at+version");    
 }
 void setUsbSerial() {
@@ -430,11 +430,13 @@ void Report() {
   usbSerial.println("alarm");
   usbSerial.flush();
   if (!isLoraJoin) {
-    if(isIntervalReport) {
-      isIntervalReport = false;
-      resetMe();    
+    if (isLoraSerial) {
+      if(isIntervalReport) {
+        isIntervalReport = false;
+        resetMe();    
+      }
+      return;
     }
-    return;
   }           
   lpp.reset();  
   for (uint8_t ch = 0; ch < numAn; ch++) {

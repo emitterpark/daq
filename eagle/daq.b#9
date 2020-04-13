@@ -739,7 +739,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="24.638" y="35.052" size="1.016" layer="27"/>
 </element>
 <element name="CON1" library="myparts" package="ISP" value="" x="24.384" y="35.56" smashed="yes" rot="R270">
-<attribute name="NAME" x="21.844" y="30.988" size="0.8128" layer="25" rot="R180" align="center"/>
+<attribute name="NAME" x="21.844" y="31.242" size="0.8128" layer="25" rot="R180" align="center"/>
 <attribute name="VALUE" x="22.86" y="36.703" size="1.016" layer="27" rot="R270"/>
 </element>
 <element name="CON2" library="myparts" package="HEADER-8P-2R-DIP-2_54MM" value="" x="23.495" y="57.912" smashed="yes" rot="R270">
