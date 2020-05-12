@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.02" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
@@ -717,14 +717,6 @@
 <text x="-15.24" y="17.78" size="1.778" layer="94">&gt;NAME</text>
 <text x="-15.24" y="20.32" size="1.778" layer="94">&gt;VALUE</text>
 </symbol>
-<symbol name="VEXT">
-<text x="-1.905" y="1.905" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="VEXT" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
-<wire x1="-1.016" y1="1.524" x2="1.016" y2="1.524" width="0.254" layer="94"/>
-<wire x1="1.016" y1="1.524" x2="1.016" y2="0" width="0.254" layer="94"/>
-<wire x1="1.016" y1="0" x2="-1.016" y2="0" width="0.254" layer="94"/>
-<wire x1="-1.016" y1="0" x2="-1.016" y2="1.524" width="0.254" layer="94"/>
-</symbol>
 <symbol name="OPTO">
 <wire x1="-5.08" y1="2.54" x2="5.08" y2="2.54" width="0.254" layer="94"/>
 <wire x1="5.08" y1="2.54" x2="5.08" y2="-5.08" width="0.254" layer="94"/>
@@ -1143,18 +1135,6 @@
 </device>
 </devices>
 </deviceset>
-<deviceset name="VEXT">
-<gates>
-<gate name="G$1" symbol="VEXT" x="0" y="2.54"/>
-</gates>
-<devices>
-<device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="RESISTOR-0805" prefix="R" uservalue="yes">
 <gates>
 <gate name="G$1" symbol="RESISTOR" x="0" y="0"/>
@@ -1466,7 +1446,6 @@
 <part name="GND46" library="myparts" deviceset="GND" device=""/>
 <part name="SUP11" library="myparts" deviceset="VCC" device=""/>
 <part name="SUP12" library="myparts" deviceset="VCC" device=""/>
-<part name="U$4" library="myparts" deviceset="VEXT" device=""/>
 <part name="CON4" library="myparts" deviceset="USB-MICRO-B-SMD" device=""/>
 <part name="C17" library="myparts" deviceset="CAPACITOR-SMD-8" device=""/>
 <part name="GND31" library="myparts" deviceset="GND" device=""/>
@@ -1549,7 +1528,6 @@
 <part name="GND28" library="myparts" deviceset="GND" device=""/>
 <part name="C10" library="myparts" deviceset="CAPACITOR-0603" device=""/>
 <part name="GND33" library="myparts" deviceset="GND" device=""/>
-<part name="U$5" library="myparts" deviceset="VEXT" device=""/>
 <part name="GND35" library="myparts" deviceset="GND" device=""/>
 <part name="C16" library="myparts" deviceset="CAPACITOR-0603" device=""/>
 </parts>
@@ -1850,9 +1828,6 @@
 <instance part="SUP12" gate="G$1" x="-139.7" y="-88.9" smashed="yes">
 <attribute name="VALUE" x="-141.605" y="-86.995" size="1.778" layer="96"/>
 </instance>
-<instance part="U$4" gate="G$1" x="-195.58" y="-50.8" smashed="yes" rot="R90">
-<attribute name="VALUE" x="-193.421" y="-52.705" size="1.778" layer="96" rot="R180"/>
-</instance>
 <instance part="CON4" gate="G$1" x="-25.4" y="68.58" smashed="yes" rot="MR90">
 <attribute name="NAME" x="-21.844" y="73.66" size="1.778" layer="95" rot="MR90" align="center-left"/>
 <attribute name="VALUE" x="-20.066" y="73.66" size="1.778" layer="96" rot="MR90" align="center-left"/>
@@ -2147,9 +2122,6 @@
 </instance>
 <instance part="GND33" gate="1" x="-170.18" y="-63.5" smashed="yes">
 <attribute name="VALUE" x="-172.72" y="-66.548" size="1.778" layer="96"/>
-</instance>
-<instance part="U$5" gate="G$1" x="-2.54" y="-154.94" smashed="yes">
-<attribute name="VALUE" x="-4.445" y="-153.035" size="1.778" layer="96"/>
 </instance>
 <instance part="GND35" gate="1" x="-5.08" y="-154.94" smashed="yes" rot="R180">
 <attribute name="VALUE" x="-2.54" y="-151.892" size="1.778" layer="96" rot="R180"/>
@@ -2687,16 +2659,6 @@
 <pinref part="IC6" gate="G$1" pin="SDA"/>
 </segment>
 </net>
-<net name="VEXT" class="0">
-<segment>
-<pinref part="D2" gate="G$1" pin="A"/>
-<pinref part="U$4" gate="G$1" pin="VEXT"/>
-</segment>
-<segment>
-<pinref part="CON5" gate="G$1" pin="2"/>
-<pinref part="U$5" gate="G$1" pin="VEXT"/>
-</segment>
-</net>
 <net name="N$18" class="0">
 <segment>
 <pinref part="R1" gate="G$1" pin="1"/>
@@ -3172,6 +3134,16 @@
 <wire x1="104.14" y1="20.32" x2="104.14" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="104.14" y1="27.94" x2="96.52" y2="27.94" width="0.1524" layer="91"/>
 <junction x="96.52" y="27.94"/>
+</segment>
+</net>
+<net name="N$7" class="0">
+<segment>
+<pinref part="CON5" gate="G$1" pin="2"/>
+<wire x1="-2.54" y1="-157.48" x2="-2.54" y2="-152.4" width="0.1524" layer="91"/>
+<wire x1="-2.54" y1="-152.4" x2="-208.28" y2="-152.4" width="0.1524" layer="91"/>
+<wire x1="-208.28" y1="-152.4" x2="-208.28" y2="-50.8" width="0.1524" layer="91"/>
+<pinref part="D2" gate="G$1" pin="A"/>
+<wire x1="-208.28" y1="-50.8" x2="-193.04" y2="-50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
