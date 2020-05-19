@@ -78,7 +78,7 @@ const float rshunt = 3.3;
 Timer t;
 CayenneLPP lpp(51);
 INA226 analog;
-//WebUSB WebUSBSerial(1 /* https:// */, "leanofis-iot.github.io/daq");
+//WebUSB WebUSBSerial(1 /* https:// */, "emitterpark.github.io/daq");
 WebUSB WebUSBSerial(1 /* https:// */, "127.0.0.1:5500");
 #define usbSerial WebUSBSerial
 #define loraSerial Serial1
