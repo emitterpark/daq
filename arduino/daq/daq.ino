@@ -1,5 +1,7 @@
 // Bootloader: Board SparkFun Pro Micro 3.3V 8MHZ
-// sparkfun boards.txt promicro.build.extra_flags={build.usb_flags} "-DUSB_VERSION=0x210"
+// sparkfun boards.txt 
+// promicro.menu.cpu.8MHzatmega32U4.bootloader.extended_fuses=0xFF
+// promicro.build.extra_flags={build.usb_flags} "-DUSB_VERSION=0x210"
 // or C:Users/../AppData/Local/Arduino../packages/arduino/hardware/avr/../cores/arduino/USBCore.h 
 // line 130: #define USB_VERSION 0x210
 
