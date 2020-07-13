@@ -24,10 +24,7 @@ const uint8_t lru08_port          = 1;
 const uint8_t lru08_report        = 2;
 
 const uint8_t anu08_enable        = 0;  
-const uint8_t anu08_unit          = 1;
-const uint8_t anu08_low_report    = 2;
-const uint8_t anu08_mid_report    = 3;
-const uint8_t anu08_high_report   = 4; 
+const uint8_t anu08_unit          = 1; 
 
 const uint8_t anu16_duration      = 0; 
 
@@ -52,7 +49,7 @@ const uint8_t numDg               = 2;
 
 struct Conf {
   uint8_t   lru08[3];
-  uint8_t   anu08[5 * numAn];
+  uint8_t   anu08[2 * numAn];
   uint16_t  anu16[numAn];
   float     anf32[7 * numAn];
   uint8_t   dgu08[5 * numDg];
@@ -72,7 +69,7 @@ int         anDuration[numAn] = {-1, -1};
 int         dgDuration[numDg] = {-1, -1};
 int         ledOscForever;
 
-bool isLoraJoin, isIntervalReport, isLoraSerial;
+bool isLoraJoin, isUsb, isIntervalReport, isLoraSerial;
 String strUsbSerial, strLoraSerial;
 const uint8_t floatToPrint = 8;
 const float rshunt = 3.9;
@@ -100,8 +97,152 @@ void loop() {
   readAnalog();
   readDigital();  
   readLoraSerial();
-  readUsbSerial();
+  if (isUsb) {
+    readUsbSerial();
+  }  
   t.update();
+}
+void Report() {   
+  for (uint8_t ch = 0; ch < numAn; ch++) {
+    t.stop(anDuration[ch]);
+    anDuration[ch] = -1;
+  }
+  for (uint8_t ch = 0; ch < numDg; ch++) {
+    t.stop(dgDuration[ch]);
+    dgDuration[ch] = -1;
+  }
+  if (isUsb) {
+    usbSerial.println("report");
+    usbSerial.flush();
+  }  
+  if (!isLoraJoin) {
+    if (isLoraSerial) {
+      if(isIntervalReport) {
+        isIntervalReport = false;
+        resetCpu();    
+      }
+      return;
+    }
+  }           
+  lpp.reset();  
+  for (uint8_t ch = 0; ch < numAn; ch++) {
+    const uint8_t _unit = conf.anu08[anu08_unit + ch * (sizeof(conf.anu08) / sizeof(conf.anu08[0])) / numAn];      
+    if (_unit == LPP_ANALOG_INPUT) {
+      lpp.addAnalogInput(1 + ch, an[ch]);
+    } else if (_unit == LPP_LUMINOSITY) {
+      lpp.addLuminosity(1 + ch, an[ch]);
+    } else if (_unit == LPP_TEMPERATURE) {
+      lpp.addTemperature(1 + ch, an[ch]);
+    } else if (_unit == LPP_RELATIVE_HUMIDITY) {
+      lpp.addRelativeHumidity(1 + ch, an[ch]);
+    } else if (_unit == LPP_BAROMETRIC_PRESSURE) {
+      lpp.addBarometricPressure(1 + ch, an[ch]);
+    } else if (_unit == LPP_VOLTAGE) {
+      lpp.addVoltage(1 + ch, an[ch]);
+    } else if (_unit == LPP_CURRENT) {
+      lpp.addCurrent(1 + ch, an[ch]);
+    } else if (_unit == LPP_PERCENTAGE) {
+      lpp.addPercentage(1 + ch, an[ch]);
+    } else if (_unit == LPP_ALTITUDE) {
+      lpp.addAltitude(1 + ch, an[ch]);
+    } else if (_unit == LPP_POWER) {
+      lpp.addPower(1 + ch, an[ch]);
+    } else if (_unit == LPP_DIRECTION) {
+      lpp.addDirection(1 + ch, an[ch]);
+    } else if (_unit == LPP_DIGITAL_INPUT) {
+      lpp.addDigitalInput(1 + ch, an[ch]);
+    } else if (_unit == LPP_SWITCH) {
+      lpp.addSwitch(1 + ch, an[ch]);
+    } else if (_unit == LPP_PRESENCE) {  
+      lpp.addPresence(1 + ch, an[ch]);      
+    }
+  } 
+  for (uint8_t ch = 0; ch < numDg; ch++) {
+    const uint8_t _unit = conf.dgu08[dgu08_unit + ch * (sizeof(conf.dgu08) / sizeof(conf.dgu08[0])) / numDg];      
+    if (_unit == LPP_DIGITAL_INPUT) {
+      lpp.addDigitalInput(3 + ch, dg[ch]);
+    } else if (_unit == LPP_SWITCH) {
+      lpp.addSwitch(3 + ch, dg[ch]);
+    } else if (_unit == LPP_PRESENCE) {
+      lpp.addPresence(3 + ch, dg[ch]);
+    }
+  }    
+  loraSerial.print("at+send=lora:" + String(conf.lru08[lru08_port]) + ':'); 
+  loraSerial.println(lppGetBuffer());       
+}
+void readLoraSerial() { 
+  while (loraSerial.available()) {    
+    const char chr = (char)loraSerial.read();    
+    strLoraSerial += chr;
+    if (chr == '\n') {
+      strLoraSerial.trim();      
+      if (strLoraSerial.endsWith(F("Join Success"))) {        
+        delay(10);         
+        loraSerial.print(F("at+set_config=lora:dr:")); 
+        loraSerial.println(conf.lru08[lru08_dr]); 
+      } else if (strLoraSerial.indexOf(F("configure DR")) >= 0) {
+        isLoraJoin = true;         
+        t.stop(ledOscForever);        
+        digitalWrite(LED_PIN, LOW);                 
+      } else if (strLoraSerial.indexOf(F("Join retry")) >= 0) {
+        t.stop(ledOscForever);
+        ledOscForever = t.oscillate(LED_PIN, 500, HIGH);       
+      }
+      if (isUsb) {
+        usbSerial.println(strLoraSerial); 
+        usbSerial.flush();
+      }           
+      strLoraSerial = "";
+    }
+  }
+}
+void readUsbSerial() {
+  while (usbSerial && usbSerial.available()) {    
+    const char chr = (char)usbSerial.read();
+    strUsbSerial += chr;
+    if (chr == '\n') {
+      strUsbSerial.trim();
+      const uint8_t num = strUsbSerial.substring(6, 8).toInt();
+      const uint16_t valInt = strUsbSerial.substring(8).toInt();
+      const float valFloat = strUsbSerial.substring(8).toFloat();       
+      if (strUsbSerial.startsWith(F("at"))) {
+        loraSerial.println(strUsbSerial);      
+      } else if (strUsbSerial.startsWith(F("xlru08"))) {
+        conf.lru08[num] = (uint8_t)valInt;
+      } else if (strUsbSerial.startsWith(F("xanu08"))) {
+        conf.anu08[num] = (uint8_t)valInt;
+      } else if (strUsbSerial.startsWith(F("xanu16"))) {
+        conf.anu16[num] = (uint16_t)valInt;
+      } else if (strUsbSerial.startsWith(F("xanf32"))) {
+        conf.anf32[num] = valFloat;
+      } else if (strUsbSerial.startsWith(F("xdgu08"))) {
+        conf.dgu08[num] = (uint8_t)valInt;
+      } else if (strUsbSerial.startsWith(F("xdgu16"))) {
+        conf.dgu16[num] = (uint16_t)valInt;
+      } else if (strUsbSerial.startsWith(F("xsave"))) {
+        EEPROM.put(0, conf);
+        resetCpu();
+      } else if (strUsbSerial.startsWith(F("xdevice"))) {
+        usbSerial.println(F("xdeviceeLoraWAN Wireless DAQ"));
+        usbSerial.flush();
+      } else if (strUsbSerial.startsWith(F("xversion"))) {
+        usbSerial.println(F("xversionFirmware 1.0.1"));
+        usbSerial.flush();
+      } else if (strUsbSerial.startsWith(F("xfetch"))) {
+        for (uint8_t ch = 0; ch < numAn; ch++) {
+          fetchAnalog(ch);       
+        }
+        for (uint8_t ch = 0; ch < numDg; ch++) {
+          fetchDigital(ch);       
+        }
+      } else if (strUsbSerial.startsWith(F("xchannels"))) {
+        getChannels();      
+      } else if (strUsbSerial.startsWith(F("xlorawan"))) {
+        getLorawan();      
+      }
+      strUsbSerial = "";
+    }
+  }   
 }
 void readAnalog() {      
   for (uint8_t ch = 0; ch < numAn; ch++) {
@@ -131,19 +272,18 @@ void readAnalog() {
   }    
 }
 void fetchAnalog(const uint8_t ch) { 
-  String str;  
-  usbSerial.print(F("xanval"));    
-  str = '0' + String(ch);
-  usbSerial.print(str.substring(str.length() - 2));    
-  usbSerial.println(an[ch], floatToPrint);
-  usbSerial.flush();    
+  if (isUsb) {
+    String str;  
+    usbSerial.print(F("xanval"));    
+    str = '0' + String(ch);
+    usbSerial.print(str.substring(str.length() - 2));    
+    usbSerial.println(an[ch], floatToPrint);
+    usbSerial.flush();  
+  }    
 }
 void isAnalogReport(const uint8_t ch) {       
   const uint8_t _low = anf32_low + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn; 
-  const uint8_t _high = anf32_high + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;
-  const uint8_t _low_report = anu08_low_report + ch * (sizeof(conf.anu08) / sizeof(conf.anu08[0])) / numAn;
-  const uint8_t _mid_report = anu08_mid_report + ch * (sizeof(conf.anu08) / sizeof(conf.anu08[0])) / numAn; 
-  const uint8_t _high_report = anu08_high_report + ch * (sizeof(conf.anu08) / sizeof(conf.anu08[0])) / numAn; 
+  const uint8_t _high = anf32_high + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;  
   const uint8_t _duration = anu16_duration + ch * (sizeof(conf.anu16) / sizeof(conf.anu16[0])) / numAn;    
   if (an[ch] > conf.anf32[_low] && an[ch] < conf.anf32[_high]) {    
     if (anPrev[ch] != MID) {
@@ -152,11 +292,9 @@ void isAnalogReport(const uint8_t ch) {
         t.stop(anDuration[ch]);
         anDuration[ch] = -1;
         return;
-      }        
-      if (conf.anu08[_mid_report]) {        
-        t.stop(anDuration[ch]);
-        anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, Report);                          
-      }            
+      }              
+      t.stop(anDuration[ch]);
+      anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, Report);                 
     }                  
   } else if (an[ch] <= conf.anf32[_low]) {    
     if (anPrev[ch] != LOW) {
@@ -165,11 +303,9 @@ void isAnalogReport(const uint8_t ch) {
         t.stop(anDuration[ch]);
         anDuration[ch] = -1;
         return; 
-      } 
-      if (conf.anu08[_low_report]) {        
-        t.stop(anDuration[ch]);
-        anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, Report);                        
-      }                       
+      }      
+      t.stop(anDuration[ch]);
+      anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, Report);
     }                  
   } else if (an[ch] >= conf.anf32[_high]) {     
     if (anPrev[ch] != HIGH) {
@@ -178,11 +314,9 @@ void isAnalogReport(const uint8_t ch) {
         t.stop(anDuration[ch]);
         anDuration[ch] = -1;
         return;
-      }        
-      if (conf.anu08[_high_report]) {        
-        t.stop(anDuration[ch]);
-        anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, Report);                          
-      }                       
+      }      
+      t.stop(anDuration[ch]);
+      anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, Report);
     }    
   }  
 }
@@ -203,13 +337,15 @@ void readDigital() {
     }    
   }
 }
-void fetchDigital(const uint8_t ch) {  
-  String str;
-  usbSerial.print(F("xdgval"));    
-  str = '0' + String(ch);
-  usbSerial.print(str.substring(str.length() - 2));    
-  usbSerial.println(dg[ch]);
-  usbSerial.flush();    
+void fetchDigital(const uint8_t ch) { 
+  if (isUsb) {
+    String str;
+    usbSerial.print(F("xdgval"));    
+    str = '0' + String(ch);
+    usbSerial.print(str.substring(str.length() - 2));    
+    usbSerial.println(dg[ch]);
+    usbSerial.flush();   
+  }    
 }
 void isDigitalReport(const uint8_t ch) {
   const uint8_t _low_report = dgu08_low_report + ch * (sizeof(conf.dgu08) / sizeof(conf.dgu08[0])) / numDg; 
@@ -241,77 +377,6 @@ void isDigitalReport(const uint8_t ch) {
       }       
     }
   }         
-}
-void readLoraSerial() { 
-  while (loraSerial.available()) {    
-    const char chr = (char)loraSerial.read();    
-    strLoraSerial += chr;
-    if (chr == '\n') {
-      strLoraSerial.trim();      
-      if (strLoraSerial.endsWith(F("Join Success"))) {         
-        isLoraJoin = true; 
-        t.stop(ledOscForever);        
-        digitalWrite(LED_PIN, LOW);
-        delay(10);         
-        loraSerial.print(F("at+set_config=lora:dr:")); 
-        loraSerial.println(conf.lru08[lru08_dr]);                  
-      } else if (strLoraSerial.indexOf(F("Join retry")) >= 0) {
-        t.stop(ledOscForever);
-        ledOscForever = t.oscillate(LED_PIN, 500, HIGH);       
-      }
-      usbSerial.println(strLoraSerial); 
-      usbSerial.flush();     
-      strLoraSerial = "";
-    }
-  }
-}
-void readUsbSerial() {
-  while (usbSerial && usbSerial.available()) {    
-    const char chr = (char)usbSerial.read();
-    strUsbSerial += chr;
-    if (chr == '\n') {
-      strUsbSerial.trim();
-      const uint8_t num = strUsbSerial.substring(6, 8).toInt();
-      const uint16_t valInt = strUsbSerial.substring(8).toInt();
-      const float valFloat = strUsbSerial.substring(8).toFloat();       
-      if (strUsbSerial.startsWith(F("at"))) {
-        loraSerial.println(strUsbSerial);      
-      } else if (strUsbSerial.startsWith(F("xlru08"))) {
-        conf.lru08[num] = (uint8_t)valInt;
-      } else if (strUsbSerial.startsWith(F("xanu08"))) {
-        conf.anu08[num] = (uint8_t)valInt;
-      } else if (strUsbSerial.startsWith(F("xanu16"))) {
-        conf.anu16[num] = (uint16_t)valInt;
-      } else if (strUsbSerial.startsWith(F("xanf32"))) {
-        conf.anf32[num] = valFloat;
-      } else if (strUsbSerial.startsWith(F("xdgu08"))) {
-        conf.dgu08[num] = (uint8_t)valInt;
-      } else if (strUsbSerial.startsWith(F("xdgu16"))) {
-        conf.dgu16[num] = (uint16_t)valInt;
-      } else if (strUsbSerial.startsWith(F("xsave"))) {
-        EEPROM.put(0, conf);
-        resetMe();
-      } else if (strUsbSerial.startsWith(F("xdevice"))) {
-        usbSerial.println(F("xdeviceeLoraWAN Wireless DAQ"));
-        usbSerial.flush();
-      } else if (strUsbSerial.startsWith(F("xversion"))) {
-        usbSerial.println(F("xversionFirmware 1.0.1"));
-        usbSerial.flush();
-      } else if (strUsbSerial.startsWith(F("xfetch"))) {
-        for (uint8_t ch = 0; ch < numAn; ch++) {
-          fetchAnalog(ch);       
-        }
-        for (uint8_t ch = 0; ch < numDg; ch++) {
-          fetchDigital(ch);       
-        }
-      } else if (strUsbSerial.startsWith(F("xchannels"))) {
-        getChannels();      
-      } else if (strUsbSerial.startsWith(F("xlorawan"))) {
-        getLorawan();      
-      }
-      strUsbSerial = "";
-    }
-  }   
 }
 void getLorawan() {
   String str; 
@@ -395,7 +460,8 @@ void setLoraSerial() {
   }
   loraSerial.begin(115200);    
   delay(100);
-  digitalWrite(LORA_RES_PIN, HIGH);  
+  pinMode(LORA_RES_PIN, INPUT);
+  //digitalWrite(LORA_RES_PIN, HIGH);  
   delay(1000);
   isLoraSerial = true;
   loraSerial.println("at+version");    
@@ -406,87 +472,20 @@ void setUsbSerial() {
     }
   }  
   usbSerial.begin(9600);  
-  usbSerial.flush();    
+  usbSerial.flush(); 
+  isUsb = true;   
 }
 void intervalReport() {
  isIntervalReport = true;
  Report(); 
 }
-void Report() {   
-  for (uint8_t ch = 0; ch < numAn; ch++) {
-    t.stop(anDuration[ch]);
-    anDuration[ch] = -1;
-  }
-  for (uint8_t ch = 0; ch < numDg; ch++) {
-    t.stop(dgDuration[ch]);
-    dgDuration[ch] = -1;
-  }
-  usbSerial.println("alarm");
-  usbSerial.flush();
-  if (!isLoraJoin) {
-    if (isLoraSerial) {
-      if(isIntervalReport) {
-        isIntervalReport = false;
-        resetMe();    
-      }
-      return;
-    }
-  }           
-  lpp.reset();  
-  for (uint8_t ch = 0; ch < numAn; ch++) {
-    const uint8_t _unit = conf.anu08[anu08_unit + ch * (sizeof(conf.anu08) / sizeof(conf.anu08[0])) / numAn];      
-    if (_unit == LPP_ANALOG_INPUT) {
-      lpp.addAnalogInput(1 + ch, an[ch]);
-    } else if (_unit == LPP_LUMINOSITY) {
-      lpp.addLuminosity(1 + ch, an[ch]);
-    } else if (_unit == LPP_TEMPERATURE) {
-      lpp.addTemperature(1 + ch, an[ch]);
-    } else if (_unit == LPP_RELATIVE_HUMIDITY) {
-      lpp.addRelativeHumidity(1 + ch, an[ch]);
-    } else if (_unit == LPP_BAROMETRIC_PRESSURE) {
-      lpp.addBarometricPressure(1 + ch, an[ch]);
-    } else if (_unit == LPP_VOLTAGE) {
-      lpp.addVoltage(1 + ch, an[ch]);
-    } else if (_unit == LPP_CURRENT) {
-      lpp.addCurrent(1 + ch, an[ch]);
-    } else if (_unit == LPP_PERCENTAGE) {
-      lpp.addPercentage(1 + ch, an[ch]);
-    } else if (_unit == LPP_ALTITUDE) {
-      lpp.addAltitude(1 + ch, an[ch]);
-    } else if (_unit == LPP_POWER) {
-      lpp.addPower(1 + ch, an[ch]);
-    } else if (_unit == LPP_DIRECTION) {
-      lpp.addDirection(1 + ch, an[ch]);
-    } else if (_unit == LPP_DIGITAL_INPUT) {
-      lpp.addDigitalInput(1 + ch, an[ch]);
-    } else if (_unit == LPP_SWITCH) {
-      lpp.addSwitch(1 + ch, an[ch]);
-    } else if (_unit == LPP_PRESENCE) {  
-      lpp.addPresence(1 + ch, an[ch]);      
-    }
-  } 
-  for (uint8_t ch = 0; ch < numDg; ch++) {
-    const uint8_t _unit = conf.dgu08[dgu08_unit + ch * (sizeof(conf.dgu08) / sizeof(conf.dgu08[0])) / numDg];      
-    if (_unit == LPP_DIGITAL_INPUT) {
-      lpp.addDigitalInput(3 + ch, dg[ch]);
-    } else if (_unit == LPP_SWITCH) {
-      lpp.addSwitch(3 + ch, dg[ch]);
-    } else if (_unit == LPP_PRESENCE) {
-      lpp.addPresence(3 + ch, dg[ch]);
-    }
-  }    
-  loraSerial.print("at+send=lora:" + String(conf.lru08[lru08_port]) + ':'); 
-  loraSerial.println(lppGetBuffer());       
-}
 unsigned long tmrRandom() {
   randomSeed(analogRead(RANDOM_PIN));
   return random(24) * 5000L + 10000L;   // min 10sec, max 2min + 10sec   
 }
-void resetMe() {
-  //wdt_enable(WDTO_15MS);
-  //while(true); 
-  usbSerial.println("reset");
-  usbSerial.flush();
+void resetCpu() {
+  wdt_enable(WDTO_15MS);
+  while(true);  
 }
 String lppGetBuffer() {
   String str;
