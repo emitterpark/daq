@@ -23,7 +23,8 @@
     let lorawanBtn = document.querySelector('#lorawan-btn');
     let lorawanSaveBtn = document.querySelector('#lorawan-save-btn');
     let lorawanBackBtn = document.querySelector('#lorawan-back-btn');
-    let channelsBtn = document.querySelector('#channels-btn'); 
+    let channelsBtn = document.querySelector('#channels-btn');
+    let channelsReportBtn = document.querySelector('#channels-report-btn'); 
     let channelsSaveBtn = document.querySelector('#channels-save-btn');    
     let channelsBackBtn = document.querySelector('#channels-back-btn');
     let atModemBtn = document.querySelector('#at-modem-btn');
@@ -101,7 +102,17 @@
       lorawanForm.hidden = true;           
       channelsForm.hidden = false;
       atModemForm.hidden = true;                
-    });    
+    });  
+    
+    channelsReportBtn.addEventListener('click', function() {
+      if (!port) {
+        return;
+      }
+      const encoder = new TextEncoder();
+      let view;                  
+      view = encoder.encode('xreport\r\n');                
+      port.send(view);
+    });  
 
     channelsSaveBtn.addEventListener('click', function() {
       if (!port) {
