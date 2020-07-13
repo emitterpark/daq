@@ -86,7 +86,6 @@ WebUSB WebUSBSerial(1 /* https:// */, "127.0.0.1:5500");
 #define loraSerial Serial1
 
 void setup() {
-  //wdt_enable(WDTO_8S);  
   setPin();
   loadConf(); 
   setUsbSerial();   
@@ -102,7 +101,6 @@ void loop() {
   readDigital();  
   readLoraSerial();
   readUsbSerial();
-  //wdt_reset();
   t.update();
 }
 void readAnalog() {      
@@ -113,8 +111,7 @@ void readAnalog() {
         analog.begin(0x40 + ch);
         an[ch] = analog.readShuntVoltage();
         if (analog.isAlert()); 
-        while (!digitalRead(AN_ALR_PIN[ch])) {
-          //wdt_reset();
+        while (!digitalRead(AN_ALR_PIN[ch])) {          
         }       
         const uint8_t _in_min = anf32_in_min + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;
         const uint8_t _in_max = anf32_in_max + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn;
@@ -246,8 +243,7 @@ void isDigitalReport(const uint8_t ch) {
   }         
 }
 void readLoraSerial() { 
-  while (loraSerial.available()) {
-    //wdt_reset();
+  while (loraSerial.available()) {    
     const char chr = (char)loraSerial.read();    
     strLoraSerial += chr;
     if (chr == '\n') {
@@ -270,8 +266,7 @@ void readLoraSerial() {
   }
 }
 void readUsbSerial() {
-  while (usbSerial && usbSerial.available()) {
-    //wdt_reset();
+  while (usbSerial && usbSerial.available()) {    
     const char chr = (char)usbSerial.read();
     strUsbSerial += chr;
     if (chr == '\n') {
@@ -383,7 +378,7 @@ void setAnalog() {
   for (uint8_t ch = 0; ch < numAn; ch++) {       
     analog.begin(0x40 + ch);
     analog.configure(INA226_AVERAGES_1024, INA226_BUS_CONV_TIME_140US, INA226_SHUNT_CONV_TIME_1100US, INA226_MODE_SHUNT_CONT);
-    analog.calibrate(3.3, 0.020);
+    analog.calibrate(3.9, 0.020);
     analog.readShuntVoltage();
     analog.enableConversionReadyAlert(); 
     if (analog.isAlert());              
@@ -396,8 +391,7 @@ void setDigital() {
   }  
 }
 void setLoraSerial() {
-  while (!loraSerial) {
-    //wdt_reset();
+  while (!loraSerial) {    
   }
   loraSerial.begin(115200);    
   delay(100);
@@ -408,8 +402,7 @@ void setLoraSerial() {
 }
 void setUsbSerial() {
   if (USBSTA >> VBUS & 1) {          
-    while (!usbSerial) {
-      //wdt_reset();
+    while (!usbSerial) {      
     }
   }  
   usbSerial.begin(9600);  
@@ -419,8 +412,7 @@ void intervalReport() {
  isIntervalReport = true;
  Report(); 
 }
-void Report() {
-  //wdt_reset(); 
+void Report() {   
   for (uint8_t ch = 0; ch < numAn; ch++) {
     t.stop(anDuration[ch]);
     anDuration[ch] = -1;
