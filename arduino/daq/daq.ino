@@ -102,7 +102,7 @@ void loop() {
   }  
   t.update();
 }
-void Report() {   
+void report() {   
   for (uint8_t ch = 0; ch < numAn; ch++) {
     t.stop(anDuration[ch]);
     anDuration[ch] = -1;
@@ -238,7 +238,9 @@ void readUsbSerial() {
       } else if (strUsbSerial.startsWith(F("xchannels"))) {
         getChannels();      
       } else if (strUsbSerial.startsWith(F("xlorawan"))) {
-        getLorawan();      
+        getLorawan(); 
+      } else if (strUsbSerial.startsWith(F("xreport"))) {
+        report();       
       }
       strUsbSerial = "";
     }
@@ -294,7 +296,7 @@ void isAnalogReport(const uint8_t ch) {
         return;
       }              
       t.stop(anDuration[ch]);
-      anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, Report);                 
+      anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, report);                 
     }                  
   } else if (an[ch] <= conf.anf32[_low]) {    
     if (anPrev[ch] != LOW) {
@@ -305,7 +307,7 @@ void isAnalogReport(const uint8_t ch) {
         return; 
       }      
       t.stop(anDuration[ch]);
-      anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, Report);
+      anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, report);
     }                  
   } else if (an[ch] >= conf.anf32[_high]) {     
     if (anPrev[ch] != HIGH) {
@@ -316,7 +318,7 @@ void isAnalogReport(const uint8_t ch) {
         return;
       }      
       t.stop(anDuration[ch]);
-      anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, Report);
+      anDuration[ch] = t.after(conf.anu16[_duration] * 1000L, report);
     }    
   }  
 }
@@ -362,7 +364,7 @@ void isDigitalReport(const uint8_t ch) {
       }       
       if (conf.dgu08[_low_report]) {                
         t.stop(dgDuration[ch]);        
-        dgDuration[ch] = t.after(conf.dgu16[_duration] * 1000L, Report);                               
+        dgDuration[ch] = t.after(conf.dgu16[_duration] * 1000L, report);                               
       }          
     } else if (dg[ch] == HIGH) { 
       dgPrev[ch] = HIGH;                       
@@ -373,7 +375,7 @@ void isDigitalReport(const uint8_t ch) {
       }            
       if (conf.dgu08[_high_report]) {                
         t.stop(dgDuration[ch]);        
-        dgDuration[ch] = t.after(conf.dgu16[_duration] * 1000L, Report);                                  
+        dgDuration[ch] = t.after(conf.dgu16[_duration] * 1000L, report);                                  
       }       
     }
   }         
@@ -477,7 +479,7 @@ void setUsbSerial() {
 }
 void intervalReport() {
  isIntervalReport = true;
- Report(); 
+ report(); 
 }
 unsigned long tmrRandom() {
   randomSeed(analogRead(RANDOM_PIN));
