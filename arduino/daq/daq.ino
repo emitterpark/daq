@@ -461,9 +461,8 @@ void setLoraSerial() {
   while (!loraSerial) {    
   }
   loraSerial.begin(115200);    
-  delay(100);
+  delay(10);
   pinMode(LORA_RES_PIN, INPUT);
-  //digitalWrite(LORA_RES_PIN, HIGH);  
   delay(1000);
   isLoraSerial = true;
   loraSerial.println("at+version");    
