@@ -1,17 +1,17 @@
-![](media/image1.png){width="2.1in" height="1.4854166666666666in"}
+![](./media/image1.png){width="2.1in" height="1.4854166666666666in"}
 
-![](media/image2.jpeg){width="2.6in" height="1.788888888888889in"}
+![](./media/image2.jpeg){width="2.6in" height="1.788888888888889in"}
 
-![](media/image4.png){width="2.4743055555555555in"
+![](./media/image4.png){width="2.4743055555555555in"
 height="2.7916666666666665in"}
 
-![](media/image6.png){width="1.9583333333333333in"
+![](./media/image6.png){width="1.9583333333333333in"
 height="2.0722222222222224in"}
 
-![](media/image7.png){width="1.3263888888888888in"
+![](./media/image7.png){width="1.3263888888888888in"
 height="0.4222222222222222in"}
 
-![](media/image8.jpeg){width="0.5916666666666667in"
+![](./media/image8.jpeg){width="0.5916666666666667in"
 height="0.4618055555555556in"}
 
 **DAQ**, Kolaylıkla **IoT (Nesnelerin İnterneti)** projelerinizi
