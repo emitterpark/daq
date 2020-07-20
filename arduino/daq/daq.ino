@@ -279,7 +279,7 @@ void fetchAnalog(const uint8_t ch) {
     usbSerial.print(F("xanval"));    
     str = '0' + String(ch);
     usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(an[ch], floatToPrint);
+    usbSerial.println(an[ch], 2);
     usbSerial.flush();  
   }    
 }
@@ -410,7 +410,7 @@ void getChannels() {
     usbSerial.print(F("xanf32"));    
     str = '0' + String(i);
     usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(conf.anf32[i], floatToPrint); 
+    usbSerial.println(conf.anf32[i], 2); 
     usbSerial.flush();   
   }
   for (uint8_t i = 0; i < (sizeof(conf.dgu08) / sizeof(conf.dgu08[0])); i++) {
