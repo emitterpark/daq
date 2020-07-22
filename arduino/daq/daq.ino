@@ -71,7 +71,6 @@ int         ledOscForever;
 
 bool isLoraJoin, isUsb, isIntervalReport, isLoraSerial;
 String strUsbSerial, strLoraSerial;
-const uint8_t floatToPrint = 8;
 const float rshunt = 3.9;
 
 Timer t;
