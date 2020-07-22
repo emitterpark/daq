@@ -2067,7 +2067,6 @@ design rules under a new name.</description>
 <vertex x="46.101" y="16.764"/>
 <vertex x="46.101" y="18.669"/>
 </polygon>
-<wire x1="46.101" y1="11.049" x2="46.228" y2="14.605" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$71" airwireshidden="yes">
 <contactref element="L2" pad="1"/>
@@ -2134,7 +2133,6 @@ design rules under a new name.</description>
 <vertex x="44.958" y="10.287"/>
 <vertex x="43.688" y="10.287"/>
 </polygon>
-<wire x1="44.323" y1="11.049" x2="44.196" y2="14.605" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$26">
 <contactref element="R4" pad="2"/>
@@ -2276,7 +2274,6 @@ design rules under a new name.</description>
 <vertex x="35.941" y="16.764"/>
 <vertex x="36.576" y="16.764"/>
 </polygon>
-<wire x1="36.576" y1="11.049" x2="36.449" y2="14.605" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$11" airwireshidden="yes">
 <contactref element="R18" pad="2"/>
@@ -2294,7 +2291,6 @@ design rules under a new name.</description>
 <vertex x="37.719" y="16.891"/>
 <vertex x="37.592" y="17.018"/>
 </polygon>
-<wire x1="38.354" y1="11.049" x2="38.481" y2="14.605" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$28">
 <contactref element="R20" pad="1"/>

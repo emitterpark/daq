@@ -872,7 +872,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="14.097" y="16.002" size="1.016" layer="27" rot="R90"/>
 </element>
 <element name="C33" library="myparts" package="0603" value="" x="45.212" y="16.129" smashed="yes">
-<attribute name="NAME" x="47.752" y="16.383" size="0.8128" layer="25" align="center"/>
+<attribute name="NAME" x="42.672" y="16.383" size="0.8128" layer="25" align="center"/>
 <attribute name="VALUE" x="41.783" y="15.875" size="1.016" layer="27"/>
 </element>
 <element name="C24" library="myparts" package="0603" value="" x="20.32" y="24.13" smashed="yes">
@@ -888,7 +888,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="37.465" y="19.05" size="1.016" layer="27"/>
 </element>
 <element name="C31" library="myparts" package="0603" value="" x="40.894" y="17.78" smashed="yes">
-<attribute name="NAME" x="40.894" y="16.637" size="0.8128" layer="25" align="center"/>
+<attribute name="NAME" x="40.513" y="16.637" size="0.8128" layer="25" align="center"/>
 <attribute name="VALUE" x="37.465" y="17.526" size="1.016" layer="27"/>
 </element>
 <element name="R28" library="myparts" package="0603" value="" x="42.672" y="26.67" smashed="yes" rot="R180">
@@ -912,7 +912,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="34.036" y="15.875" size="1.016" layer="27"/>
 </element>
 <element name="C26" library="myparts" package="0603" value="" x="33.147" y="17.78" smashed="yes">
-<attribute name="NAME" x="32.639" y="16.637" size="0.8128" layer="25" align="center"/>
+<attribute name="NAME" x="32.766" y="16.637" size="0.8128" layer="25" align="center"/>
 <attribute name="VALUE" x="29.718" y="17.526" size="1.016" layer="27"/>
 </element>
 <element name="C27" library="myparts" package="0603" value="" x="33.147" y="19.304" smashed="yes">
