@@ -88,7 +88,8 @@ void setup() {
   setAnalog();
   setDigital();  
   setLoraSerial();
-  //t.after(tmrRandom(), setLoraSerial);       
+  //t.after(tmrRandom(), setLoraSerial);
+  printConf();       
   t.every(conf.lru08[lru08_report] * 1000L * 60, intervalReport);
   ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
@@ -220,24 +221,7 @@ void readUsbSerial() {
         conf.dgu16[num] = (uint16_t)valInt;
       } else if (strUsbSerial.startsWith(F("xsave"))) {
         EEPROM.put(0, conf);
-        resetCpu();
-      } else if (strUsbSerial.startsWith(F("xdevice"))) {
-        usbSerial.println(F("xdeviceeLoraWAN Wireless DAQ"));
-        usbSerial.flush();
-      } else if (strUsbSerial.startsWith(F("xversion"))) {
-        usbSerial.println(F("xversionFirmware 1.0.1"));
-        usbSerial.flush();
-      } else if (strUsbSerial.startsWith(F("xfetch"))) {
-        for (uint8_t ch = 0; ch < numAn; ch++) {
-          fetchAnalog(ch);       
-        }
-        for (uint8_t ch = 0; ch < numDg; ch++) {
-          fetchDigital(ch);       
-        }
-      } else if (strUsbSerial.startsWith(F("xchannels"))) {
-        getChannels();      
-      } else if (strUsbSerial.startsWith(F("xlorawan"))) {
-        getLorawan(); 
+        resetCpu();      
       } else if (strUsbSerial.startsWith(F("xreport"))) {
         report();       
       }
@@ -379,18 +363,25 @@ void isDigitalReport(const uint8_t ch) {
     }
   }         
 }
-void getLorawan() {
-  String str; 
-  for (uint8_t i = 0; i < sizeof(conf.lru08); i++) {    
-    usbSerial.print(F("xlru08"));    
-    str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(conf.lru08[i]);
-    usbSerial.flush();    
-  }  
-}
-void getChannels() { 
-  String str;  
+void printConf() {
+  if (!isUsb) {
+    return;
+  }
+  String str;
+  // FETCH
+  for (uint8_t ch = 0; ch < numAn; ch++) {
+    fetchAnalog(ch);       
+  }
+  for (uint8_t ch = 0; ch < numDg; ch++) {
+    fetchDigital(ch);       
+  }
+  // DEVICE
+  usbSerial.println(F("xdeviceeLoraWAN Wireless DAQ"));
+  usbSerial.flush();
+  // VERSION
+  usbSerial.println(F("xversionFirmware 1.0.1"));
+  usbSerial.flush();
+  // CHANNELS    
   for (uint8_t i = 0; i < (sizeof(conf.anu08) / sizeof(conf.anu08[0])); i++) {
     usbSerial.print(F("xanu08"));    
     str = '0' + String(i);
@@ -426,6 +417,17 @@ void getChannels() {
     usbSerial.println(conf.dgu16[i]);
     usbSerial.flush();    
   }    
+  // LORAWAN   
+  for (uint8_t i = 0; i < sizeof(conf.lru08); i++) {    
+    usbSerial.print(F("xlru08"));    
+    str = '0' + String(i);
+    usbSerial.print(str.substring(str.length() - 2));    
+    usbSerial.println(conf.lru08[i]);
+    usbSerial.flush();    
+  } 
+  // LORAWAN KEYS
+  delay(10);         
+  loraSerial.println(F("at+get_config=lora:status"));   
 }
 void loadConf() {
   EEPROM.get(0, conf);  
