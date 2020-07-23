@@ -89,7 +89,7 @@ void setup() {
   setDigital();  
   setLoraSerial();
   //t.after(tmrRandom(), setLoraSerial);
-  printConf();       
+  printAll();       
   t.every(conf.lru08[lru08_report] * 1000L * 60, intervalReport);
   ledOscForever = t.oscillate(LED_PIN, 500, HIGH);  
 }
@@ -111,10 +111,7 @@ void report() {
     t.stop(dgDuration[ch]);
     dgDuration[ch] = -1;
   }
-  if (isUsb) {
-    usbSerial.println("report");
-    usbSerial.flush();
-  }  
+  printMsg(F("report")); 
   if (!isLoraJoin) {
     if (isLoraSerial) {
       if(isIntervalReport) {
@@ -180,13 +177,22 @@ void readLoraSerial() {
         delay(10);         
         loraSerial.print(F("at+set_config=lora:dr:")); 
         loraSerial.println(conf.lru08[lru08_dr]); 
+      } else if (strLoraSerial.endsWith(F("JOIN_FAIL 99"))) {
+        isLoraJoin = false;
+        printMsg(F("xjoinloraCould not Join to Network"));
+      } else if (strLoraSerial.indexOf(F("Join retry")) >= 0) {
+        isLoraJoin = false;
+        t.stop(ledOscForever);
+        ledOscForever = t.oscillate(LED_PIN, 500, HIGH);
+        printMsg(F("xjoinloraJoining to Network .."));
+      } else if (strLoraSerial.indexOf(F("NO_NETWORK")) >= 0) {
+        isLoraJoin = false;
+        printMsg(F("xjoinloraCould not Join to Network")); 
       } else if (strLoraSerial.indexOf(F("configure DR")) >= 0) {
         isLoraJoin = true;         
         t.stop(ledOscForever);        
-        digitalWrite(LED_PIN, LOW);                 
-      } else if (strLoraSerial.indexOf(F("Join retry")) >= 0) {
-        t.stop(ledOscForever);
-        ledOscForever = t.oscillate(LED_PIN, 500, HIGH);       
+        digitalWrite(LED_PIN, LOW);              
+        printMsg(F("xjoinloraJoin Success"));              
       }
       if (isUsb) {
         usbSerial.println(strLoraSerial); 
@@ -257,14 +263,15 @@ void readAnalog() {
   }    
 }
 void fetchAnalog(const uint8_t ch) { 
-  if (isUsb) {
-    String str;  
-    usbSerial.print(F("xanval"));    
-    str = '0' + String(ch);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(an[ch], 2);
-    usbSerial.flush();  
-  }    
+  if (!isUsb) {
+    return;
+  }
+  String str;  
+  usbSerial.print(F("xanval"));    
+  str = '0' + String(ch);
+  usbSerial.print(str.substring(str.length() - 2));    
+  usbSerial.println(an[ch], 2);
+  usbSerial.flush();      
 }
 void isAnalogReport(const uint8_t ch) {       
   const uint8_t _low = anf32_low + ch * (sizeof(conf.anf32) / sizeof(conf.anf32[0])) / numAn; 
@@ -323,14 +330,15 @@ void readDigital() {
   }
 }
 void fetchDigital(const uint8_t ch) { 
-  if (isUsb) {
-    String str;
-    usbSerial.print(F("xdgval"));    
-    str = '0' + String(ch);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(dg[ch]);
-    usbSerial.flush();   
-  }    
+  if (!isUsb) {
+    return;
+  }
+  String str;
+  usbSerial.print(F("xdgval"));    
+  str = '0' + String(ch);
+  usbSerial.print(str.substring(str.length() - 2));    
+  usbSerial.println(dg[ch]);
+  usbSerial.flush();       
 }
 void isDigitalReport(const uint8_t ch) {
   const uint8_t _low_report = dgu08_low_report + ch * (sizeof(conf.dgu08) / sizeof(conf.dgu08[0])) / numDg; 
@@ -362,72 +370,6 @@ void isDigitalReport(const uint8_t ch) {
       }       
     }
   }         
-}
-void printConf() {
-  if (!isUsb) {
-    return;
-  }
-  String str;
-  // FETCH
-  for (uint8_t ch = 0; ch < numAn; ch++) {
-    fetchAnalog(ch);       
-  }
-  for (uint8_t ch = 0; ch < numDg; ch++) {
-    fetchDigital(ch);       
-  }
-  // DEVICE
-  usbSerial.println(F("xdeviceeLoraWAN Wireless DAQ"));
-  usbSerial.flush();
-  // VERSION
-  usbSerial.println(F("xversionFirmware 1.0.1"));
-  usbSerial.flush();
-  // CHANNELS    
-  for (uint8_t i = 0; i < (sizeof(conf.anu08) / sizeof(conf.anu08[0])); i++) {
-    usbSerial.print(F("xanu08"));    
-    str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(conf.anu08[i]);
-    usbSerial.flush();    
-  }
-  for (uint8_t i = 0; i < (sizeof(conf.anu16) / sizeof(conf.anu16[0])); i++) {
-    usbSerial.print(F("xanu16"));    
-    str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(conf.anu16[i]);
-    usbSerial.flush();    
-  }
-  for (uint8_t i = 0; i < (sizeof(conf.anf32) / sizeof(conf.anf32[0])); i++) {
-    usbSerial.print(F("xanf32"));    
-    str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(conf.anf32[i], 2); 
-    usbSerial.flush();   
-  }
-  for (uint8_t i = 0; i < (sizeof(conf.dgu08) / sizeof(conf.dgu08[0])); i++) {
-    usbSerial.print(F("xdgu08"));    
-    str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(conf.dgu08[i]);
-    usbSerial.flush();    
-  }
-  for (uint8_t i = 0; i < (sizeof(conf.dgu16) / sizeof(conf.dgu16[0])); i++) {
-    usbSerial.print(F("xdgu16"));    
-    str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(conf.dgu16[i]);
-    usbSerial.flush();    
-  }    
-  // LORAWAN   
-  for (uint8_t i = 0; i < sizeof(conf.lru08); i++) {    
-    usbSerial.print(F("xlru08"));    
-    str = '0' + String(i);
-    usbSerial.print(str.substring(str.length() - 2));    
-    usbSerial.println(conf.lru08[i]);
-    usbSerial.flush();    
-  } 
-  // LORAWAN KEYS
-  delay(10);         
-  loraSerial.println(F("at+get_config=lora:status"));   
 }
 void loadConf() {
   EEPROM.get(0, conf);  
@@ -476,6 +418,94 @@ void setUsbSerial() {
   usbSerial.begin(9600);  
   usbSerial.flush(); 
   isUsb = true;   
+}
+void printAll() {
+  printChFetch();
+  printMsg(F("xdeviceeLoraWAN Wireless TH"));   
+  printMsg(F("xversionFirmware 1.0.1"));
+  printChConf();
+  printLoraConf();
+  printLoraKeys();
+  printMsg(F("xjoinloraJoining to Network .."));
+}
+void printMsg(String msg) {
+  if (!isUsb) {
+    return;
+  }
+  usbSerial.println(msg);
+  usbSerial.flush();
+}
+void printChFetch() {
+  if (!isUsb) {
+    return;
+  }
+  for (uint8_t ch = 0; ch < numAn; ch++) {
+    fetchAnalog(ch);       
+  }
+  for (uint8_t ch = 0; ch < numDg; ch++) {
+    fetchDigital(ch);       
+  }
+}
+void printChConf() {
+  if (!isUsb) {
+    return;
+  }
+  String str;
+  for (uint8_t i = 0; i < (sizeof(conf.anu08) / sizeof(conf.anu08[0])); i++) {
+    usbSerial.print(F("xanu08"));    
+    str = '0' + String(i);
+    usbSerial.print(str.substring(str.length() - 2));    
+    usbSerial.println(conf.anu08[i]);
+    usbSerial.flush();    
+  }
+  for (uint8_t i = 0; i < (sizeof(conf.anu16) / sizeof(conf.anu16[0])); i++) {
+    usbSerial.print(F("xanu16"));    
+    str = '0' + String(i);
+    usbSerial.print(str.substring(str.length() - 2));    
+    usbSerial.println(conf.anu16[i]);
+    usbSerial.flush();    
+  }
+  for (uint8_t i = 0; i < (sizeof(conf.anf32) / sizeof(conf.anf32[0])); i++) {
+    usbSerial.print(F("xanf32"));    
+    str = '0' + String(i);
+    usbSerial.print(str.substring(str.length() - 2));    
+    usbSerial.println(conf.anf32[i], 2); 
+    usbSerial.flush();   
+  }
+  for (uint8_t i = 0; i < (sizeof(conf.dgu08) / sizeof(conf.dgu08[0])); i++) {
+    usbSerial.print(F("xdgu08"));    
+    str = '0' + String(i);
+    usbSerial.print(str.substring(str.length() - 2));    
+    usbSerial.println(conf.dgu08[i]);
+    usbSerial.flush();    
+  }
+  for (uint8_t i = 0; i < (sizeof(conf.dgu16) / sizeof(conf.dgu16[0])); i++) {
+    usbSerial.print(F("xdgu16"));    
+    str = '0' + String(i);
+    usbSerial.print(str.substring(str.length() - 2));    
+    usbSerial.println(conf.dgu16[i]);
+    usbSerial.flush();    
+  }    
+}
+void printLoraConf() {
+  if (!isUsb) {
+    return;
+  }
+  String str;
+  for (uint8_t i = 0; i < sizeof(conf.lru08); i++) {    
+    usbSerial.print(F("xlru08"));    
+    str = '0' + String(i);
+    usbSerial.print(str.substring(str.length() - 2));    
+    usbSerial.println(conf.lru08[i]);
+    usbSerial.flush();    
+  } 
+}
+void printLoraKeys() {
+  if (!isUsb) {
+    return;
+  }
+  delay(10);         
+  loraSerial.println(F("at+get_config=lora:status")); 
 }
 void intervalReport() {
  isIntervalReport = true;

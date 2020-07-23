@@ -33,6 +33,7 @@
         
     let deviceDisp = document.querySelector('#device');
     let versionDisp = document.querySelector('#version');
+    let joinloraDisp = document.querySelector('#joinlora');
     let port;
 
     let numAn = 2, numDg = 2;
@@ -245,7 +246,9 @@
           } else if (dataline.startsWith('xdevicee')) {
             deviceDisp.textContent = value;
           } else if (dataline.startsWith('xversion')) {
-            versionDisp.textContent = value; 
+            versionDisp.textContent = value;
+          } else if (dataline.startsWith('xjoinlora')) {
+            joinloraDisp.textContent = value; 
           } else if (dataline.startsWith('x')) {
             item = formDiv.querySelector('#' + dataline.slice(0, 8));
             item.value = value;                             
@@ -285,6 +288,7 @@
       }, error => {
          deviceDisp.textContent = error;
          versionDisp.textContent = '';
+         joinloraDisp.textContent = '';
       });
     }    
     connectBtn.addEventListener('click', function() {
@@ -293,6 +297,7 @@
         connectBtn.textContent = 'CONNECT';
         deviceDisp.textContent = '';
         versionDisp.textContent = '';
+        joinloraDisp.textContent = '';
         port = null;
       } else {
         serial.requestPort().then(selectedPort => {
@@ -301,6 +306,7 @@
         }).catch(error => {
           deviceDisp.textContent = error;
           versionDisp.textContent = '';
+          joinloraDisp.textContent = '';
         });
       }
     }); 
@@ -308,9 +314,11 @@
       if (ports.length == 0) {
         deviceDisp.textContent = 'No device found.';
         versionDisp.textContent = '';
+        joinloraDisp.textContent = '';
       } else {
         deviceDisp.textContent = 'Connecting...';
         versionDisp.textContent = '';
+        joinloraDisp.textContent = '';
         port = ports[0];
         connect();
       }
