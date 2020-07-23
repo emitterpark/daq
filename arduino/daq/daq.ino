@@ -179,20 +179,20 @@ void readLoraSerial() {
         loraSerial.println(conf.lru08[lru08_dr]); 
       } else if (strLoraSerial.endsWith(F("JOIN_FAIL 99"))) {
         isLoraJoin = false;
-        printMsg(F("xjoinloraCould not Join to Network"));
+        printMsg(F("xjoinlrwCould not Join to Network"));
       } else if (strLoraSerial.indexOf(F("Join retry")) >= 0) {
         isLoraJoin = false;
         t.stop(ledOscForever);
         ledOscForever = t.oscillate(LED_PIN, 500, HIGH);
-        printMsg(F("xjoinloraJoining to Network .."));
+        printMsg(F("xjoinlrwJoining to Network .."));
       } else if (strLoraSerial.indexOf(F("NO_NETWORK")) >= 0) {
         isLoraJoin = false;
-        printMsg(F("xjoinloraCould not Join to Network")); 
+        printMsg(F("xjoinlrwCould not Join to Network")); 
       } else if (strLoraSerial.indexOf(F("configure DR")) >= 0) {
         isLoraJoin = true;         
         t.stop(ledOscForever);        
         digitalWrite(LED_PIN, LOW);              
-        printMsg(F("xjoinloraJoin Success"));              
+        printMsg(F("xjoinlrwJoin Success"));              
       }
       if (isUsb) {
         usbSerial.println(strLoraSerial); 
@@ -426,7 +426,7 @@ void printAll() {
   printChConf();
   printLoraConf();
   printLoraKeys();
-  printMsg(F("xjoinloraJoining to Network .."));
+  printMsg(F("xjoinlrwJoining to Network .."));
 }
 void printMsg(String msg) {
   if (!isUsb) {
