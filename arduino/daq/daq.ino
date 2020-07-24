@@ -421,7 +421,7 @@ void setUsbSerial() {
 }
 void printAll() {
   printChFetch();
-  printMsg(F("xdeviceeLoraWAN Wireless TH"));   
+  printMsg(F("xdeviceeLoraWAN Wireless DAQ"));   
   printMsg(F("xversionFirmware 1.0.1"));
   printChConf();
   printLoraConf();
