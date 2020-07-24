@@ -277,17 +277,17 @@
         */              
       }, error => {
          deviceDisp.textContent = error;
-         versionDisp.textContent = '';
-         joinlrwDisp.textContent = '';
+         versionDisp.textContent = '.';
+         joinlrwDisp.textContent = '.';
       });
     }    
     connectBtn.addEventListener('click', function() {
       if (port) {
         port.disconnect();
         connectBtn.textContent = 'CONNECT';
-        deviceDisp.textContent = '';
-        versionDisp.textContent = '';
-        joinlrwDisp.textContent = '';
+        deviceDisp.textContent = '.';
+        versionDisp.textContent = '.';
+        joinlrwDisp.textContent = '.';
         port = null;
       } else {
         serial.requestPort().then(selectedPort => {
@@ -295,20 +295,20 @@
           connect();
         }).catch(error => {
           deviceDisp.textContent = error;
-          versionDisp.textContent = '';
-          joinlrwDisp.textContent = '';
+          versionDisp.textContent = '.';
+          joinlrwDisp.textContent = '.';
         });
       }
     }); 
     serial.getPorts().then(ports => {
       if (ports.length == 0) {
         deviceDisp.textContent = 'No device found.';
-        versionDisp.textContent = '';
-        joinlrwDisp.textContent = '';
+        versionDisp.textContent = '.';
+        joinlrwDisp.textContent = '.';
       } else {
         deviceDisp.textContent = 'Connecting...';
-        versionDisp.textContent = '';
-        joinlrwDisp.textContent = '';
+        versionDisp.textContent = '.';
+        joinlrwDisp.textContent = '.';
         port = ports[0];
         connect();
       }
