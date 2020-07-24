@@ -272,19 +272,9 @@
         /*
         const encoder = new TextEncoder();
         let view;
-        view = encoder.encode('xdevice\r\n');      
+        view = encoder.encode('xprintall\r\n');      
         port.send(view);
-        view = encoder.encode('xversion\r\n');      
-        port.send(view);
-        view = encoder.encode('xfetch\r\n');      
-        port.send(view);
-        view = encoder.encode('xchannels\r\n');      
-        port.send(view);
-        view = encoder.encode('xlorawan\r\n');      
-        port.send(view);
-        view = encoder.encode('at+get_config=lora:status\r\n');      
-        port.send(view);
-        */        
+        */              
       }, error => {
          deviceDisp.textContent = error;
          versionDisp.textContent = '';
